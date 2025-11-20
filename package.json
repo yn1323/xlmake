@@ -24,12 +24,12 @@
   "description": "Declarative schema-based wrapper for ExcelJS with type safety and intuitive styling",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YOUR_USERNAME/sheetflow.git"
+    "url": "git+https://github.com/yn1323/sheetflow.git"
   },
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/sheetflow/issues"
+    "url": "https://github.com/yn1323/sheetflow/issues"
   },
-  "homepage": "https://github.com/YOUR_USERNAME/sheetflow#readme",
+  "homepage": "https://github.com/yn1323/sheetflow#readme",
   "dependencies": {
     "exceljs": "^4.4.0"
   },
