@@ -1,0 +1,41 @@
+{
+  "name": "sheetflow",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "excel",
+    "exceljs",
+    "spreadsheet",
+    "wrapper",
+    "declarative",
+    "schema"
+  ],
+  "author": "",
+  "license": "MIT",
+  "description": "Declarative schema-based wrapper for ExcelJS with type safety and intuitive styling",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR_USERNAME/sheetflow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/sheetflow/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/sheetflow#readme",
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.12"
+  }
+}
