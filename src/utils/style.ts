@@ -13,13 +13,15 @@ export function mapStyle(style: SheetflowStyle): Partial<Style> {
   }
 
   if (style.fill) {
-    excelStyle.fill = { ...style.fill };
     if (style.fill.color) {
       excelStyle.fill = {
         type: 'pattern',
         pattern: 'solid',
         fgColor: { argb: toArgb(style.fill.color) },
       };
+    } else {
+      // If no color is specified but fill is provided, use it as-is
+      excelStyle.fill = style.fill as any;
     }
   }
 
