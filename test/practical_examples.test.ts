@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createWorkbook } from '../src';
-import { readExcel, getCellStyle } from './utils';
+import { readExcel } from './utils';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -10,19 +10,13 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 }
 
 describe('Practical Excel Examples', () => {
+  it('should generate all practical examples in a single workbook', async () => {
+    const filePath = path.join(OUTPUT_DIR, 'practical_examples.xlsx');
+    const workbook = createWorkbook();
 
-  /**
-   * 売上レポート
-   * - 日付・金額フォーマット
-   * - 条件付きスタイル（目標達成で緑、未達で赤）
-   * - 縞模様の行
-   * - 部署ごとの縦マージ
-   */
-  it('should generate a sales report', async () => {
-    const filePath = path.join(OUTPUT_DIR, 'sales_report.xlsx');
-
-    await createWorkbook().addSheet({
-      name: '月次売上レポート',
+    // --- Sheet 1: 売上レポート ---
+    workbook.addSheet({
+      name: '売上レポート',
       title: {
         label: '2025年1月 売上レポート',
         style: {
@@ -74,39 +68,10 @@ describe('Practical Excel Examples', () => {
         row: (_, index) => index % 2 === 1 ? { fill: { color: '#DEEBF7' } } : {}
       },
       borders: 'all'
-    }).save(filePath);
+    });
 
-    const workbook = await readExcel(filePath);
-    const sheet = workbook.getWorksheet('月次売上レポート');
-    expect(sheet).toBeDefined();
-
-    if (sheet) {
-      // タイトルの確認
-      expect(sheet.getCell(1, 1).value).toBe('2025年1月 売上レポート');
-
-      // データ行の確認 (タイトル1行 + ヘッダー1行 + データ)
-      expect(sheet.getCell(3, 2).value).toBe('田中太郎');
-
-      // 金額フォーマットの確認
-      expect(sheet.getCell(3, 7).numFmt).toBe('¥#,##0');
-
-      // 縦マージの確認（営業1課が3行マージ）
-      const dept1 = sheet.getCell(3, 1);
-      const dept2 = sheet.getCell(4, 1);
-      expect(dept2.master).toBe(dept1);
-    }
-  });
-
-  /**
-   * 従業員名簿
-   * - 基本的な従業員情報
-   * - 在籍状況による色分け
-   * - ヘッダーセルのスタイル
-   */
-  it('should generate an employee list', async () => {
-    const filePath = path.join(OUTPUT_DIR, 'employee_list.xlsx');
-
-    await createWorkbook().addSheet({
+    // --- Sheet 2: 従業員名簿 ---
+    workbook.addSheet({
       name: '従業員名簿',
       title: {
         label: '株式会社サンプル 従業員名簿 2025年度',
@@ -152,34 +117,10 @@ describe('Practical Excel Examples', () => {
       },
       borders: 'all',
       autoWidth: true
-    }).save(filePath);
+    });
 
-    const workbook = await readExcel(filePath);
-    const sheet = workbook.getWorksheet('従業員名簿');
-    expect(sheet).toBeDefined();
-
-    if (sheet) {
-      // タイトル行の確認
-      expect(sheet.getCell(1, 1).value).toBe('株式会社サンプル 従業員名簿 2025年度');
-
-      // ヘッダー行の確認（タイトル1行の後）
-      expect(sheet.getCell(2, 1).value).toBe('社員番号');
-
-      // データの確認
-      expect(sheet.getCell(3, 2).value).toBe('山田太郎');
-    }
-  });
-
-  /**
-   * 請求書
-   * - 会社情報と請求先情報
-   * - 明細行
-   * - 小計・消費税・合計
-   */
-  it('should generate an invoice', async () => {
-    const filePath = path.join(OUTPUT_DIR, 'invoice.xlsx');
-
-    await createWorkbook().addSheet({
+    // --- Sheet 3: 請求書 ---
+    workbook.addSheet({
       name: '請求書',
       title: {
         label: '請 求 書',
@@ -215,33 +156,9 @@ describe('Practical Excel Examples', () => {
         }
       },
       borders: 'all'
-    }).save(filePath);
+    });
 
-    const workbook = await readExcel(filePath);
-    const sheet = workbook.getWorksheet('請求書');
-    expect(sheet).toBeDefined();
-
-    if (sheet) {
-      // タイトルの確認
-      expect(sheet.getCell(1, 1).value).toBe('請 求 書');
-
-      // 明細の確認
-      expect(sheet.getCell(3, 2).value).toBe('システム開発費');
-
-      // 合計金額の確認（セルスタイル付き）
-      const totalCell = sheet.getCell(10, 7);
-      expect(totalCell.value).toBe(3740000);
-    }
-  });
-
-  /**
-   * 在庫管理表
-   * - 在庫状況による色分け（多・適正・少・欠品）
-   * - 発注点との比較
-   */
-  it('should generate an inventory report', async () => {
-    const filePath = path.join(OUTPUT_DIR, 'inventory_report.xlsx');
-
+    // --- Sheet 4: 在庫管理表 ---
     const getStockStatus = (stock: number, reorderPoint: number) => {
       if (stock === 0) return '欠品';
       if (stock < reorderPoint) return '要発注';
@@ -249,7 +166,7 @@ describe('Practical Excel Examples', () => {
       return '過剰';
     };
 
-    const rows = [
+    const inventoryRows = [
       { code: 'A001', name: 'ボールペン（黒）', category: '文房具', stock: 500, reorderPoint: 100, unitPrice: 100 },
       { code: 'A002', name: 'ボールペン（赤）', category: '文房具', stock: 50, reorderPoint: 100, unitPrice: 100 },
       { code: 'A003', name: 'ノート（A4）', category: '文房具', stock: 0, reorderPoint: 50, unitPrice: 200 },
@@ -263,7 +180,7 @@ describe('Practical Excel Examples', () => {
       stockValue: row.stock * row.unitPrice
     }));
 
-    await createWorkbook().addSheet({
+    workbook.addSheet({
       name: '在庫管理表',
       title: {
         label: '在庫管理表（2025年1月末時点）',
@@ -307,7 +224,7 @@ describe('Practical Excel Examples', () => {
           }
         }
       ],
-      rows,
+      rows: inventoryRows,
       styles: {
         header: {
           fill: { color: '#5B2C6F' },
@@ -317,34 +234,13 @@ describe('Practical Excel Examples', () => {
         row: (_, index) => index % 2 === 1 ? { fill: { color: '#E8DAEF' } } : {}
       },
       borders: 'all'
-    }).save(filePath);
+    });
 
-    const workbook = await readExcel(filePath);
-    const sheet = workbook.getWorksheet('在庫管理表');
-    expect(sheet).toBeDefined();
-
-    if (sheet) {
-      // ステータスの色分け確認
-      const outOfStockCell = sheet.getCell(5, 8); // A003の状態セル
-      expect(outOfStockCell.value).toBe('欠品');
-
-      // 在庫金額のフォーマット確認
-      expect(sheet.getCell(3, 7).numFmt).toBe('¥#,##0');
-    }
-  });
-
-  /**
-   * 勤怠表
-   * - 日付ごとの勤務時間
-   * - 残業時間のハイライト
-   */
-  it('should generate an attendance sheet', async () => {
-    const filePath = path.join(OUTPUT_DIR, 'attendance_sheet.xlsx');
-
+    // --- Sheet 5: 勤怠表 ---
     const generateAttendanceData = () => {
       const data = [];
       for (let day = 1; day <= 10; day++) {
-        const isWeekend = [4, 5, 11, 12].includes(day); // 土日
+        const isWeekend = [4, 5, 11, 12].includes(day);
         if (isWeekend) {
           data.push({
             date: new Date(2025, 0, day),
@@ -357,10 +253,10 @@ describe('Practical Excel Examples', () => {
             note: '休日'
           });
         } else {
-          const overtime = Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : 0;
+          const overtime = day % 3 === 0 ? 2 : 0; // Deterministic for testing
           data.push({
             date: new Date(2025, 0, day),
-            dayOfWeek: ['月', '火', '水', '木', '金'][day % 5],
+            dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][new Date(2025, 0, day).getDay()],
             startTime: '09:00',
             endTime: overtime > 0 ? `${18 + overtime}:00` : '18:00',
             breakTime: '1:00',
@@ -373,7 +269,7 @@ describe('Practical Excel Examples', () => {
       return data;
     };
 
-    await createWorkbook().addSheet({
+    workbook.addSheet({
       name: '勤怠表',
       title: {
         label: '勤怠表 - 山田太郎 2025年1月',
@@ -425,18 +321,60 @@ describe('Practical Excel Examples', () => {
         }
       },
       borders: 'all'
-    }).save(filePath);
+    });
 
-    const workbook = await readExcel(filePath);
-    const sheet = workbook.getWorksheet('勤怠表');
-    expect(sheet).toBeDefined();
+    await workbook.save(filePath);
 
-    if (sheet) {
-      // 日付フォーマットの確認（タイトル1行 + ヘッダー1行 = データは3行目から）
-      expect(sheet.getCell(3, 1).numFmt).toBe('mm/dd');
+    // --- Assertions ---
+    const wb = await readExcel(filePath);
 
-      // ヘッダーの確認
-      expect(sheet.getCell(2, 3).value).toBe('出勤');
+    // Sales report assertions
+    const salesSheet = wb.getWorksheet('売上レポート');
+    expect(salesSheet).toBeDefined();
+    if (salesSheet) {
+      expect(salesSheet.getCell(1, 1).value).toBe('2025年1月 売上レポート');
+      expect(salesSheet.getCell(3, 2).value).toBe('田中太郎');
+      expect(salesSheet.getCell(3, 7).numFmt).toBe('¥#,##0');
+      // Vertical merge check
+      const dept1 = salesSheet.getCell(3, 1);
+      const dept2 = salesSheet.getCell(4, 1);
+      expect(dept2.master).toBe(dept1);
+    }
+
+    // Employee list assertions
+    const empSheet = wb.getWorksheet('従業員名簿');
+    expect(empSheet).toBeDefined();
+    if (empSheet) {
+      expect(empSheet.getCell(1, 1).value).toBe('株式会社サンプル 従業員名簿 2025年度');
+      expect(empSheet.getCell(2, 1).value).toBe('社員番号');
+      expect(empSheet.getCell(3, 2).value).toBe('山田太郎');
+    }
+
+    // Invoice assertions
+    const invoiceSheet = wb.getWorksheet('請求書');
+    expect(invoiceSheet).toBeDefined();
+    if (invoiceSheet) {
+      expect(invoiceSheet.getCell(1, 1).value).toBe('請 求 書');
+      expect(invoiceSheet.getCell(3, 2).value).toBe('システム開発費');
+      const totalCell = invoiceSheet.getCell(10, 7);
+      expect(totalCell.value).toBe(3740000);
+    }
+
+    // Inventory assertions
+    const invSheet = wb.getWorksheet('在庫管理表');
+    expect(invSheet).toBeDefined();
+    if (invSheet) {
+      const outOfStockCell = invSheet.getCell(5, 8);
+      expect(outOfStockCell.value).toBe('欠品');
+      expect(invSheet.getCell(3, 7).numFmt).toBe('¥#,##0');
+    }
+
+    // Attendance assertions
+    const attSheet = wb.getWorksheet('勤怠表');
+    expect(attSheet).toBeDefined();
+    if (attSheet) {
+      expect(attSheet.getCell(3, 1).numFmt).toBe('mm/dd');
+      expect(attSheet.getCell(2, 3).value).toBe('出勤');
     }
   });
 });
