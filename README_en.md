@@ -4,17 +4,32 @@
   <img src="./logo.png" alt="xlkit Logo" width="200" />
 </p>
 
-A declarative, schema-based wrapper for [ExcelJS](https://github.com/exceljs/exceljs).  
+A declarative, schema-based wrapper for [ExcelJS](https://github.com/exceljs/exceljs).
 Define your Excel structure with a simple schema and let xlkit handle the styling, formatting, and layout.
+
+[日本語 README](./README.md)
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Quick Reference](#quick-reference)
+  - [Style Properties](#style-properties)
+  - [Border Presets](#border-presets)
+  - [Style Priority](#style-priority)
+- [API Reference](#api-reference)
+- [Common Patterns](#common-patterns)
+- [Complete Example](#complete-example)
 
 ## Features
 
-- 📝 **Declarative Schema**: Define data and schema in one place.
-- 🎨 **Flexible Styling**: Apply styles at 7 different levels (title, header, row, column, cell).
-- 🔗 **Auto Merge**: Automatically merge vertical cells with the same value.
-- 📏 **Auto Width**: Smart column width calculation based on content (including full-width chars).
-- 🌈 **Hex Colors**: Use standard 6-digit hex codes (`#FF0000`) directly.
-- 🌐 **Universal**: Works in Node.js (file output) and Browser/Frontend (`Uint8Array` output).
+- 📝 **Declarative Schema**: Define data and schema in one place
+- 🎨 **Flexible Styling**: Apply styles at 7 different levels (title, header, row, column, cell)
+- 🔗 **Auto Merge**: Automatically merge vertical cells with the same value
+- 📏 **Auto Width**: Smart column width calculation based on content (including full-width chars)
+- 🌈 **Hex Colors**: Use standard 6-digit hex codes (`#FF0000`) directly
+- 🌐 **Universal**: Works in Node.js (file output) and Browser (`Uint8Array` output)
 
 ## Installation
 
@@ -32,15 +47,10 @@ await createWorkbook().addSheet({
   headers: [
     { key: 'id', label: 'ID', width: 10 },
     { key: 'name', label: 'Name', width: 20 },
-    { 
-      key: 'role', 
-      label: 'Role', 
-      width: 'auto', 
-      merge: 'vertical' 
-    },
-    { 
-      key: 'isActive', 
-      label: 'Status', 
+    { key: 'role', label: 'Role', width: 'auto', merge: 'vertical' },
+    {
+      key: 'isActive',
+      label: 'Status',
       format: (val) => val ? 'Active' : 'Inactive',
       style: (val) => ({ font: { color: val ? '#00AA00' : '#FF0000' } })
     }
@@ -50,213 +60,389 @@ await createWorkbook().addSheet({
     { id: 2, name: 'Bob', role: 'User', isActive: true },
     { id: 3, name: 'Charlie', role: 'User', isActive: false }
   ],
-  borders: 'outer'
+  borders: 'all'
 }).save('users.xlsx');
+```
+
+## Quick Reference
+
+### Style Properties
+
+#### Font (`font`)
+
+| Property | Type | Possible Values | Default | Description |
+|----------|------|-----------------|---------|-------------|
+| `name` | `string` | `'Arial'`, `'Times New Roman'`, etc. | System dependent | Font name |
+| `size` | `number` | `8` - `72` | `11` | Font size |
+| `bold` | `boolean` | `true` / `false` | `false` | Bold text |
+| `italic` | `boolean` | `true` / `false` | `false` | Italic text |
+| `underline` | `boolean` | `true` / `false` | `false` | Underlined text |
+| `strike` | `boolean` | `true` / `false` | `false` | Strikethrough |
+| `color` | `string` | `'#RRGGBB'` format | `'#000000'` | Font color |
+
+```typescript
+// Example
+{ font: { name: 'Arial', size: 12, bold: true, color: '#FF0000' } }
+```
+
+#### Fill (`fill`)
+
+| Property | Type | Possible Values | Default | Description |
+|----------|------|-----------------|---------|-------------|
+| `color` | `string` | `'#RRGGBB'` format | None | Background color |
+
+```typescript
+// Example
+{ fill: { color: '#FFFF00' } }  // Yellow background
+```
+
+**Common Colors:**
+
+| Color | Hex Code | Use Case |
+|-------|----------|----------|
+| Red | `#FF0000` | Errors, warnings |
+| Green | `#00AA00` | Success, active |
+| Blue | `#4472C4` | Headers, links |
+| Yellow | `#FFFF00` | Highlights |
+| Gray | `#F2F2F2` | Alternating rows |
+| Light Blue | `#DEEBF7` | Selected rows |
+| Light Green | `#C6EFCE` | Positive values |
+| Light Red | `#FFC7CE` | Negative values |
+
+#### Alignment (`alignment`)
+
+| Property | Type | Possible Values | Default | Description |
+|----------|------|-----------------|---------|-------------|
+| `horizontal` | `string` | `'left'`, `'center'`, `'right'` | `'left'` | Horizontal alignment |
+| `vertical` | `string` | `'top'`, `'middle'`, `'bottom'` | `'bottom'` | Vertical alignment |
+| `wrapText` | `boolean` | `true` / `false` | `false` | Wrap text in cell |
+
+```typescript
+// Example
+{ alignment: { horizontal: 'center', vertical: 'middle', wrapText: true } }
+```
+
+### Border Presets
+
+| Value | Description | Appearance |
+|-------|-------------|------------|
+| `'none'` | No borders (default) | Cell boundaries invisible |
+| `'all'` | Grid borders on all cells | Table format |
+| `'outer'` | Border only on outer edges | Outer frame only |
+| `'header-body'` | Thick line below header | Emphasized header |
+
+### Column Width Options
+
+| Value | Type | Description |
+|-------|------|-------------|
+| `10`, `20`, etc. | `number` | Fixed width (character units) |
+| `'auto'` | `string` | Auto-calculated based on content |
+| Not specified | - | Uses `autoWidth` setting, or default width |
+
+### Style Priority
+
+Styles are applied in the following order, with later styles overriding earlier ones.
+
+**Header Row:**
+```
+styles.all → styles.header → headers[].label.style
+```
+
+**Data Rows:**
+```
+styles.all → styles.body → styles.column[key] → styles.row() → headers[].style → rows[].{key}.style
+```
+
+```
+Priority: Low ──────────────────────────────────────────────────────────→ High
+
+┌──────────┐   ┌──────────┐   ┌────────────────┐   ┌───────────┐   ┌──────────────┐   ┌─────────────────┐
+│styles.all│ → │styles.body│ → │styles.column[key]│ → │styles.row()│ → │headers[].style│ → │rows[].{key}.style│
+└──────────┘   └──────────┘   └────────────────┘   └───────────┘   └──────────────┘   └─────────────────┘
+    All          All body        Column-level        Row-level       Header def style   Cell-level style
 ```
 
 ## API Reference
 
-### 1. Basic Structure
+### Basic Structure
 
 ```typescript
 createWorkbook().addSheet({
   name: string,              // Sheet name (required)
   headers: HeaderDef[],      // Column definitions (required)
-  rows: any[],               // Data rows (required)
-  title?: TitleConfig,       // Title row (optional)
-  styles?: StylesConfig,     // Global styles (optional)
-  borders?: 'all' | 'outer' | 'header-body' | 'none',
-  autoWidth?: boolean | { ... }
+  rows: RowData[],           // Data rows (required)
+  title?: TitleConfig,       // Title row
+  styles?: StylesConfig,     // Global styles
+  borders?: BorderPreset,    // Border preset
+  autoWidth?: AutoWidthConfig // Auto width configuration
 })
 ```
 
-### 2. Headers (`headers`)
+### Header Definition (`HeaderDef`)
 
-Define columns with the `headers` array.
+| Property | Type | Required | Default | Description |
+|----------|------|:--------:|---------|-------------|
+| `key` | `string` | ✅ | - | Data property key |
+| `label` | `string \| LabelConfig` | ✅ | - | Header text |
+| `width` | `number \| 'auto'` | - | Not set | Column width |
+| `merge` | `'vertical'` | - | Not set | Auto-merge vertically |
+| `format` | `string \| FormatFn` | - | Not set | Display format |
+| `style` | `XLStyle \| StyleFn` | - | Not set | Column style |
 
 ```typescript
 headers: [
-  { 
-    key: 'age',                    // Data property key
-    label: 'Age',                  // Header text
-    width: 10,                     // Column width (number or 'auto')
-    merge: 'vertical',             // Auto-merge vertically
-    format: '$#,##0',              // Number/date format
-    style: { ... }                 // Fixed column style
-  },
+  // Basic definition
+  { key: 'id', label: 'ID', width: 10 },
+
+  // Auto-merge
+  { key: 'dept', label: 'Department', merge: 'vertical' },
+
+  // Excel format string
+  { key: 'salary', label: 'Salary', format: '$#,##0' },
+
+  // Format function
+  { key: 'rate', label: 'Rate', format: (val) => `${val}%` },
+
+  // Fixed style
+  { key: 'total', label: 'Total', style: { font: { bold: true } } },
+
+  // Conditional style (function)
   {
-    key: 'salary',
-    label: 'Salary',
-    style: (val, row, index) => { // Conditional style (function)
-      return val > 100000 ? { font: { color: '#FF0000' } } : {};
-    }
+    key: 'status',
+    label: 'Status',
+    style: (val, row, index) => val === 'OK'
+      ? { font: { color: '#00AA00' } }
+      : { font: { color: '#FF0000' } }
+  },
+
+  // Style header cell itself
+  {
+    key: 'name',
+    label: { value: 'Name', style: { font: { bold: true, color: '#FFFFFF' }, fill: { color: '#4472C4' } } }
   }
 ]
 ```
 
-**Header Cell Styling:**
-```typescript
-headers: [
-  { 
-    key: 'age', 
-    label: { value: 'Age', style: { font: { bold: true } } }  // Style header cell
-  }
-]
-```
+### Format Strings
 
-### 3. Data Rows (`rows`)
+| Purpose | Format | Display Example |
+|---------|--------|-----------------|
+| Currency (USD) | `'$#,##0'` | $1,000 |
+| Currency (JPY) | `'¥#,##0'` | ¥1,000 |
+| 2 Decimals | `'#,##0.00'` | 1,000.00 |
+| Percentage | `'0.00%'` | 12.34% |
+| Date (ISO) | `'yyyy-mm-dd'` | 2025-01-15 |
+| Date (US) | `'mm/dd/yyyy'` | 01/15/2025 |
 
-Define data and cell-level styles.
+### Data Rows (`rows`)
 
 ```typescript
 rows: [
-  { age: 18, name: "Mary" },  // Simple values
-  { 
-    age: 25, 
-    name: { value: "Tom", style: { font: { bold: true } } }  // Cell with style
+  // Simple values
+  { id: 1, name: 'Alice', salary: 50000 },
+
+  // Cell with style
+  {
+    id: 2,
+    name: { value: 'Bob', style: { font: { bold: true } } },
+    salary: 60000
   }
 ]
 ```
 
-### 4. Title Row (`title`)
+### Title Row (`title`)
 
-Add a title row at the top of the sheet.
+| Property | Type | Description |
+|----------|------|-------------|
+| `label` | `string \| string[]` | Title text (array for multiple lines) |
+| `style` | `XLStyle` | Title style |
 
 ```typescript
+// Single line title
 title: {
-  label: 'Employee List 2025',  // Or array: ['Title 1', 'Title 2']
-  style: { 
-    fill: { color: '#4472C4' }, 
+  label: 'Employee List 2025',
+  style: {
+    fill: { color: '#4472C4' },
     font: { color: '#FFFFFF', bold: true, size: 14 },
     alignment: { horizontal: 'center' }
   }
 }
+
+// Multiple line title
+title: {
+  label: ['Company Inc.', 'Monthly Report - January 2025'],
+  style: { font: { bold: true }, alignment: { horizontal: 'center' } }
+}
 ```
 
-### 5. Global Styles (`styles`)
+### Global Styles (`styles`)
 
-Apply styles at 7 different priority levels.
+| Property | Type | Description |
+|----------|------|-------------|
+| `all` | `XLStyle` | Applied to all cells |
+| `header` | `XLStyle` | Applied to header row |
+| `body` | `XLStyle` | Applied to all data rows |
+| `row` | `(data, index) => XLStyle` | Dynamic row styling |
+| `column` | `{ [key]: XLStyle }` | Column-specific styling |
 
 ```typescript
 styles: {
-  all: { font: { name: 'Arial', size: 11 } },  // Default for all
-  header: { fill: { color: '#EEEEEE' }, font: { bold: true } },  // Header row
-  body: { alignment: { vertical: 'middle' } },  // Body area
-  row: (data, index) => {  // Row-level (dynamic)
-    return index % 2 === 1 ? { fill: { color: '#F2F2F2' } } : {};
-  },
-  column: {  // Column-level
-    age: { alignment: { horizontal: 'center' } },
+  all: { font: { name: 'Arial', size: 10 } },
+  header: { fill: { color: '#4472C4' }, font: { color: '#FFFFFF', bold: true } },
+  body: { alignment: { vertical: 'middle' } },
+  row: (data, index) => index % 2 === 1 ? { fill: { color: '#F2F2F2' } } : {},
+  column: {
+    price: { alignment: { horizontal: 'right' } },
     name: { font: { bold: true } }
   }
 }
 ```
 
-**Style Priority (Header Row):**
-1. `styles.all` → 2. `styles.header` → 3. `headers[].label.style`
-
-**Style Priority (Data Rows):**
-1. `styles.all` → 2. `styles.body` → 3. `styles.column[key]` → 4. `styles.row()` → 5. `headers[].style` → 6. `rows[].{key}.style`
-
-### 6. Borders (`borders`)
-
-Apply border presets to the entire sheet.
-
-- **`'all'`**: Grid borders on all cells
-- **`'outer'`**: Border only on outer edges
-- **`'header-body'`**: Thick line below header
-- **`'none'`**: No borders (default)
+### Auto Width (`autoWidth`)
 
 ```typescript
-{
-  borders: 'all'
+// Simple enable
+autoWidth: true
+
+// Detailed configuration
+autoWidth: {
+  enabled: true,           // Enable/disable
+  padding: 2,              // Padding (character units)
+  headerIncluded: true,    // Include header in calculation
+  charWidthConstant: 1.2   // Width calculation multiplier
 }
 ```
 
-### 7. Auto Width (`autoWidth`)
+### Output Methods
+
+| Method | Environment | Description |
+|--------|-------------|-------------|
+| `save(filename, options?)` | Node.js | Save to file |
+| `download(filename, options?)` | Browser | Trigger download |
+| `saveToBuffer(options?)` | Both | Get `Uint8Array` |
 
 ```typescript
-// Method 1: Auto-adjust all columns
-{ autoWidth: true }
+// Options
+interface SaveOptions {
+  timeout?: number;  // Timeout in ms, default: 10000
+}
 
-// Method 2: Detailed configuration
-{ 
-  autoWidth: {
-    enabled: true,
-    padding: 2,
-    headerIncluded: true,
-    charWidthConstant: 1.2
+// Examples
+await workbook.save('output.xlsx');
+await workbook.save('output.xlsx', { timeout: 30000 });
+await workbook.download('output.xlsx');
+const buffer = await workbook.saveToBuffer();
+```
+
+## Common Patterns
+
+### Alternating Row Colors
+
+```typescript
+styles: {
+  row: (_, index) => index % 2 === 1 ? { fill: { color: '#F2F2F2' } } : {}
+}
+```
+
+### Conditional Formatting (Color by Value)
+
+```typescript
+headers: [
+  {
+    key: 'score',
+    label: 'Score',
+    style: (val) => {
+      if (val >= 80) return { font: { color: '#006100' }, fill: { color: '#C6EFCE' } };
+      if (val >= 60) return { font: { color: '#9C5700' }, fill: { color: '#FFEB9C' } };
+      return { font: { color: '#9C0006' }, fill: { color: '#FFC7CE' } };
+    }
+  }
+]
+```
+
+### Merge Cells by Department
+
+```typescript
+headers: [
+  { key: 'dept', label: 'Department', merge: 'vertical', style: { alignment: { vertical: 'middle' } } },
+  { key: 'name', label: 'Name' },
+  { key: 'role', label: 'Role' }
+]
+// Ensure rows are sorted by department
+```
+
+### Currency Format with Right Alignment
+
+```typescript
+headers: [
+  {
+    key: 'price',
+    label: 'Price',
+    format: '$#,##0',
+    style: { alignment: { horizontal: 'right' } }
+  }
+]
+```
+
+### Emphasized Header
+
+```typescript
+styles: {
+  header: {
+    fill: { color: '#4472C4' },
+    font: { color: '#FFFFFF', bold: true, size: 12 },
+    alignment: { horizontal: 'center' }
   }
 }
-
-// Method 3: Individual width takes priority
-{
-  headers: [
-    { key: 'age', label: 'Age', width: 10 },  // Fixed width
-    { key: 'name', label: 'Name' }  // Auto-adjust
-  ],
-  autoWidth: true
-}
 ```
-
-### 8. Browser Download
-
-```typescript
-// Node.js
-await createWorkbook().addSheet({ ... }).save('output.xlsx');
-
-// Browser
-await createWorkbook().addSheet({ ... }).download('output.xlsx');
-```
-
-### 9. Timeout Configuration
-
-Default 10-second timeout to prevent freezing with large datasets.
-
-```typescript
-// Default (10 seconds)
-await createWorkbook().addSheet({ ... }).save('output.xlsx');
-
-// Custom timeout (30 seconds)
-await createWorkbook().addSheet({ ... }).save('output.xlsx', { timeout: 30000 });
-```
-
-> **Recommendation**: Default setting works well for datasets under 100,000 rows.
 
 ## Complete Example
 
 ```typescript
+import { createWorkbook } from 'xlkit';
+
 await createWorkbook().addSheet({
   name: 'Employees',
   title: {
     label: 'Employee List 2025',
-    style: { 
-      fill: { color: '#4472C4' }, 
-      font: { color: '#FFFFFF', bold: true, size: 14 },
+    style: {
+      fill: { color: '#1F4E79' },
+      font: { color: '#FFFFFF', bold: true, size: 16 },
       alignment: { horizontal: 'center' }
     }
   },
   headers: [
-    { 
-      key: 'dept', 
-      label: 'Department', 
+    {
+      key: 'dept',
+      label: 'Department',
       merge: 'vertical',
       style: { alignment: { vertical: 'middle', horizontal: 'center' } }
     },
     { key: 'name', label: 'Name', width: 20 },
-    { 
-      key: 'salary', 
+    {
+      key: 'salary',
       label: 'Salary',
       format: '$#,##0',
-      style: (val) => val > 100000 ? { font: { color: '#FF0000', bold: true } } : {}
+      style: (val) => val > 100000
+        ? { font: { color: '#006100', bold: true }, fill: { color: '#C6EFCE' } }
+        : {}
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      format: (val) => val ? 'Active' : 'Inactive',
+      style: (val) => ({ font: { color: val ? '#006100' : '#9C0006' } })
     }
   ],
   rows: [
-    { dept: 'Engineering', name: 'Alice', salary: 120000 },
-    { dept: 'Engineering', name: 'Bob', salary: 80000 },
-    { dept: 'Sales', name: { value: 'Charlie', style: { font: { bold: true } } }, salary: 95000 }
+    { dept: 'Engineering', name: 'Alice', salary: 120000, status: true },
+    { dept: 'Engineering', name: 'Bob', salary: 80000, status: true },
+    { dept: 'Sales', name: 'Charlie', salary: 95000, status: true },
+    { dept: 'Sales', name: 'Diana', salary: 88000, status: false }
   ],
   styles: {
+    all: { font: { name: 'Arial', size: 10 } },
+    header: { fill: { color: '#4472C4' }, font: { color: '#FFFFFF', bold: true } },
     row: (_, index) => index % 2 === 1 ? { fill: { color: '#F2F2F2' } } : {}
   },
   borders: 'all',
