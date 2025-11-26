@@ -18,6 +18,7 @@ Define your Excel structure with a simple schema and let xlkit handle the stylin
   - [Style Properties](#style-properties)
   - [Border Presets](#border-presets)
   - [Style Priority](#style-priority)
+  - [Preserving Leading Zeros](#preserving-leading-zeros--string-values)
 - [API Reference](#api-reference)
 - [Common Patterns](#common-patterns)
 - [Complete Example](#complete-example)
@@ -233,6 +234,45 @@ headers: [
 | Percentage | `'0.00%'` | 12.34% |
 | Date (ISO) | `'yyyy-mm-dd'` | 2025-01-15 |
 | Date (US) | `'mm/dd/yyyy'` | 01/15/2025 |
+| Text (String) | `'@'` | As-is |
+
+### Preserving Leading Zeros / String Values
+
+In Excel, values like `01` or `007` are treated as numbers, causing leading zeros to be removed.
+To preserve them as strings, use one of the following methods:
+
+**Method 1: Pass data as strings (Recommended)**
+
+```typescript
+rows: [
+  { code: '007' },      // ✅ Pass as string → "007" preserved
+  { code: '0123' },     // ✅ "0123" preserved
+  { zipCode: '00456' }  // ✅ "00456" preserved
+]
+```
+
+**Method 2: Use `@` format**
+
+```typescript
+headers: [
+  {
+    key: 'code',
+    label: 'Code',
+    format: '@'  // Force text format
+  }
+]
+```
+
+**Important Notes:**
+
+| Value | Type | Excel Display |
+|-------|------|---------------|
+| `'007'` | String | 007 ✅ |
+| `7` | Number | 7 |
+| `'01234567890'` | String | 01234567890 ✅ |
+| `1234567890` | Number | 1234567890 |
+
+> For phone numbers, zip codes, employee IDs, and other data that may have leading zeros, always pass them as strings.
 
 ### Data Rows (`rows`)
 
