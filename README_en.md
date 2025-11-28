@@ -175,7 +175,6 @@ createWorkbook().addSheet({
   headers: HeaderDef[],      // Column definitions (required)
   rows: RowData[],           // Data rows (required)
   title?: TitleConfig,       // Title row
-  multiRowHeaders?: MultiRowHeaderConfig, // Multi-row header configuration
   styles?: StylesConfig,     // Global styles
   borders?: BorderPreset,    // Border preset
   autoWidth?: AutoWidthConfig // Auto width configuration
@@ -187,11 +186,16 @@ createWorkbook().addSheet({
 | Property | Type | Required | Default | Description |
 |----------|------|:--------:|---------|-------------|
 | `key` | `string` | ✅ | - | Data property key |
-| `label` | `string \| LabelConfig` | ✅ | - | Header text |
+| `label` | `HeaderLabel` | ✅ | - | Header text (see below) |
 | `width` | `number \| 'auto'` | - | Not set | Column width |
 | `merge` | `'vertical'` | - | Not set | Auto-merge vertically |
 | `format` | `string \| FormatFn` | - | Not set | Display format |
 | `style` | `XLStyle \| StyleFn` | - | Not set | Column style |
+
+**`label` Type (`HeaderLabel`):**
+- `string`: Single-row header (e.g., `'Name'`)
+- `{ value: string, style?: XLStyle }`: Single-row header with style
+- `(string | { value: string, style?: XLStyle })[]`: Multi-row header (array)
 
 ```typescript
 headers: [
@@ -379,7 +383,7 @@ const buffer = await workbook.saveToBuffer();
 
 ## Multi-Row Headers
 
-Define headers that span multiple rows. Use `colSpan` for horizontal merging and `rowSpan` for vertical merging.
+Pass an array to `label` to define headers that span multiple rows. When consecutive cells in the same row have the same value, they are automatically merged horizontally (colSpan).
 
 ### Basic Usage
 
@@ -387,19 +391,10 @@ Define headers that span multiple rows. Use `colSpan` for horizontal merging and
 await createWorkbook().addSheet({
   name: 'Report',
   headers: [
-    { key: 'col1', label: 'Col 1' },
-    { key: 'col2', label: 'Col 2' },
-    { key: 'col3', label: 'Col 3' }
+    { key: 'col1', label: ['Group A', 'Sub 1'] },
+    { key: 'col2', label: ['Group A', 'Sub 2'] },  // Same 'Group A' → auto-merge
+    { key: 'col3', label: ['Group B', 'Sub 3'] }
   ],
-  multiRowHeaders: {
-    rows: [
-      [
-        { value: 'Group A', colSpan: 2 },  // Merge 2 columns horizontally
-        'Group B'
-      ],
-      ['Sub 1', 'Sub 2', 'Sub 3']  // Row 2
-    ]
-  },
   rows: [
     { col1: 'A1', col2: 'B1', col3: 'C1' }
   ]
@@ -409,7 +404,7 @@ await createWorkbook().addSheet({
 **Result:**
 ```
 ┌─────────────────┬─────────┐
-│    Group A      │ Group B │  ← Row 1 (Group A spans 2 columns)
+│    Group A      │ Group B │  ← Row 1 (Group A auto-merged)
 ├────────┬────────┼─────────┤
 │ Sub 1  │ Sub 2  │  Sub 3  │  ← Row 2
 ├────────┼────────┼─────────┤
@@ -417,65 +412,86 @@ await createWorkbook().addSheet({
 └────────┴────────┴─────────┘
 ```
 
-### rowSpan (Vertical Merging)
+### 3+ Row Headers
 
 ```typescript
-multiRowHeaders: {
-  rows: [
-    [
-      { value: 'Group 1', colSpan: 2 },
-      { value: 'Group 2', rowSpan: 2 }  // Merge 2 rows vertically
-    ],
-    ['Sub 1', 'Sub 2']  // Group 2 is merged from above, so skip it
-  ]
-}
+headers: [
+  { key: 'a', label: ['Main Title', 'Left Group', 'A'] },
+  { key: 'b', label: ['Main Title', 'Left Group', 'B'] },
+  { key: 'c', label: ['Main Title', 'Right Group', 'C'] },
+  { key: 'd', label: ['Main Title', 'Right Group', 'D'] }
+]
 ```
 
 **Result:**
 ```
-┌─────────────────┬─────────┐
-│    Group 1      │         │
-├────────┬────────┤ Group 2 │  ← rowSpan merges 2 rows
-│ Sub 1  │ Sub 2  │         │
-├────────┼────────┼─────────┤
-│  ...   │  ...   │   ...   │  ← Data row
-└────────┴────────┴─────────┘
-```
-
-### 3+ Row Headers
-
-```typescript
-multiRowHeaders: {
-  rows: [
-    [{ value: 'Main Title', colSpan: 4 }],
-    [
-      { value: 'Left Group', colSpan: 2 },
-      { value: 'Right Group', colSpan: 2 }
-    ],
-    ['A', 'B', 'C', 'D']
-  ]
-}
+┌───────────────────────────────────────┐
+│            Main Title                 │  ← All 4 columns merged
+├───────────────────┬───────────────────┤
+│    Left Group     │    Right Group    │  ← 2 columns each merged
+├─────────┬─────────┼─────────┬─────────┤
+│    A    │    B    │    C    │    D    │
+└─────────┴─────────┴─────────┴─────────┘
 ```
 
 ### Styling Header Cells
 
+Use object format in the array to apply styles to individual cells.
+
 ```typescript
-multiRowHeaders: {
-  rows: [
-    [
+headers: [
+  {
+    key: 'col1',
+    label: [
       {
         value: 'Styled Header',
-        colSpan: 2,
         style: {
           font: { bold: true, color: '#FFFFFF' },
           fill: { color: '#4472C4' },
           alignment: { horizontal: 'center' }
         }
-      }
-    ],
-    ['Column A', 'Column B']
-  ]
-}
+      },
+      'Column A'
+    ]
+  },
+  {
+    key: 'col2',
+    label: [
+      {
+        value: 'Styled Header',  // Same value → auto-merge
+        style: {
+          font: { bold: true, color: '#FFFFFF' },
+          fill: { color: '#4472C4' },
+          alignment: { horizontal: 'center' }
+        }
+      },
+      'Column B'
+    ]
+  }
+]
+```
+
+### Mixed Single and Multi-Row Headers
+
+You can mix single-row (`string`) and multi-row (array) headers. Single-row headers display the same value across all rows.
+
+```typescript
+headers: [
+  { key: 'id', label: 'ID' },  // Single row
+  { key: 'name', label: ['Person', 'Name'] },  // Multi-row
+  { key: 'age', label: ['Person', 'Age'] }  // 'Person' auto-merged
+]
+```
+
+**Result:**
+```
+┌────────┬─────────────────┐
+│   ID   │     Person      │  ← 'Person' auto-merged
+├────────┼────────┬────────┤
+│   ID   │  Name  │  Age   │  ← Single 'ID' repeated
+├────────┼────────┼────────┤
+│  ...   │  ...   │  ...   │
+└────────┴────────┴────────┘
 ```
 
 ### Combined with Title
@@ -483,33 +499,45 @@ multiRowHeaders: {
 ```typescript
 {
   title: { label: 'Report Title' },
-  multiRowHeaders: {
-    rows: [
-      [{ value: 'Group', colSpan: 2 }],
-      ['A', 'B']
-    ]
-  },
+  headers: [
+    { key: 'col1', label: ['Group', 'A'] },
+    { key: 'col2', label: ['Group', 'B'] }  // 'Group' auto-merged
+  ],
   // ...
 }
 // Result: Title row → Multi-row headers → Data rows
 ```
 
-### HeaderCell Type Definition
+### Vertical Duplicate Values (Error)
 
-| Property | Type | Required | Default | Description |
-|----------|------|:--------:|---------|-------------|
-| `value` | `string` | ✅ | - | Cell text |
-| `colSpan` | `number` | - | `1` | Horizontal merge count |
-| `rowSpan` | `number` | - | `1` | Vertical merge count |
-| `style` | `XLStyle` | - | - | Cell style |
+Consecutive identical values within the same column (vertically) will throw an error. This prevents unintended merges.
 
 ```typescript
-// Type definitions
-type HeaderRowDef = (HeaderCell | string)[];  // string is shorthand for { value: string }
+// ❌ Error: Vertical duplicates not allowed
+headers: [
+  { key: 'col1', label: ['Same', 'Same'] }  // Error!
+]
 
-interface MultiRowHeaderConfig {
-  rows: HeaderRowDef[];
+// ✅ Correct: Use different values
+headers: [
+  { key: 'col1', label: ['Group', 'Sub'] }
+]
+```
+
+### HeaderLabel Type Definition
+
+```typescript
+// Cell definition (with style)
+interface HeaderLabelCell {
+  value: string;
+  style?: XLStyle;
 }
+
+// Header label type
+type HeaderLabel =
+  | string                           // Single row
+  | { value: string; style?: XLStyle }  // Single row (with style)
+  | (string | HeaderLabelCell)[];    // Multi-row
 ```
 
 ## Common Patterns

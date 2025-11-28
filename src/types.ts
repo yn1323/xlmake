@@ -15,27 +15,28 @@ export type CellValue = any | {
   style?: XLStyle;
 };
 
-export interface HeaderDef {
-  key: string;
-  label: string | { value: string; style?: XLStyle };  // 文字列または{ value, style }形式
-  width?: number | 'auto';
-  merge?: 'vertical';
-  style?: XLStyle | ((val: any, row: any, index: number) => XLStyle);  // オブジェクト（固定）または関数（条件付き）
-  format?: string | ((val: any) => string);
-}
-
-// 複数行ヘッダー用の型定義
-export interface HeaderCell {
+// ヘッダーラベルのセル（複数行ヘッダー用）
+export interface HeaderLabelCell {
   value: string;
-  colSpan?: number;  // 横方向の結合（デフォルト: 1）
-  rowSpan?: number;  // 縦方向の結合（デフォルト: 1）
   style?: XLStyle;
 }
 
-export type HeaderRowDef = (HeaderCell | string)[];
+// ヘッダーラベルの型
+// - string: 単一行ヘッダー
+// - { value, style }: 単一行ヘッダー（スタイル付き）
+// - (string | HeaderLabelCell)[]: 複数行ヘッダー（同値で自動結合）
+export type HeaderLabel =
+  | string
+  | { value: string; style?: XLStyle }
+  | (string | HeaderLabelCell)[];
 
-export interface MultiRowHeaderConfig {
-  rows: HeaderRowDef[];
+export interface HeaderDef {
+  key: string;
+  label: HeaderLabel;
+  width?: number | 'auto';
+  merge?: 'vertical';
+  style?: XLStyle | ((val: any, row: any, index: number) => XLStyle);
+  format?: string | ((val: any) => string);
 }
 
 export interface TitleConfig {
@@ -56,7 +57,6 @@ export interface SheetConfig {
   headers: HeaderDef[];
   rows: any[];  // CellValue を含むデータオブジェクトの配列
   title?: TitleConfig;
-  multiRowHeaders?: MultiRowHeaderConfig;  // 複数行ヘッダー設定
   styles?: StylesConfig;  // 全体スタイル設定
   borders?: 'all' | 'outer' | 'header-body' | 'none';
   autoWidth?: boolean | {

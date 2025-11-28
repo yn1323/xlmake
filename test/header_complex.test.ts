@@ -10,26 +10,17 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 }
 
 describe('Complex Header', () => {
-  it('should render multi-row headers with colSpan', async () => {
+  it('should render multi-row headers with colSpan (same-value auto-merge)', async () => {
     const filePath = path.join(OUTPUT_DIR, 'header_colspan.xlsx');
 
     await createWorkbook()
       .addSheet({
         name: 'ColSpanTest',
         headers: [
-          { key: 'col1', label: 'Col 1' },
-          { key: 'col2', label: 'Col 2' },
-          { key: 'col3', label: 'Col 3' }
+          { key: 'col1', label: ['Group A', 'Sub 1'] },
+          { key: 'col2', label: ['Group A', 'Sub 2'] },  // Same 'Group A' → colSpan
+          { key: 'col3', label: ['Group B', 'Sub 3'] }
         ],
-        multiRowHeaders: {
-          rows: [
-            [
-              { value: 'Group A', colSpan: 2 },
-              'Group B'
-            ],
-            ['Sub 1', 'Sub 2', 'Sub 3']
-          ]
-        },
         rows: [
           { col1: 'A1', col2: 'B1', col3: 'C1' },
           { col1: 'A2', col2: 'B2', col3: 'C2' }
@@ -42,7 +33,7 @@ describe('Complex Header', () => {
 
     expect(sheet).toBeDefined();
     if (sheet) {
-      // Check Group A merge (colSpan: 2)
+      // Check Group A merge (colSpan: 2) - same value auto-merge
       const groupA = sheet.getCell(1, 1);
       expect(groupA.value).toBe('Group A');
 
@@ -69,66 +60,6 @@ describe('Complex Header', () => {
     }
   });
 
-  it('should render multi-row headers with rowSpan', async () => {
-    const filePath = path.join(OUTPUT_DIR, 'header_rowspan.xlsx');
-
-    await createWorkbook()
-      .addSheet({
-        name: 'RowSpanTest',
-        headers: [
-          { key: 'col1', label: 'Col 1' },
-          { key: 'col2', label: 'Col 2' },
-          { key: 'col3', label: 'Col 3' }
-        ],
-        multiRowHeaders: {
-          rows: [
-            [
-              { value: 'Group 1', colSpan: 2 },
-              { value: 'Group 2', rowSpan: 2 }
-            ],
-            ['Sub 1', 'Sub 2']
-          ]
-        },
-        rows: [
-          { col1: 'A', col2: 'B', col3: 'C' }
-        ]
-      })
-      .save(filePath);
-
-    const workbook = await readExcel(filePath);
-    const sheet = workbook.getWorksheet('RowSpanTest');
-
-    expect(sheet).toBeDefined();
-    if (sheet) {
-      // Check Group 1 merge (colSpan: 2)
-      const group1 = sheet.getCell(1, 1);
-      expect(group1.value).toBe('Group 1');
-      expect(group1.isMerged).toBe(true);
-
-      // Check cell (1,2) is merged to (1,1)
-      const cell12 = sheet.getCell(1, 2);
-      expect(cell12.master).toBe(group1);
-
-      // Check Group 2 merge (rowSpan: 2)
-      const group2 = sheet.getCell(1, 3);
-      expect(group2.value).toBe('Group 2');
-      expect(group2.isMerged).toBe(true);
-
-      // Check cell (2,3) is merged to (1,3)
-      const cell23 = sheet.getCell(2, 3);
-      expect(cell23.master).toBe(group2);
-
-      // Check Sub headers
-      expect(sheet.getCell(2, 1).value).toBe('Sub 1');
-      expect(sheet.getCell(2, 2).value).toBe('Sub 2');
-
-      // Check data starts at row 3
-      expect(sheet.getCell(3, 1).value).toBe('A');
-      expect(sheet.getCell(3, 2).value).toBe('B');
-      expect(sheet.getCell(3, 3).value).toBe('C');
-    }
-  });
-
   it('should render 3-row headers with complex merges', async () => {
     const filePath = path.join(OUTPUT_DIR, 'header_complex_3rows.xlsx');
 
@@ -136,23 +67,11 @@ describe('Complex Header', () => {
       .addSheet({
         name: 'ThreeRowHeader',
         headers: [
-          { key: 'a', label: 'A' },
-          { key: 'b', label: 'B' },
-          { key: 'c', label: 'C' },
-          { key: 'd', label: 'D' }
+          { key: 'a', label: ['Main Group', 'Left', 'A'] },
+          { key: 'b', label: ['Main Group', 'Left', 'B'] },
+          { key: 'c', label: ['Main Group', 'Right', 'C'] },
+          { key: 'd', label: ['Main Group', 'Right', 'D'] }
         ],
-        multiRowHeaders: {
-          rows: [
-            [
-              { value: 'Main Group', colSpan: 4 }
-            ],
-            [
-              { value: 'Left', colSpan: 2 },
-              { value: 'Right', colSpan: 2 }
-            ],
-            ['A', 'B', 'C', 'D']
-          ]
-        },
         rows: [
           { a: 1, b: 2, c: 3, d: 4 }
         ]
@@ -164,15 +83,15 @@ describe('Complex Header', () => {
 
     expect(sheet).toBeDefined();
     if (sheet) {
-      // Check Main Group spans all 4 columns
+      // Check Main Group spans all 4 columns (row 1)
       const mainGroup = sheet.getCell(1, 1);
       expect(mainGroup.value).toBe('Main Group');
 
-      // Check Left spans columns 1-2
+      // Check Left spans columns 1-2 (row 2)
       const left = sheet.getCell(2, 1);
       expect(left.value).toBe('Left');
 
-      // Check Right spans columns 3-4
+      // Check Right spans columns 3-4 (row 2)
       const right = sheet.getCell(2, 3);
       expect(right.value).toBe('Right');
 
@@ -195,25 +114,35 @@ describe('Complex Header', () => {
       .addSheet({
         name: 'StyledHeader',
         headers: [
-          { key: 'col1', label: 'Col 1' },
-          { key: 'col2', label: 'Col 2' }
-        ],
-        multiRowHeaders: {
-          rows: [
-            [
+          {
+            key: 'col1',
+            label: [
               {
                 value: 'Styled Group',
-                colSpan: 2,
                 style: {
                   font: { bold: true },
                   fill: { color: '#4472C4' },
                   alignment: { horizontal: 'center' }
                 }
-              }
-            ],
-            ['Header 1', 'Header 2']
-          ]
-        },
+              },
+              'Header 1'
+            ]
+          },
+          {
+            key: 'col2',
+            label: [
+              {
+                value: 'Styled Group',  // Same value → colSpan
+                style: {
+                  font: { bold: true },
+                  fill: { color: '#4472C4' },
+                  alignment: { horizontal: 'center' }
+                }
+              },
+              'Header 2'
+            ]
+          }
+        ],
         rows: [
           { col1: 'Data 1', col2: 'Data 2' }
         ]
@@ -239,17 +168,11 @@ describe('Complex Header', () => {
       .addSheet({
         name: 'WithTitle',
         headers: [
-          { key: 'col1', label: 'Col 1' },
-          { key: 'col2', label: 'Col 2' }
+          { key: 'col1', label: ['Group', 'A'] },
+          { key: 'col2', label: ['Group', 'B'] }  // Same 'Group' → colSpan
         ],
         title: {
           label: 'Report Title'
-        },
-        multiRowHeaders: {
-          rows: [
-            [{ value: 'Group', colSpan: 2 }],
-            ['A', 'B']
-          ]
         },
         rows: [
           { col1: 'X', col2: 'Y' }
@@ -283,15 +206,9 @@ describe('Complex Header', () => {
       .addSheet({
         name: 'BorderTest',
         headers: [
-          { key: 'col1', label: 'Col 1' },
-          { key: 'col2', label: 'Col 2' }
+          { key: 'col1', label: ['Group', 'A'] },
+          { key: 'col2', label: ['Group', 'B'] }
         ],
-        multiRowHeaders: {
-          rows: [
-            [{ value: 'Group', colSpan: 2 }],
-            ['A', 'B']
-          ]
-        },
         rows: [
           { col1: 'X', col2: 'Y' }
         ],
@@ -310,7 +227,7 @@ describe('Complex Header', () => {
     }
   });
 
-  it('should work with single row when no multiRowHeaders is specified', async () => {
+  it('should work with single row when label is not an array', async () => {
     const filePath = path.join(OUTPUT_DIR, 'header_single_row.xlsx');
 
     await createWorkbook()
@@ -338,6 +255,93 @@ describe('Complex Header', () => {
       // Data should be at row 2
       expect(sheet.getCell(2, 1).value).toBe('Alice');
       expect(sheet.getCell(2, 2).value).toBe(30);
+    }
+  });
+
+  it('should throw error for vertical duplicate header values', () => {
+    expect(() => {
+      createWorkbook()
+        .addSheet({
+          name: 'VerticalDup',
+          headers: [
+            { key: 'col1', label: ['Same', 'Same'] },  // Vertical duplicate → Error
+            { key: 'col2', label: ['A', 'B'] }
+          ],
+          rows: [
+            { col1: 'X', col2: 'Y' }
+          ]
+        });
+    }).toThrow(/Vertical duplicate header values are not allowed/);
+  });
+
+  it('should support mixed single and multi-row headers', async () => {
+    const filePath = path.join(OUTPUT_DIR, 'header_mixed.xlsx');
+
+    await createWorkbook()
+      .addSheet({
+        name: 'MixedHeader',
+        headers: [
+          { key: 'id', label: 'ID' },  // Single row
+          { key: 'name', label: ['Person', 'Name'] },  // Multi-row
+          { key: 'age', label: ['Person', 'Age'] }  // Multi-row, same 'Person' → colSpan
+        ],
+        rows: [
+          { id: 1, name: 'Alice', age: 30 }
+        ]
+      })
+      .save(filePath);
+
+    const workbook = await readExcel(filePath);
+    const sheet = workbook.getWorksheet('MixedHeader');
+
+    expect(sheet).toBeDefined();
+    if (sheet) {
+      // Row 1: ID (repeated), Person (spans col 2-3)
+      expect(sheet.getCell(1, 1).value).toBe('ID');
+      expect(sheet.getCell(1, 2).value).toBe('Person');
+
+      // Row 2: ID (repeated), Name, Age
+      expect(sheet.getCell(2, 1).value).toBe('ID');
+      expect(sheet.getCell(2, 2).value).toBe('Name');
+      expect(sheet.getCell(2, 3).value).toBe('Age');
+
+      // Data starts at row 3
+      expect(sheet.getCell(3, 1).value).toBe(1);
+      expect(sheet.getCell(3, 2).value).toBe('Alice');
+      expect(sheet.getCell(3, 3).value).toBe(30);
+    }
+  });
+
+  it('should handle label with style object (non-array)', async () => {
+    const filePath = path.join(OUTPUT_DIR, 'header_label_style.xlsx');
+
+    await createWorkbook()
+      .addSheet({
+        name: 'LabelStyle',
+        headers: [
+          {
+            key: 'col1',
+            label: {
+              value: 'Styled Label',
+              style: { font: { bold: true, color: '#FF0000' } }
+            }
+          },
+          { key: 'col2', label: 'Normal Label' }
+        ],
+        rows: [
+          { col1: 'A', col2: 'B' }
+        ]
+      })
+      .save(filePath);
+
+    const workbook = await readExcel(filePath);
+    const sheet = workbook.getWorksheet('LabelStyle');
+
+    expect(sheet).toBeDefined();
+    if (sheet) {
+      const styledCell = sheet.getCell(1, 1);
+      expect(styledCell.value).toBe('Styled Label');
+      expect(styledCell.font?.bold).toBe(true);
     }
   });
 });

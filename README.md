@@ -175,7 +175,6 @@ createWorkbook().addSheet({
   headers: HeaderDef[],      // 列定義（必須）
   rows: RowData[],           // データ行（必須）
   title?: TitleConfig,       // タイトル行
-  multiRowHeaders?: MultiRowHeaderConfig, // 複数行ヘッダー設定
   styles?: StylesConfig,     // 全体スタイル設定
   borders?: BorderPreset,    // 罫線プリセット
   autoWidth?: AutoWidthConfig // 自動列幅設定
@@ -187,11 +186,16 @@ createWorkbook().addSheet({
 | プロパティ | 型 | 必須 | デフォルト | 説明 |
 |-----------|-----|:----:|----------|------|
 | `key` | `string` | ✅ | - | データのプロパティキー |
-| `label` | `string \| LabelConfig` | ✅ | - | ヘッダーテキスト |
+| `label` | `HeaderLabel` | ✅ | - | ヘッダーテキスト（詳細は下記） |
 | `width` | `number \| 'auto'` | - | 未指定 | 列幅 |
 | `merge` | `'vertical'` | - | 未指定 | 縦方向の自動結合 |
 | `format` | `string \| FormatFn` | - | 未指定 | 表示フォーマット |
 | `style` | `XLStyle \| StyleFn` | - | 未指定 | 列のスタイル |
+
+**`label` の型（`HeaderLabel`）:**
+- `string`: 単一行ヘッダー（例: `'名前'`）
+- `{ value: string, style?: XLStyle }`: 単一行ヘッダー（スタイル付き）
+- `(string | { value: string, style?: XLStyle })[]`: 複数行ヘッダー（配列）
 
 ```typescript
 headers: [
@@ -379,7 +383,7 @@ const buffer = await workbook.saveToBuffer();
 
 ## 複数行ヘッダー
 
-複数行にまたがるヘッダーを定義できます。`colSpan` で横方向、`rowSpan` で縦方向にセルを結合できます。
+`label` に配列を渡すことで、複数行にまたがるヘッダーを定義できます。同じ行で同じ値が連続する場合、自動的に横方向に結合（colSpan）されます。
 
 ### 基本的な使い方
 
@@ -387,19 +391,10 @@ const buffer = await workbook.saveToBuffer();
 await createWorkbook().addSheet({
   name: 'Report',
   headers: [
-    { key: 'col1', label: 'Col 1' },
-    { key: 'col2', label: 'Col 2' },
-    { key: 'col3', label: 'Col 3' }
+    { key: 'col1', label: ['Group A', 'Sub 1'] },
+    { key: 'col2', label: ['Group A', 'Sub 2'] },  // 'Group A' が同じ → 自動結合
+    { key: 'col3', label: ['Group B', 'Sub 3'] }
   ],
-  multiRowHeaders: {
-    rows: [
-      [
-        { value: 'Group A', colSpan: 2 },  // 2列を横に結合
-        'Group B'
-      ],
-      ['Sub 1', 'Sub 2', 'Sub 3']  // 2行目
-    ]
-  },
   rows: [
     { col1: 'A1', col2: 'B1', col3: 'C1' }
   ]
@@ -409,7 +404,7 @@ await createWorkbook().addSheet({
 **結果:**
 ```
 ┌─────────────────┬─────────┐
-│    Group A      │ Group B │  ← 1行目（Group Aは2列結合）
+│    Group A      │ Group B │  ← 1行目（Group Aは同値自動結合）
 ├────────┬────────┼─────────┤
 │ Sub 1  │ Sub 2  │  Sub 3  │  ← 2行目
 ├────────┼────────┼─────────┤
@@ -417,65 +412,86 @@ await createWorkbook().addSheet({
 └────────┴────────┴─────────┘
 ```
 
-### rowSpan（縦方向の結合）
+### 3行以上のヘッダー
 
 ```typescript
-multiRowHeaders: {
-  rows: [
-    [
-      { value: 'Group 1', colSpan: 2 },
-      { value: 'Group 2', rowSpan: 2 }  // 2行を縦に結合
-    ],
-    ['Sub 1', 'Sub 2']  // Group 2は上から結合されているのでスキップ
-  ]
-}
+headers: [
+  { key: 'a', label: ['Main Title', 'Left Group', 'A'] },
+  { key: 'b', label: ['Main Title', 'Left Group', 'B'] },
+  { key: 'c', label: ['Main Title', 'Right Group', 'C'] },
+  { key: 'd', label: ['Main Title', 'Right Group', 'D'] }
+]
 ```
 
 **結果:**
 ```
-┌─────────────────┬─────────┐
-│    Group 1      │         │
-├────────┬────────┤ Group 2 │  ← rowSpanで2行結合
-│ Sub 1  │ Sub 2  │         │
-├────────┼────────┼─────────┤
-│  ...   │  ...   │   ...   │  ← データ行
-└────────┴────────┴─────────┘
-```
-
-### 3行以上のヘッダー
-
-```typescript
-multiRowHeaders: {
-  rows: [
-    [{ value: 'Main Title', colSpan: 4 }],
-    [
-      { value: 'Left Group', colSpan: 2 },
-      { value: 'Right Group', colSpan: 2 }
-    ],
-    ['A', 'B', 'C', 'D']
-  ]
-}
+┌───────────────────────────────────────┐
+│            Main Title                 │  ← 全4列結合
+├───────────────────┬───────────────────┤
+│    Left Group     │    Right Group    │  ← 各2列結合
+├─────────┬─────────┼─────────┬─────────┤
+│    A    │    B    │    C    │    D    │
+└─────────┴─────────┴─────────┴─────────┘
 ```
 
 ### ヘッダーセルへのスタイル適用
 
+配列の要素にオブジェクト形式を使用することで、個別のセルにスタイルを適用できます。
+
 ```typescript
-multiRowHeaders: {
-  rows: [
-    [
+headers: [
+  {
+    key: 'col1',
+    label: [
       {
         value: 'Styled Header',
-        colSpan: 2,
         style: {
           font: { bold: true, color: '#FFFFFF' },
           fill: { color: '#4472C4' },
           alignment: { horizontal: 'center' }
         }
-      }
-    ],
-    ['Column A', 'Column B']
-  ]
-}
+      },
+      'Column A'
+    ]
+  },
+  {
+    key: 'col2',
+    label: [
+      {
+        value: 'Styled Header',  // 同値 → 自動結合
+        style: {
+          font: { bold: true, color: '#FFFFFF' },
+          fill: { color: '#4472C4' },
+          alignment: { horizontal: 'center' }
+        }
+      },
+      'Column B'
+    ]
+  }
+]
+```
+
+### 単一行と複数行の混在
+
+単一行（`string`）と複数行（配列）を混在させることができます。単一行のヘッダーは全行で同じ値が表示されます。
+
+```typescript
+headers: [
+  { key: 'id', label: 'ID' },  // 単一行
+  { key: 'name', label: ['Person', 'Name'] },  // 複数行
+  { key: 'age', label: ['Person', 'Age'] }  // 'Person' が自動結合
+]
+```
+
+**結果:**
+```
+┌────────┬─────────────────┐
+│   ID   │     Person      │  ← 'Person' は同値自動結合
+├────────┼────────┬────────┤
+│   ID   │  Name  │  Age   │  ← 単一行の 'ID' は繰り返し表示
+├────────┼────────┼────────┤
+│  ...   │  ...   │  ...   │
+└────────┴────────┴────────┘
 ```
 
 ### タイトルとの併用
@@ -483,33 +499,45 @@ multiRowHeaders: {
 ```typescript
 {
   title: { label: 'Report Title' },
-  multiRowHeaders: {
-    rows: [
-      [{ value: 'Group', colSpan: 2 }],
-      ['A', 'B']
-    ]
-  },
+  headers: [
+    { key: 'col1', label: ['Group', 'A'] },
+    { key: 'col2', label: ['Group', 'B'] }  // 'Group' が自動結合
+  ],
   // ...
 }
 // 結果: タイトル行 → 複数行ヘッダー → データ行
 ```
 
-### HeaderCell の型定義
+### 縦方向の重複値（エラー）
 
-| プロパティ | 型 | 必須 | デフォルト | 説明 |
-|-----------|-----|:----:|----------|------|
-| `value` | `string` | ✅ | - | セルのテキスト |
-| `colSpan` | `number` | - | `1` | 横方向の結合数 |
-| `rowSpan` | `number` | - | `1` | 縦方向の結合数 |
-| `style` | `XLStyle` | - | - | セルのスタイル |
+同じ列内で縦に同じ値が連続する場合はエラーになります。これは意図しない結合を防ぐための仕様です。
 
 ```typescript
-// 型定義
-type HeaderRowDef = (HeaderCell | string)[];  // string は { value: string } の省略形
+// ❌ エラー: 縦方向の重複は許可されていません
+headers: [
+  { key: 'col1', label: ['Same', 'Same'] }  // Error!
+]
 
-interface MultiRowHeaderConfig {
-  rows: HeaderRowDef[];
+// ✅ 正しい: 異なる値を使用
+headers: [
+  { key: 'col1', label: ['Group', 'Sub'] }
+]
+```
+
+### HeaderLabel の型定義
+
+```typescript
+// セル定義（スタイル付き）
+interface HeaderLabelCell {
+  value: string;
+  style?: XLStyle;
 }
+
+// ヘッダーラベルの型
+type HeaderLabel =
+  | string                           // 単一行
+  | { value: string; style?: XLStyle }  // 単一行（スタイル付き）
+  | (string | HeaderLabelCell)[];    // 複数行
 ```
 
 ## よくある使用パターン

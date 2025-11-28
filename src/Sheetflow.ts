@@ -1,6 +1,21 @@
 import ExcelJS from 'exceljs';
-import { SheetConfig, HeaderDef, XLStyle, CellValue, StylesConfig, HeaderCell, HeaderRowDef, MultiRowHeaderConfig } from './types';
+import { SheetConfig, HeaderDef, XLStyle, HeaderLabelCell, HeaderLabel } from './types';
 import { mapStyle } from './utils/style';
+
+// Helper: Check if label is multi-row (array)
+function isMultiRowLabel(label: HeaderLabel): label is (string | HeaderLabelCell)[] {
+  return Array.isArray(label);
+}
+
+// Helper: Get label text from HeaderLabel or HeaderLabelCell
+function getLabelText(label: string | HeaderLabelCell | { value: string; style?: XLStyle }): string {
+  return typeof label === 'string' ? label : label.value;
+}
+
+// Helper: Get label style from HeaderLabelCell
+function getLabelStyle(label: string | HeaderLabelCell): XLStyle | undefined {
+  return typeof label === 'string' ? undefined : label.style;
+}
 
 export class XLKit {
   private workbook: ExcelJS.Workbook;
@@ -17,7 +32,6 @@ export class XLKit {
     if (config.name.length > 31) {
       throw new Error(`Sheet name "${config.name}" exceeds the maximum length of 31 characters.`);
     }
-    // Invalid characters: \ / ? * [ ] :
     const invalidChars = /[\\/?*[\]:]/;
     if (invalidChars.test(config.name)) {
       throw new Error(`Sheet name "${config.name}" contains invalid characters (\\ / ? * [ ] :).`);
@@ -26,52 +40,70 @@ export class XLKit {
     const sheet = this.workbook.addWorksheet(config.name);
     const data = config.rows;
 
+    // Determine if multi-row headers are used
+    const hasMultiRowHeaders = config.headers.some(h => isMultiRowLabel(h.label));
+
+    // Calculate header row count
+    let headerRowCount = 1;
+    if (hasMultiRowHeaders) {
+      headerRowCount = Math.max(...config.headers.map(h =>
+        isMultiRowLabel(h.label) ? h.label.length : 1
+      ));
+    }
+
+    // Validate: Check for vertical duplicate values in multi-row headers
+    if (hasMultiRowHeaders) {
+      config.headers.forEach((header, colIdx) => {
+        if (isMultiRowLabel(header.label)) {
+          for (let rowIdx = 1; rowIdx < header.label.length; rowIdx++) {
+            const currentText = getLabelText(header.label[rowIdx]);
+            const prevText = getLabelText(header.label[rowIdx - 1]);
+            if (currentText === prevText) {
+              throw new Error(
+                `Vertical duplicate header values are not allowed. ` +
+                `Column "${header.key}" has duplicate value "${currentText}" at rows ${rowIdx} and ${rowIdx + 1}. ` +
+                `Use different values for each row.`
+              );
+            }
+          }
+        }
+      });
+    }
+
     // Handle autoWidth
-    const autoWidthConfig = typeof config.autoWidth === 'boolean' 
-      ? { enabled: config.autoWidth } 
+    const autoWidthConfig = typeof config.autoWidth === 'boolean'
+      ? { enabled: config.autoWidth }
       : config.autoWidth || {};
     const autoWidthEnabled = autoWidthConfig.enabled !== false;
 
-    // 1. Setup Columns & Headers
-    const hasMultiRowHeaders = !!config.multiRowHeaders;
+    // 1. Setup Columns
     const columns = config.headers.map((header, colIndex) => {
       let width = header.width;
 
-      // Apply autoWidth if no width specified and autoWidth is enabled
       if (!width && autoWidthEnabled) {
         width = 'auto';
       }
 
       if (width === 'auto') {
-        // Get header label text
-        const headerText = typeof header.label === 'string'
-          ? header.label
-          : header.label.value;
+        let maxLen = 0;
 
-        let maxLen = headerText.length * (autoWidthConfig.headerIncluded !== false ? 1 : 0);
-
-        // For multi-row headers, also consider the header cell values
-        if (hasMultiRowHeaders && autoWidthConfig.headerIncluded !== false) {
-          config.multiRowHeaders!.rows.forEach(row => {
-            let currentCol = 0;
-            row.forEach(cell => {
-              const cellObj = typeof cell === 'string' ? { value: cell } : cell;
-              const cellColSpan = cellObj.colSpan || 1;
-
-              // Check if this cell affects the current column
-              if (currentCol <= colIndex && colIndex < currentCol + cellColSpan) {
-                const cellText = cellObj.value;
-                let len = 0;
-                for (let i = 0; i < cellText.length; i++) {
-                  len += cellText.charCodeAt(i) > 255 ? 2 : 1;
-                }
-                // Divide by colSpan since the text spans multiple columns
-                const effectiveLen = Math.ceil(len / cellColSpan);
-                if (effectiveLen > maxLen) maxLen = effectiveLen;
+        // Consider header label(s)
+        if (autoWidthConfig.headerIncluded !== false) {
+          if (isMultiRowLabel(header.label)) {
+            header.label.forEach(lbl => {
+              const text = getLabelText(lbl);
+              let len = 0;
+              for (let i = 0; i < text.length; i++) {
+                len += text.charCodeAt(i) > 255 ? 2 : 1;
               }
-              currentCol += cellColSpan;
+              if (len > maxLen) maxLen = len;
             });
-          });
+          } else {
+            const text = getLabelText(header.label);
+            for (let i = 0; i < text.length; i++) {
+              maxLen += text.charCodeAt(i) > 255 ? 2 : 1;
+            }
+          }
         }
 
         // Check data length
@@ -79,7 +111,6 @@ export class XLKit {
           const cellData = row[header.key];
           const val = this.isCellValueWithStyle(cellData) ? cellData.value : cellData;
           const str = val != null ? String(val) : '';
-          // Simple full-width check: count as 2 if char code > 255
           let len = 0;
           for (let i = 0; i < str.length; i++) {
             len += str.charCodeAt(i) > 255 ? 2 : 1;
@@ -92,14 +123,8 @@ export class XLKit {
         width = (maxLen + padding) * constant;
       }
 
-      // Get header label text for ExcelJS (only used when no multiRowHeaders)
-      const headerText = typeof header.label === 'string'
-        ? header.label
-        : header.label.value;
-
       return {
-        // If multiRowHeaders is used, don't set header (we'll add it manually)
-        header: hasMultiRowHeaders ? undefined : headerText,
+        header: undefined, // We'll add headers manually
         key: String(header.key),
         width: typeof width === 'number' ? width : 15
       };
@@ -108,19 +133,17 @@ export class XLKit {
 
     // 2. Apply Title Rows (if any)
     if (config.title) {
-      const titleLabels = Array.isArray(config.title.label) 
-        ? config.title.label 
+      const titleLabels = Array.isArray(config.title.label)
+        ? config.title.label
         : [config.title.label];
-      
+
       titleLabels.forEach(titleText => {
         const titleRow = sheet.insertRow(1, [titleText]);
-        
-        // Merge title across all columns
+
         if (config.headers.length > 1) {
           sheet.mergeCells(1, 1, 1, config.headers.length);
         }
-        
-        // Apply title style
+
         if (config.title!.style) {
           const mappedTitleStyle = mapStyle(config.title!.style);
           titleRow.eachCell((cell) => {
@@ -130,74 +153,101 @@ export class XLKit {
       });
     }
 
-    // Calculate header row index (after title rows)
+    // Calculate row indices
     const titleRowCount = config.title
       ? (Array.isArray(config.title.label) ? config.title.label.length : 1)
       : 0;
-    const headerRowCount = hasMultiRowHeaders
-      ? config.multiRowHeaders!.rows.length
-      : 1;
     const headerStartRowIndex = titleRowCount + 1;
     const headerEndRowIndex = titleRowCount + headerRowCount;
 
-    // 3. Apply Multi-Row Headers (if configured)
+    // 3. Build and render header grid
     if (hasMultiRowHeaders) {
-      // Build a grid to track which cells are occupied by rowSpan
-      const occupiedCells: boolean[][] = [];
+      // Build header grid: grid[row][col] = { text, style }
+      const grid: { text: string; style?: XLStyle }[][] = [];
       for (let r = 0; r < headerRowCount; r++) {
-        occupiedCells[r] = new Array(config.headers.length).fill(false);
+        grid[r] = [];
+        for (let c = 0; c < config.headers.length; c++) {
+          const header = config.headers[c];
+          if (isMultiRowLabel(header.label)) {
+            if (r < header.label.length) {
+              grid[r][c] = {
+                text: getLabelText(header.label[r]),
+                style: getLabelStyle(header.label[r])
+              };
+            } else {
+              // Extend last value if array is shorter
+              const lastIdx = header.label.length - 1;
+              grid[r][c] = {
+                text: getLabelText(header.label[lastIdx]),
+                style: getLabelStyle(header.label[lastIdx])
+              };
+            }
+          } else {
+            // Single value - same for all rows
+            grid[r][c] = {
+              text: getLabelText(header.label),
+              style: typeof header.label === 'object' && !Array.isArray(header.label)
+                ? header.label.style
+                : undefined
+            };
+          }
+        }
       }
 
-      // Process each header row
-      config.multiRowHeaders!.rows.forEach((headerRowDef, rowIdx) => {
-        const excelRowIndex = headerStartRowIndex + rowIdx;
-        const row = sheet.getRow(excelRowIndex);
-        let colIdx = 0; // Logical column index (0-based)
+      // Calculate merges based on same values
+      // mergeInfo[row][col] = { rowSpan, colSpan, isStart }
+      const mergeInfo: { rowSpan: number; colSpan: number; isStart: boolean }[][] = [];
+      for (let r = 0; r < headerRowCount; r++) {
+        mergeInfo[r] = [];
+        for (let c = 0; c < config.headers.length; c++) {
+          mergeInfo[r][c] = { rowSpan: 1, colSpan: 1, isStart: true };
+        }
+      }
 
-        headerRowDef.forEach(cellDef => {
-          // Skip cells that are occupied by rowSpan from previous rows
-          while (colIdx < config.headers.length && occupiedCells[rowIdx][colIdx]) {
-            colIdx++;
+      // Calculate horizontal merges (colSpan) - same text in same row
+      for (let r = 0; r < headerRowCount; r++) {
+        let c = 0;
+        while (c < config.headers.length) {
+          const startCol = c;
+          const currentText = grid[r][c].text;
+          let colSpan = 1;
+
+          // Count consecutive same values
+          while (c + colSpan < config.headers.length &&
+                 grid[r][c + colSpan].text === currentText) {
+            mergeInfo[r][c + colSpan].isStart = false;
+            colSpan++;
           }
 
-          if (colIdx >= config.headers.length) return;
+          mergeInfo[r][startCol].colSpan = colSpan;
+          c += colSpan;
+        }
+      }
 
-          const cellObj = typeof cellDef === 'string' ? { value: cellDef } : cellDef;
-          const colSpan = cellObj.colSpan || 1;
-          const rowSpan = cellObj.rowSpan || 1;
+      // Render header cells and apply merges
+      for (let r = 0; r < headerRowCount; r++) {
+        const excelRowIndex = headerStartRowIndex + r;
+        const row = sheet.getRow(excelRowIndex);
 
-          // Set the cell value
-          const excelColIndex = colIdx + 1; // 1-based
-          const cell = row.getCell(excelColIndex);
-          cell.value = cellObj.value;
+        for (let c = 0; c < config.headers.length; c++) {
+          const info = mergeInfo[r][c];
+          if (!info.isStart) continue; // Skip merged cells
 
-          // Apply cell style
-          if (cellObj.style) {
-            const mappedStyle = mapStyle(cellObj.style);
+          const cell = row.getCell(c + 1);
+          cell.value = grid[r][c].text;
+
+          // Apply cell-specific style
+          if (grid[r][c].style) {
+            const mappedStyle = mapStyle(grid[r][c].style!);
             cell.style = { ...cell.style, ...mappedStyle };
           }
 
-          // Mark occupied cells for colSpan and rowSpan
-          for (let r = 0; r < rowSpan; r++) {
-            for (let c = 0; c < colSpan; c++) {
-              if (rowIdx + r < headerRowCount && colIdx + c < config.headers.length) {
-                occupiedCells[rowIdx + r][colIdx + c] = true;
-              }
-            }
+          // Apply merge if colSpan > 1
+          if (info.colSpan > 1) {
+            sheet.mergeCells(excelRowIndex, c + 1, excelRowIndex, c + info.colSpan);
           }
-
-          // Apply merge if needed
-          if (colSpan > 1 || rowSpan > 1) {
-            const startRow = excelRowIndex;
-            const startCol = excelColIndex;
-            const endRow = excelRowIndex + rowSpan - 1;
-            const endCol = excelColIndex + colSpan - 1;
-            sheet.mergeCells(startRow, startCol, endRow, endCol);
-          }
-
-          colIdx += colSpan;
-        });
-      });
+        }
+      }
 
       // Apply styles.header to all header rows
       if (config.styles?.header) {
@@ -221,19 +271,21 @@ export class XLKit {
         }
       }
     } else {
-      // Single row header (original behavior)
+      // Single row header
       const headerRow = sheet.getRow(headerStartRowIndex);
 
-      // 3. Apply Header Cell Styles (from headers[].label.style)
       config.headers.forEach((header, colIndex) => {
-        if (typeof header.label === 'object' && header.label.style) {
-          const cell = headerRow.getCell(colIndex + 1);
+        const cell = headerRow.getCell(colIndex + 1);
+        cell.value = getLabelText(header.label as string | { value: string; style?: XLStyle });
+
+        // Apply label style
+        if (typeof header.label === 'object' && !Array.isArray(header.label) && header.label.style) {
           const mappedStyle = mapStyle(header.label.style);
           cell.style = { ...cell.style, ...mappedStyle };
         }
       });
 
-      // 4. Apply Header Row Style (from styles.header)
+      // Apply styles.header
       if (config.styles?.header) {
         const mappedHeaderStyle = mapStyle(config.styles.header);
         headerRow.eachCell((cell) => {
@@ -241,7 +293,7 @@ export class XLKit {
         });
       }
 
-      // 5. Apply styles.all to header row
+      // Apply styles.all
       if (config.styles?.all) {
         const mappedAllStyle = mapStyle(config.styles.all);
         headerRow.eachCell((cell) => {
@@ -250,18 +302,16 @@ export class XLKit {
       }
     }
 
-    // 6. Add Data & Apply Styles
+    // 4. Add Data & Apply Styles
     data.forEach((rowData, rowIndex) => {
       const rowValues: any = {};
-      
-      // Extract values from row data
+
       config.headers.forEach(header => {
         const cellData = rowData[header.key];
         rowValues[header.key] = this.isCellValueWithStyle(cellData) ? cellData.value : cellData;
       });
 
       const addedRow = sheet.addRow(rowValues);
-      const excelRowIndex = headerEndRowIndex + rowIndex + 1;
 
       // Apply styles to each cell
       config.headers.forEach((header, colIndex) => {
@@ -269,7 +319,6 @@ export class XLKit {
         const cellData = rowData[header.key];
         const cellValue = this.isCellValueWithStyle(cellData) ? cellData.value : cellData;
 
-        // Apply styles in priority order
         let finalStyle: any = {};
 
         // 1. styles.all
@@ -321,13 +370,12 @@ export class XLKit {
       });
     });
 
-    // 7. Apply Vertical Merges
+    // 5. Apply Vertical Merges (for data rows)
     config.headers.forEach((header, colIndex) => {
       if (header.merge === 'vertical') {
-        let startRow = headerEndRowIndex + 1; // First data row
+        let startRow = headerEndRowIndex + 1;
         let previousValue: any = null;
 
-        // Iterate from first data row to last
         for (let i = 0; i < data.length; i++) {
           const currentRowIndex = headerEndRowIndex + i + 1;
           const cell = sheet.getCell(currentRowIndex, colIndex + 1);
@@ -338,7 +386,6 @@ export class XLKit {
             continue;
           }
 
-          // If value changed or it's the last row, process the merge
           if (currentValue !== previousValue) {
             if (currentRowIndex - 1 > startRow) {
               sheet.mergeCells(startRow, colIndex + 1, currentRowIndex - 1, colIndex + 1);
@@ -348,7 +395,6 @@ export class XLKit {
           }
         }
 
-        // Handle the last group
         const lastRowIndex = headerEndRowIndex + data.length;
         if (lastRowIndex > startRow) {
           sheet.mergeCells(startRow, colIndex + 1, lastRowIndex, colIndex + 1);
@@ -356,7 +402,7 @@ export class XLKit {
       }
     });
 
-    // 8. Apply Borders
+    // 6. Apply Borders
     if (config.borders === 'all') {
       sheet.eachRow((row) => {
         row.eachCell((cell) => {
@@ -371,15 +417,13 @@ export class XLKit {
     } else if (config.borders === 'outer') {
       const lastRow = sheet.rowCount;
       const lastCol = sheet.columnCount;
-      
-      // Top & Bottom
+
       for (let c = 1; c <= lastCol; c++) {
         const topCell = sheet.getCell(1, c);
         topCell.border = { ...topCell.border, top: { style: 'thin' } };
         const bottomCell = sheet.getCell(lastRow, c);
         bottomCell.border = { ...bottomCell.border, bottom: { style: 'thin' } };
       }
-      // Left & Right
       for (let r = 1; r <= lastRow; r++) {
         const leftCell = sheet.getCell(r, 1);
         leftCell.border = { ...leftCell.border, left: { style: 'thin' } };
@@ -398,9 +442,9 @@ export class XLKit {
   }
 
   private isCellValueWithStyle(val: any): val is { value: any; style: XLStyle } {
-    return val !== null && 
-           typeof val === 'object' && 
-           'value' in val && 
+    return val !== null &&
+           typeof val === 'object' &&
+           'value' in val &&
            !Array.isArray(val) &&
            !(val instanceof Date);
   }
@@ -410,10 +454,9 @@ export class XLKit {
       throw new Error('File path cannot be empty.');
     }
     if (typeof process !== 'undefined' && process.versions && process.versions.node) {
-      const timeout = options?.timeout ?? 10000; // Default 10s
-      
+      const timeout = options?.timeout ?? 10000;
+
       const writePromise = this.workbook.xlsx.writeFile(path);
-      
       const timeoutPromise = new Promise<void>((_, reject) => {
         setTimeout(() => reject(new Error(`Operation timed out after ${timeout}ms`)), timeout);
       });
@@ -423,12 +466,11 @@ export class XLKit {
       throw new Error('File system access is only available in Node.js environment. Use saveToBuffer() instead.');
     }
   }
-  
+
   async saveToBuffer(options?: { timeout?: number }): Promise<Uint8Array> {
-    const timeout = options?.timeout ?? 10000; // Default 10s
+    const timeout = options?.timeout ?? 10000;
 
     const writePromise = this.workbook.xlsx.writeBuffer();
-    
     const timeoutPromise = new Promise<ExcelJS.Buffer>((_, reject) => {
       setTimeout(() => reject(new Error(`Operation timed out after ${timeout}ms`)), timeout);
     });
@@ -443,8 +485,8 @@ export class XLKit {
     }
 
     const buffer = await this.saveToBuffer(options);
-    const blob = new Blob([buffer.buffer as ArrayBuffer], { 
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    const blob = new Blob([buffer.buffer as ArrayBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
