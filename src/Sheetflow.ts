@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { SheetConfig, HeaderDef, XLStyle, CellValue, StylesConfig } from './types';
+import { SheetConfig, HeaderDef, XLStyle, CellValue, StylesConfig, HeaderCell, HeaderRowDef, MultiRowHeaderConfig } from './types';
 import { mapStyle } from './utils/style';
 
 export class XLKit {
@@ -33,6 +33,7 @@ export class XLKit {
     const autoWidthEnabled = autoWidthConfig.enabled !== false;
 
     // 1. Setup Columns & Headers
+    const hasMultiRowHeaders = !!config.multiRowHeaders;
     const columns = config.headers.map((header, colIndex) => {
       let width = header.width;
 
@@ -43,12 +44,36 @@ export class XLKit {
 
       if (width === 'auto') {
         // Get header label text
-        const headerText = typeof header.label === 'string' 
-          ? header.label 
+        const headerText = typeof header.label === 'string'
+          ? header.label
           : header.label.value;
-        
+
         let maxLen = headerText.length * (autoWidthConfig.headerIncluded !== false ? 1 : 0);
-        
+
+        // For multi-row headers, also consider the header cell values
+        if (hasMultiRowHeaders && autoWidthConfig.headerIncluded !== false) {
+          config.multiRowHeaders!.rows.forEach(row => {
+            let currentCol = 0;
+            row.forEach(cell => {
+              const cellObj = typeof cell === 'string' ? { value: cell } : cell;
+              const cellColSpan = cellObj.colSpan || 1;
+
+              // Check if this cell affects the current column
+              if (currentCol <= colIndex && colIndex < currentCol + cellColSpan) {
+                const cellText = cellObj.value;
+                let len = 0;
+                for (let i = 0; i < cellText.length; i++) {
+                  len += cellText.charCodeAt(i) > 255 ? 2 : 1;
+                }
+                // Divide by colSpan since the text spans multiple columns
+                const effectiveLen = Math.ceil(len / cellColSpan);
+                if (effectiveLen > maxLen) maxLen = effectiveLen;
+              }
+              currentCol += cellColSpan;
+            });
+          });
+        }
+
         // Check data length
         data.forEach(row => {
           const cellData = row[header.key];
@@ -67,13 +92,14 @@ export class XLKit {
         width = (maxLen + padding) * constant;
       }
 
-      // Get header label text for ExcelJS
-      const headerText = typeof header.label === 'string' 
-        ? header.label 
+      // Get header label text for ExcelJS (only used when no multiRowHeaders)
+      const headerText = typeof header.label === 'string'
+        ? header.label
         : header.label.value;
 
       return {
-        header: headerText,
+        // If multiRowHeaders is used, don't set header (we'll add it manually)
+        header: hasMultiRowHeaders ? undefined : headerText,
         key: String(header.key),
         width: typeof width === 'number' ? width : 15
       };
@@ -105,35 +131,123 @@ export class XLKit {
     }
 
     // Calculate header row index (after title rows)
-    const titleRowCount = config.title 
-      ? (Array.isArray(config.title.label) ? config.title.label.length : 1) 
+    const titleRowCount = config.title
+      ? (Array.isArray(config.title.label) ? config.title.label.length : 1)
       : 0;
-    const headerRowIndex = titleRowCount + 1;
+    const headerRowCount = hasMultiRowHeaders
+      ? config.multiRowHeaders!.rows.length
+      : 1;
+    const headerStartRowIndex = titleRowCount + 1;
+    const headerEndRowIndex = titleRowCount + headerRowCount;
 
-    // 3. Apply Header Cell Styles (from headers[].label.style)
-    const headerRow = sheet.getRow(headerRowIndex);
-    config.headers.forEach((header, colIndex) => {
-      if (typeof header.label === 'object' && header.label.style) {
-        const cell = headerRow.getCell(colIndex + 1);
-        const mappedStyle = mapStyle(header.label.style);
-        cell.style = { ...cell.style, ...mappedStyle };
+    // 3. Apply Multi-Row Headers (if configured)
+    if (hasMultiRowHeaders) {
+      // Build a grid to track which cells are occupied by rowSpan
+      const occupiedCells: boolean[][] = [];
+      for (let r = 0; r < headerRowCount; r++) {
+        occupiedCells[r] = new Array(config.headers.length).fill(false);
       }
-    });
 
-    // 4. Apply Header Row Style (from styles.header)
-    if (config.styles?.header) {
-      const mappedHeaderStyle = mapStyle(config.styles.header);
-      headerRow.eachCell((cell) => {
-        cell.style = { ...cell.style, ...mappedHeaderStyle };
-      });
-    }
+      // Process each header row
+      config.multiRowHeaders!.rows.forEach((headerRowDef, rowIdx) => {
+        const excelRowIndex = headerStartRowIndex + rowIdx;
+        const row = sheet.getRow(excelRowIndex);
+        let colIdx = 0; // Logical column index (0-based)
 
-    // 5. Apply styles.all to header row
-    if (config.styles?.all) {
-      const mappedAllStyle = mapStyle(config.styles.all);
-      headerRow.eachCell((cell) => {
-        cell.style = { ...mappedAllStyle, ...cell.style };
+        headerRowDef.forEach(cellDef => {
+          // Skip cells that are occupied by rowSpan from previous rows
+          while (colIdx < config.headers.length && occupiedCells[rowIdx][colIdx]) {
+            colIdx++;
+          }
+
+          if (colIdx >= config.headers.length) return;
+
+          const cellObj = typeof cellDef === 'string' ? { value: cellDef } : cellDef;
+          const colSpan = cellObj.colSpan || 1;
+          const rowSpan = cellObj.rowSpan || 1;
+
+          // Set the cell value
+          const excelColIndex = colIdx + 1; // 1-based
+          const cell = row.getCell(excelColIndex);
+          cell.value = cellObj.value;
+
+          // Apply cell style
+          if (cellObj.style) {
+            const mappedStyle = mapStyle(cellObj.style);
+            cell.style = { ...cell.style, ...mappedStyle };
+          }
+
+          // Mark occupied cells for colSpan and rowSpan
+          for (let r = 0; r < rowSpan; r++) {
+            for (let c = 0; c < colSpan; c++) {
+              if (rowIdx + r < headerRowCount && colIdx + c < config.headers.length) {
+                occupiedCells[rowIdx + r][colIdx + c] = true;
+              }
+            }
+          }
+
+          // Apply merge if needed
+          if (colSpan > 1 || rowSpan > 1) {
+            const startRow = excelRowIndex;
+            const startCol = excelColIndex;
+            const endRow = excelRowIndex + rowSpan - 1;
+            const endCol = excelColIndex + colSpan - 1;
+            sheet.mergeCells(startRow, startCol, endRow, endCol);
+          }
+
+          colIdx += colSpan;
+        });
       });
+
+      // Apply styles.header to all header rows
+      if (config.styles?.header) {
+        const mappedHeaderStyle = mapStyle(config.styles.header);
+        for (let r = headerStartRowIndex; r <= headerEndRowIndex; r++) {
+          const row = sheet.getRow(r);
+          row.eachCell((cell) => {
+            cell.style = { ...cell.style, ...mappedHeaderStyle };
+          });
+        }
+      }
+
+      // Apply styles.all to all header rows
+      if (config.styles?.all) {
+        const mappedAllStyle = mapStyle(config.styles.all);
+        for (let r = headerStartRowIndex; r <= headerEndRowIndex; r++) {
+          const row = sheet.getRow(r);
+          row.eachCell((cell) => {
+            cell.style = { ...mappedAllStyle, ...cell.style };
+          });
+        }
+      }
+    } else {
+      // Single row header (original behavior)
+      const headerRow = sheet.getRow(headerStartRowIndex);
+
+      // 3. Apply Header Cell Styles (from headers[].label.style)
+      config.headers.forEach((header, colIndex) => {
+        if (typeof header.label === 'object' && header.label.style) {
+          const cell = headerRow.getCell(colIndex + 1);
+          const mappedStyle = mapStyle(header.label.style);
+          cell.style = { ...cell.style, ...mappedStyle };
+        }
+      });
+
+      // 4. Apply Header Row Style (from styles.header)
+      if (config.styles?.header) {
+        const mappedHeaderStyle = mapStyle(config.styles.header);
+        headerRow.eachCell((cell) => {
+          cell.style = { ...cell.style, ...mappedHeaderStyle };
+        });
+      }
+
+      // 5. Apply styles.all to header row
+      if (config.styles?.all) {
+        const mappedAllStyle = mapStyle(config.styles.all);
+        headerRow.eachCell((cell) => {
+          cell.style = { ...mappedAllStyle, ...cell.style };
+        });
+      }
     }
 
     // 6. Add Data & Apply Styles
@@ -147,7 +261,7 @@ export class XLKit {
       });
 
       const addedRow = sheet.addRow(rowValues);
-      const excelRowIndex = headerRowIndex + rowIndex + 1;
+      const excelRowIndex = headerEndRowIndex + rowIndex + 1;
 
       // Apply styles to each cell
       config.headers.forEach((header, colIndex) => {
@@ -210,12 +324,12 @@ export class XLKit {
     // 7. Apply Vertical Merges
     config.headers.forEach((header, colIndex) => {
       if (header.merge === 'vertical') {
-        let startRow = headerRowIndex + 1; // First data row
+        let startRow = headerEndRowIndex + 1; // First data row
         let previousValue: any = null;
 
         // Iterate from first data row to last
         for (let i = 0; i < data.length; i++) {
-          const currentRowIndex = headerRowIndex + i + 1;
+          const currentRowIndex = headerEndRowIndex + i + 1;
           const cell = sheet.getCell(currentRowIndex, colIndex + 1);
           const currentValue = cell.value;
 
@@ -233,9 +347,9 @@ export class XLKit {
             previousValue = currentValue;
           }
         }
-        
+
         // Handle the last group
-        const lastRowIndex = headerRowIndex + data.length;
+        const lastRowIndex = headerEndRowIndex + data.length;
         if (lastRowIndex > startRow) {
           sheet.mergeCells(startRow, colIndex + 1, lastRowIndex, colIndex + 1);
         }
@@ -275,7 +389,7 @@ export class XLKit {
     } else if (config.borders === 'header-body') {
       const lastCol = sheet.columnCount;
       for (let c = 1; c <= lastCol; c++) {
-        const headerCell = sheet.getCell(headerRowIndex, c);
+        const headerCell = sheet.getCell(headerEndRowIndex, c);
         headerCell.border = { ...headerCell.border, bottom: { style: 'medium' } };
       }
     }

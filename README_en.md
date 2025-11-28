@@ -20,6 +20,7 @@ Define your Excel structure with a simple schema and let xlkit handle the stylin
   - [Style Priority](#style-priority)
   - [Preserving Leading Zeros](#preserving-leading-zeros--string-values)
 - [API Reference](#api-reference)
+- [Multi-Row Headers](#multi-row-headers)
 - [Common Patterns](#common-patterns)
 - [Complete Example](#complete-example)
 
@@ -28,6 +29,7 @@ Define your Excel structure with a simple schema and let xlkit handle the stylin
 - 📝 **Declarative Schema**: Define data and schema in one place
 - 🎨 **Flexible Styling**: Apply styles at 7 different levels (title, header, row, column, cell)
 - 🔗 **Auto Merge**: Automatically merge vertical cells with the same value
+- 📊 **Multi-Row Headers**: Flexible header layouts with `colSpan`/`rowSpan` support
 - 📏 **Auto Width**: Smart column width calculation based on content (including full-width chars)
 - 🌈 **Hex Colors**: Use standard 6-digit hex codes (`#FF0000`) directly
 - 🌐 **Universal**: Works in Node.js (file output) and Browser (`Uint8Array` output)
@@ -173,6 +175,7 @@ createWorkbook().addSheet({
   headers: HeaderDef[],      // Column definitions (required)
   rows: RowData[],           // Data rows (required)
   title?: TitleConfig,       // Title row
+  multiRowHeaders?: MultiRowHeaderConfig, // Multi-row header configuration
   styles?: StylesConfig,     // Global styles
   borders?: BorderPreset,    // Border preset
   autoWidth?: AutoWidthConfig // Auto width configuration
@@ -372,6 +375,141 @@ await workbook.save('output.xlsx');
 await workbook.save('output.xlsx', { timeout: 30000 });
 await workbook.download('output.xlsx');
 const buffer = await workbook.saveToBuffer();
+```
+
+## Multi-Row Headers
+
+Define headers that span multiple rows. Use `colSpan` for horizontal merging and `rowSpan` for vertical merging.
+
+### Basic Usage
+
+```typescript
+await createWorkbook().addSheet({
+  name: 'Report',
+  headers: [
+    { key: 'col1', label: 'Col 1' },
+    { key: 'col2', label: 'Col 2' },
+    { key: 'col3', label: 'Col 3' }
+  ],
+  multiRowHeaders: {
+    rows: [
+      [
+        { value: 'Group A', colSpan: 2 },  // Merge 2 columns horizontally
+        'Group B'
+      ],
+      ['Sub 1', 'Sub 2', 'Sub 3']  // Row 2
+    ]
+  },
+  rows: [
+    { col1: 'A1', col2: 'B1', col3: 'C1' }
+  ]
+}).save('output.xlsx');
+```
+
+**Result:**
+```
+┌─────────────────┬─────────┐
+│    Group A      │ Group B │  ← Row 1 (Group A spans 2 columns)
+├────────┬────────┼─────────┤
+│ Sub 1  │ Sub 2  │  Sub 3  │  ← Row 2
+├────────┼────────┼─────────┤
+│  A1    │  B1    │   C1    │  ← Data row
+└────────┴────────┴─────────┘
+```
+
+### rowSpan (Vertical Merging)
+
+```typescript
+multiRowHeaders: {
+  rows: [
+    [
+      { value: 'Group 1', colSpan: 2 },
+      { value: 'Group 2', rowSpan: 2 }  // Merge 2 rows vertically
+    ],
+    ['Sub 1', 'Sub 2']  // Group 2 is merged from above, so skip it
+  ]
+}
+```
+
+**Result:**
+```
+┌─────────────────┬─────────┐
+│    Group 1      │         │
+├────────┬────────┤ Group 2 │  ← rowSpan merges 2 rows
+│ Sub 1  │ Sub 2  │         │
+├────────┼────────┼─────────┤
+│  ...   │  ...   │   ...   │  ← Data row
+└────────┴────────┴─────────┘
+```
+
+### 3+ Row Headers
+
+```typescript
+multiRowHeaders: {
+  rows: [
+    [{ value: 'Main Title', colSpan: 4 }],
+    [
+      { value: 'Left Group', colSpan: 2 },
+      { value: 'Right Group', colSpan: 2 }
+    ],
+    ['A', 'B', 'C', 'D']
+  ]
+}
+```
+
+### Styling Header Cells
+
+```typescript
+multiRowHeaders: {
+  rows: [
+    [
+      {
+        value: 'Styled Header',
+        colSpan: 2,
+        style: {
+          font: { bold: true, color: '#FFFFFF' },
+          fill: { color: '#4472C4' },
+          alignment: { horizontal: 'center' }
+        }
+      }
+    ],
+    ['Column A', 'Column B']
+  ]
+}
+```
+
+### Combined with Title
+
+```typescript
+{
+  title: { label: 'Report Title' },
+  multiRowHeaders: {
+    rows: [
+      [{ value: 'Group', colSpan: 2 }],
+      ['A', 'B']
+    ]
+  },
+  // ...
+}
+// Result: Title row → Multi-row headers → Data rows
+```
+
+### HeaderCell Type Definition
+
+| Property | Type | Required | Default | Description |
+|----------|------|:--------:|---------|-------------|
+| `value` | `string` | ✅ | - | Cell text |
+| `colSpan` | `number` | - | `1` | Horizontal merge count |
+| `rowSpan` | `number` | - | `1` | Vertical merge count |
+| `style` | `XLStyle` | - | - | Cell style |
+
+```typescript
+// Type definitions
+type HeaderRowDef = (HeaderCell | string)[];  // string is shorthand for { value: string }
+
+interface MultiRowHeaderConfig {
+  rows: HeaderRowDef[];
+}
 ```
 
 ## Common Patterns

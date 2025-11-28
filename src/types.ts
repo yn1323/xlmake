@@ -24,6 +24,20 @@ export interface HeaderDef {
   format?: string | ((val: any) => string);
 }
 
+// 複数行ヘッダー用の型定義
+export interface HeaderCell {
+  value: string;
+  colSpan?: number;  // 横方向の結合（デフォルト: 1）
+  rowSpan?: number;  // 縦方向の結合（デフォルト: 1）
+  style?: XLStyle;
+}
+
+export type HeaderRowDef = (HeaderCell | string)[];
+
+export interface MultiRowHeaderConfig {
+  rows: HeaderRowDef[];
+}
+
 export interface TitleConfig {
   label: string | string[];
   style?: XLStyle;
@@ -42,6 +56,7 @@ export interface SheetConfig {
   headers: HeaderDef[];
   rows: any[];  // CellValue を含むデータオブジェクトの配列
   title?: TitleConfig;
+  multiRowHeaders?: MultiRowHeaderConfig;  // 複数行ヘッダー設定
   styles?: StylesConfig;  // 全体スタイル設定
   borders?: 'all' | 'outer' | 'header-body' | 'none';
   autoWidth?: boolean | {
