@@ -15,12 +15,27 @@ export type CellValue = any | {
   style?: XLStyle;
 };
 
+// ヘッダーラベルのセル（複数行ヘッダー用）
+export interface HeaderLabelCell {
+  value: string;
+  style?: XLStyle;
+}
+
+// ヘッダーラベルの型
+// - string: 単一行ヘッダー
+// - { value, style }: 単一行ヘッダー（スタイル付き）
+// - (string | HeaderLabelCell)[]: 複数行ヘッダー（同値で自動結合）
+export type HeaderLabel =
+  | string
+  | { value: string; style?: XLStyle }
+  | (string | HeaderLabelCell)[];
+
 export interface HeaderDef {
   key: string;
-  label: string | { value: string; style?: XLStyle };  // 文字列または{ value, style }形式
+  label: HeaderLabel;
   width?: number | 'auto';
   merge?: 'vertical';
-  style?: XLStyle | ((val: any, row: any, index: number) => XLStyle);  // オブジェクト（固定）または関数（条件付き）
+  style?: XLStyle | ((val: any, row: any, index: number) => XLStyle);
   format?: string | ((val: any) => string);
 }
 

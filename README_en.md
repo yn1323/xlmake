@@ -20,6 +20,7 @@ Define your Excel structure with a simple schema and let xlkit handle the stylin
   - [Style Priority](#style-priority)
   - [Preserving Leading Zeros](#preserving-leading-zeros--string-values)
 - [API Reference](#api-reference)
+- [Multi-Row Headers](#multi-row-headers)
 - [Common Patterns](#common-patterns)
 - [Complete Example](#complete-example)
 
@@ -28,6 +29,7 @@ Define your Excel structure with a simple schema and let xlkit handle the stylin
 - 📝 **Declarative Schema**: Define data and schema in one place
 - 🎨 **Flexible Styling**: Apply styles at 7 different levels (title, header, row, column, cell)
 - 🔗 **Auto Merge**: Automatically merge vertical cells with the same value
+- 📊 **Multi-Row Headers**: Flexible header layouts with `colSpan`/`rowSpan` support
 - 📏 **Auto Width**: Smart column width calculation based on content (including full-width chars)
 - 🌈 **Hex Colors**: Use standard 6-digit hex codes (`#FF0000`) directly
 - 🌐 **Universal**: Works in Node.js (file output) and Browser (`Uint8Array` output)
@@ -184,11 +186,16 @@ createWorkbook().addSheet({
 | Property | Type | Required | Default | Description |
 |----------|------|:--------:|---------|-------------|
 | `key` | `string` | ✅ | - | Data property key |
-| `label` | `string \| LabelConfig` | ✅ | - | Header text |
+| `label` | `HeaderLabel` | ✅ | - | Header text (see below) |
 | `width` | `number \| 'auto'` | - | Not set | Column width |
 | `merge` | `'vertical'` | - | Not set | Auto-merge vertically |
 | `format` | `string \| FormatFn` | - | Not set | Display format |
 | `style` | `XLStyle \| StyleFn` | - | Not set | Column style |
+
+**`label` Type (`HeaderLabel`):**
+- `string`: Single-row header (e.g., `'Name'`)
+- `{ value: string, style?: XLStyle }`: Single-row header with style
+- `(string | { value: string, style?: XLStyle })[]`: Multi-row header (array)
 
 ```typescript
 headers: [
@@ -372,6 +379,165 @@ await workbook.save('output.xlsx');
 await workbook.save('output.xlsx', { timeout: 30000 });
 await workbook.download('output.xlsx');
 const buffer = await workbook.saveToBuffer();
+```
+
+## Multi-Row Headers
+
+Pass an array to `label` to define headers that span multiple rows. When consecutive cells in the same row have the same value, they are automatically merged horizontally (colSpan).
+
+### Basic Usage
+
+```typescript
+await createWorkbook().addSheet({
+  name: 'Report',
+  headers: [
+    { key: 'col1', label: ['Group A', 'Sub 1'] },
+    { key: 'col2', label: ['Group A', 'Sub 2'] },  // Same 'Group A' → auto-merge
+    { key: 'col3', label: ['Group B', 'Sub 3'] }
+  ],
+  rows: [
+    { col1: 'A1', col2: 'B1', col3: 'C1' }
+  ]
+}).save('output.xlsx');
+```
+
+**Result:**
+```
+┌─────────────────┬─────────┐
+│    Group A      │ Group B │  ← Row 1 (Group A auto-merged)
+├────────┬────────┼─────────┤
+│ Sub 1  │ Sub 2  │  Sub 3  │  ← Row 2
+├────────┼────────┼─────────┤
+│  A1    │  B1    │   C1    │  ← Data row
+└────────┴────────┴─────────┘
+```
+
+### 3+ Row Headers
+
+```typescript
+headers: [
+  { key: 'a', label: ['Main Title', 'Left Group', 'A'] },
+  { key: 'b', label: ['Main Title', 'Left Group', 'B'] },
+  { key: 'c', label: ['Main Title', 'Right Group', 'C'] },
+  { key: 'd', label: ['Main Title', 'Right Group', 'D'] }
+]
+```
+
+**Result:**
+```
+┌───────────────────────────────────────┐
+│            Main Title                 │  ← All 4 columns merged
+├───────────────────┬───────────────────┤
+│    Left Group     │    Right Group    │  ← 2 columns each merged
+├─────────┬─────────┼─────────┬─────────┤
+│    A    │    B    │    C    │    D    │
+└─────────┴─────────┴─────────┴─────────┘
+```
+
+### Styling Header Cells
+
+Use object format in the array to apply styles to individual cells.
+
+```typescript
+headers: [
+  {
+    key: 'col1',
+    label: [
+      {
+        value: 'Styled Header',
+        style: {
+          font: { bold: true, color: '#FFFFFF' },
+          fill: { color: '#4472C4' },
+          alignment: { horizontal: 'center' }
+        }
+      },
+      'Column A'
+    ]
+  },
+  {
+    key: 'col2',
+    label: [
+      {
+        value: 'Styled Header',  // Same value → auto-merge
+        style: {
+          font: { bold: true, color: '#FFFFFF' },
+          fill: { color: '#4472C4' },
+          alignment: { horizontal: 'center' }
+        }
+      },
+      'Column B'
+    ]
+  }
+]
+```
+
+### Mixed Single and Multi-Row Headers
+
+You can mix single-row (`string`) and multi-row (array) headers. Single-row headers display the same value across all rows.
+
+```typescript
+headers: [
+  { key: 'id', label: 'ID' },  // Single row
+  { key: 'name', label: ['Person', 'Name'] },  // Multi-row
+  { key: 'age', label: ['Person', 'Age'] }  // 'Person' auto-merged
+]
+```
+
+**Result:**
+```
+┌────────┬─────────────────┐
+│   ID   │     Person      │  ← 'Person' auto-merged
+├────────┼────────┬────────┤
+│   ID   │  Name  │  Age   │  ← Single 'ID' repeated
+├────────┼────────┼────────┤
+│  ...   │  ...   │  ...   │
+└────────┴────────┴────────┘
+```
+
+### Combined with Title
+
+```typescript
+{
+  title: { label: 'Report Title' },
+  headers: [
+    { key: 'col1', label: ['Group', 'A'] },
+    { key: 'col2', label: ['Group', 'B'] }  // 'Group' auto-merged
+  ],
+  // ...
+}
+// Result: Title row → Multi-row headers → Data rows
+```
+
+### Vertical Duplicate Values (Error)
+
+Consecutive identical values within the same column (vertically) will throw an error. This prevents unintended merges.
+
+```typescript
+// ❌ Error: Vertical duplicates not allowed
+headers: [
+  { key: 'col1', label: ['Same', 'Same'] }  // Error!
+]
+
+// ✅ Correct: Use different values
+headers: [
+  { key: 'col1', label: ['Group', 'Sub'] }
+]
+```
+
+### HeaderLabel Type Definition
+
+```typescript
+// Cell definition (with style)
+interface HeaderLabelCell {
+  value: string;
+  style?: XLStyle;
+}
+
+// Header label type
+type HeaderLabel =
+  | string                           // Single row
+  | { value: string; style?: XLStyle }  // Single row (with style)
+  | (string | HeaderLabelCell)[];    // Multi-row
 ```
 
 ## Common Patterns
