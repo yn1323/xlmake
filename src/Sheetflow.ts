@@ -1,6 +1,6 @@
-import ExcelJS from 'exceljs';
-import { SheetConfig, HeaderDef, XLStyle, HeaderLabelCell, HeaderLabel } from './types';
-import { mapStyle } from './utils/style';
+import ExcelJS from "exceljs";
+import { HeaderDef, type HeaderLabel, type HeaderLabelCell, type SheetConfig, type XLStyle } from "./types";
+import { mapStyle } from "./utils/style";
 
 // Helper: Check if label is multi-row (array)
 function isMultiRowLabel(label: HeaderLabel): label is (string | HeaderLabelCell)[] {
@@ -9,12 +9,12 @@ function isMultiRowLabel(label: HeaderLabel): label is (string | HeaderLabelCell
 
 // Helper: Get label text from HeaderLabel or HeaderLabelCell
 function getLabelText(label: string | HeaderLabelCell | { value: string; style?: XLStyle }): string {
-  return typeof label === 'string' ? label : label.value;
+  return typeof label === "string" ? label : label.value;
 }
 
 // Helper: Get label style from HeaderLabelCell
 function getLabelStyle(label: string | HeaderLabelCell): XLStyle | undefined {
-  return typeof label === 'string' ? undefined : label.style;
+  return typeof label === "string" ? undefined : label.style;
 }
 
 export class XLKit {
@@ -27,7 +27,7 @@ export class XLKit {
   addSheet(config: SheetConfig): XLKit {
     // Validate Sheet Name
     if (!config.name) {
-      throw new Error('Sheet name is required.');
+      throw new Error("Sheet name is required.");
     }
     if (config.name.length > 31) {
       throw new Error(`Sheet name "${config.name}" exceeds the maximum length of 31 characters.`);
@@ -41,14 +41,12 @@ export class XLKit {
     const data = config.rows;
 
     // Determine if multi-row headers are used
-    const hasMultiRowHeaders = config.headers.some(h => isMultiRowLabel(h.label));
+    const hasMultiRowHeaders = config.headers.some((h) => isMultiRowLabel(h.label));
 
     // Calculate header row count
     let headerRowCount = 1;
     if (hasMultiRowHeaders) {
-      headerRowCount = Math.max(...config.headers.map(h =>
-        isMultiRowLabel(h.label) ? h.label.length : 1
-      ));
+      headerRowCount = Math.max(...config.headers.map((h) => (isMultiRowLabel(h.label) ? h.label.length : 1)));
     }
 
     // Validate: Check for vertical duplicate values in multi-row headers
@@ -61,8 +59,8 @@ export class XLKit {
             if (currentText === prevText) {
               throw new Error(
                 `Vertical duplicate header values are not allowed. ` +
-                `Column "${header.key}" has duplicate value "${currentText}" at rows ${rowIdx} and ${rowIdx + 1}. ` +
-                `Use different values for each row.`
+                  `Column "${header.key}" has duplicate value "${currentText}" at rows ${rowIdx} and ${rowIdx + 1}. ` +
+                  `Use different values for each row.`,
               );
             }
           }
@@ -71,9 +69,8 @@ export class XLKit {
     }
 
     // Handle autoWidth
-    const autoWidthConfig = typeof config.autoWidth === 'boolean'
-      ? { enabled: config.autoWidth }
-      : config.autoWidth || {};
+    const autoWidthConfig =
+      typeof config.autoWidth === "boolean" ? { enabled: config.autoWidth } : config.autoWidth || {};
     const autoWidthEnabled = autoWidthConfig.enabled !== false;
 
     // 1. Setup Columns
@@ -81,16 +78,16 @@ export class XLKit {
       let width = header.width;
 
       if (!width && autoWidthEnabled) {
-        width = 'auto';
+        width = "auto";
       }
 
-      if (width === 'auto') {
+      if (width === "auto") {
         let maxLen = 0;
 
         // Consider header label(s)
         if (autoWidthConfig.headerIncluded !== false) {
           if (isMultiRowLabel(header.label)) {
-            header.label.forEach(lbl => {
+            header.label.forEach((lbl) => {
               const text = getLabelText(lbl);
               let len = 0;
               for (let i = 0; i < text.length; i++) {
@@ -107,10 +104,10 @@ export class XLKit {
         }
 
         // Check data length
-        data.forEach(row => {
+        data.forEach((row) => {
           const cellData = row[header.key];
           const val = this.isCellValueWithStyle(cellData) ? cellData.value : cellData;
-          const str = val != null ? String(val) : '';
+          const str = val != null ? String(val) : "";
           let len = 0;
           for (let i = 0; i < str.length; i++) {
             len += str.charCodeAt(i) > 255 ? 2 : 1;
@@ -126,18 +123,16 @@ export class XLKit {
       return {
         header: undefined, // We'll add headers manually
         key: String(header.key),
-        width: typeof width === 'number' ? width : 15
+        width: typeof width === "number" ? width : 15,
       };
     });
     sheet.columns = columns;
 
     // 2. Apply Title Rows (if any)
     if (config.title) {
-      const titleLabels = Array.isArray(config.title.label)
-        ? config.title.label
-        : [config.title.label];
+      const titleLabels = Array.isArray(config.title.label) ? config.title.label : [config.title.label];
 
-      titleLabels.forEach(titleText => {
+      titleLabels.forEach((titleText) => {
         const titleRow = sheet.insertRow(1, [titleText]);
 
         if (config.headers.length > 1) {
@@ -154,9 +149,7 @@ export class XLKit {
     }
 
     // Calculate row indices
-    const titleRowCount = config.title
-      ? (Array.isArray(config.title.label) ? config.title.label.length : 1)
-      : 0;
+    const titleRowCount = config.title ? (Array.isArray(config.title.label) ? config.title.label.length : 1) : 0;
     const headerStartRowIndex = titleRowCount + 1;
     const headerEndRowIndex = titleRowCount + headerRowCount;
 
@@ -172,23 +165,21 @@ export class XLKit {
             if (r < header.label.length) {
               grid[r][c] = {
                 text: getLabelText(header.label[r]),
-                style: getLabelStyle(header.label[r])
+                style: getLabelStyle(header.label[r]),
               };
             } else {
               // Extend last value if array is shorter
               const lastIdx = header.label.length - 1;
               grid[r][c] = {
                 text: getLabelText(header.label[lastIdx]),
-                style: getLabelStyle(header.label[lastIdx])
+                style: getLabelStyle(header.label[lastIdx]),
               };
             }
           } else {
             // Single value - same for all rows
             grid[r][c] = {
               text: getLabelText(header.label),
-              style: typeof header.label === 'object' && !Array.isArray(header.label)
-                ? header.label.style
-                : undefined
+              style: typeof header.label === "object" && !Array.isArray(header.label) ? header.label.style : undefined,
             };
           }
         }
@@ -213,8 +204,7 @@ export class XLKit {
           let colSpan = 1;
 
           // Count consecutive same values
-          while (c + colSpan < config.headers.length &&
-                 grid[r][c + colSpan].text === currentText) {
+          while (c + colSpan < config.headers.length && grid[r][c + colSpan].text === currentText) {
             mergeInfo[r][c + colSpan].isStart = false;
             colSpan++;
           }
@@ -279,7 +269,7 @@ export class XLKit {
         cell.value = getLabelText(header.label as string | { value: string; style?: XLStyle });
 
         // Apply label style
-        if (typeof header.label === 'object' && !Array.isArray(header.label) && header.label.style) {
+        if (typeof header.label === "object" && !Array.isArray(header.label) && header.label.style) {
           const mappedStyle = mapStyle(header.label.style);
           cell.style = { ...cell.style, ...mappedStyle };
         }
@@ -306,7 +296,7 @@ export class XLKit {
     data.forEach((rowData, rowIndex) => {
       const rowValues: any = {};
 
-      config.headers.forEach(header => {
+      config.headers.forEach((header) => {
         const cellData = rowData[header.key];
         rowValues[header.key] = this.isCellValueWithStyle(cellData) ? cellData.value : cellData;
       });
@@ -344,7 +334,7 @@ export class XLKit {
 
         // 5. headers[].style (object or function)
         if (header.style) {
-          if (typeof header.style === 'function') {
+          if (typeof header.style === "function") {
             const cellStyle = header.style(cellValue, rowData, rowIndex);
             finalStyle = { ...finalStyle, ...mapStyle(cellStyle) };
           } else {
@@ -361,7 +351,7 @@ export class XLKit {
 
         // Apply format
         if (header.format) {
-          if (typeof header.format === 'string') {
+          if (typeof header.format === "string") {
             cell.numFmt = header.format;
           } else {
             cell.value = header.format(cellValue);
@@ -372,7 +362,7 @@ export class XLKit {
 
     // 5. Apply Vertical Merges (for data rows)
     config.headers.forEach((header, colIndex) => {
-      if (header.merge === 'vertical') {
+      if (header.merge === "vertical") {
         let startRow = headerEndRowIndex + 1;
         let previousValue: any = null;
 
@@ -403,38 +393,38 @@ export class XLKit {
     });
 
     // 6. Apply Borders
-    if (config.borders === 'all') {
+    if (config.borders === "all") {
       sheet.eachRow((row) => {
         row.eachCell((cell) => {
           cell.border = {
-            top: { style: 'thin' },
-            left: { style: 'thin' },
-            bottom: { style: 'thin' },
-            right: { style: 'thin' }
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
           };
         });
       });
-    } else if (config.borders === 'outer') {
+    } else if (config.borders === "outer") {
       const lastRow = sheet.rowCount;
       const lastCol = sheet.columnCount;
 
       for (let c = 1; c <= lastCol; c++) {
         const topCell = sheet.getCell(1, c);
-        topCell.border = { ...topCell.border, top: { style: 'thin' } };
+        topCell.border = { ...topCell.border, top: { style: "thin" } };
         const bottomCell = sheet.getCell(lastRow, c);
-        bottomCell.border = { ...bottomCell.border, bottom: { style: 'thin' } };
+        bottomCell.border = { ...bottomCell.border, bottom: { style: "thin" } };
       }
       for (let r = 1; r <= lastRow; r++) {
         const leftCell = sheet.getCell(r, 1);
-        leftCell.border = { ...leftCell.border, left: { style: 'thin' } };
+        leftCell.border = { ...leftCell.border, left: { style: "thin" } };
         const rightCell = sheet.getCell(r, lastCol);
-        rightCell.border = { ...rightCell.border, right: { style: 'thin' } };
+        rightCell.border = { ...rightCell.border, right: { style: "thin" } };
       }
-    } else if (config.borders === 'header-body') {
+    } else if (config.borders === "header-body") {
       const lastCol = sheet.columnCount;
       for (let c = 1; c <= lastCol; c++) {
         const headerCell = sheet.getCell(headerEndRowIndex, c);
-        headerCell.border = { ...headerCell.border, bottom: { style: 'medium' } };
+        headerCell.border = { ...headerCell.border, bottom: { style: "medium" } };
       }
     }
 
@@ -442,18 +432,14 @@ export class XLKit {
   }
 
   private isCellValueWithStyle(val: any): val is { value: any; style: XLStyle } {
-    return val !== null &&
-           typeof val === 'object' &&
-           'value' in val &&
-           !Array.isArray(val) &&
-           !(val instanceof Date);
+    return val !== null && typeof val === "object" && "value" in val && !Array.isArray(val) && !(val instanceof Date);
   }
 
   async save(path: string, options?: { timeout?: number }): Promise<void> {
-    if (!path || path.trim() === '') {
-      throw new Error('File path cannot be empty.');
+    if (!path || path.trim() === "") {
+      throw new Error("File path cannot be empty.");
     }
-    if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+    if (typeof process !== "undefined" && process.versions && process.versions.node) {
       const timeout = options?.timeout ?? 10000;
 
       const writePromise = this.workbook.xlsx.writeFile(path);
@@ -463,7 +449,7 @@ export class XLKit {
 
       await Promise.race([writePromise, timeoutPromise]);
     } else {
-      throw new Error('File system access is only available in Node.js environment. Use saveToBuffer() instead.');
+      throw new Error("File system access is only available in Node.js environment. Use saveToBuffer() instead.");
     }
   }
 
@@ -480,16 +466,18 @@ export class XLKit {
   }
 
   async download(filename: string, options?: { timeout?: number }): Promise<void> {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      throw new Error('download() is only available in browser environment. Use save() for Node.js or saveToBuffer() for custom handling.');
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      throw new Error(
+        "download() is only available in browser environment. Use save() for Node.js or saveToBuffer() for custom handling.",
+      );
     }
 
     const buffer = await this.saveToBuffer(options);
     const blob = new Blob([buffer.buffer as ArrayBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     a.click();

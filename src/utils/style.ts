@@ -1,13 +1,13 @@
-import { Style, Borders } from 'exceljs';
-import { XLStyle } from '../types';
-import { toArgb } from './color';
+import type { Borders, Style } from "exceljs";
+import type { XLStyle } from "../types";
+import { toArgb } from "./color";
 
 export function mapStyle(style: XLStyle): Partial<Style> {
   const excelStyle: Partial<Style> = {};
 
   if (style.font) {
     excelStyle.font = { ...style.font };
-    if (typeof style.font.color === 'string') {
+    if (typeof style.font.color === "string") {
       excelStyle.font.color = { argb: toArgb(style.font.color) };
     }
   }
@@ -15,8 +15,8 @@ export function mapStyle(style: XLStyle): Partial<Style> {
   if (style.fill) {
     if (style.fill.color) {
       excelStyle.fill = {
-        type: 'pattern',
-        pattern: 'solid',
+        type: "pattern",
+        pattern: "solid",
         fgColor: { argb: toArgb(style.fill.color) },
       };
     } else {
@@ -30,7 +30,7 @@ export function mapStyle(style: XLStyle): Partial<Style> {
   }
 
   if (style.border) {
-    if (typeof style.border === 'string') {
+    if (typeof style.border === "string") {
       // Presets handled in main logic or expanded here
       // For now, we'll handle explicit border objects here
     } else {

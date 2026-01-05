@@ -1,22 +1,22 @@
-import { describe, it, expect } from 'vitest';
-import { createWorkbook } from '../src';
-import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from "fs";
+import * as path from "path";
+import { describe, expect, it } from "vitest";
+import { createWorkbook } from "../src";
 
-const OUTPUT_DIR = path.join(__dirname, 'output');
+const OUTPUT_DIR = path.join(__dirname, "output");
 if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
-describe('Performance', () => {
-  it('should handle 50,000 rows with 20 columns (Wide Dataset)', async () => {
-    const filePath = path.join(OUTPUT_DIR, 'large_wide_50k.xlsx');
-    
+describe("Performance", () => {
+  it("should handle 50,000 rows with 20 columns (Wide Dataset)", async () => {
+    const filePath = path.join(OUTPUT_DIR, "large_wide_50k.xlsx");
+
     // Generate 20 columns
     const headers = Array.from({ length: 20 }, (_, i) => ({
       key: `col_${i}`,
       label: `Column ${i}`,
-      width: 15
+      width: 15,
     }));
 
     // Generate data
@@ -29,17 +29,17 @@ describe('Performance', () => {
       data.push(row);
     }
 
-    console.log('Starting 50k row * 20 column generation (1M cells)...');
+    console.log("Starting 50k row * 20 column generation (1M cells)...");
     const start = Date.now();
     await createWorkbook()
       .addSheet({
-        name: 'WideData',
+        name: "WideData",
         headers: headers,
-        rows: data
+        rows: data,
       })
       .save(filePath);
     const end = Date.now();
-    
+
     console.log(`Generated 50,000 rows (20 cols) in ${end - start}ms`);
     // CI environments may be slower, allow 20 seconds
     expect(end - start).toBeLessThan(20000);

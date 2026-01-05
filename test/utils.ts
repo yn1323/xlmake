@@ -1,4 +1,4 @@
-import ExcelJS from 'exceljs';
+import ExcelJS from "exceljs";
 
 export async function readExcel(path: string) {
   const workbook = new ExcelJS.Workbook();
@@ -12,6 +12,6 @@ export function getCellValue(sheet: ExcelJS.Worksheet, row: number, col: number)
 }
 
 export function getCellStyle(sheet: ExcelJS.Worksheet, row: number, col: number) {
-    const cell = sheet.getRow(row).getCell(col);
-    return cell.style;
+  const cell = sheet.getRow(row).getCell(col);
+  return cell.style;
 }
