@@ -1,0 +1,45 @@
+{
+  "name": "xlkit",
+  "version": "1.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "type-check": "tsc",
+    "format": "biome check --write",
+    "lint": "biome check"
+  },
+  "keywords": [
+    "excel",
+    "exceljs",
+    "spreadsheet",
+    "wrapper",
+    "declarative",
+    "schema"
+  ],
+  "author": "",
+  "license": "MIT",
+  "description": "xlkit - Declarative schema-based wrapper for ExcelJS with type safety and intuitive styling",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yn1323/xlkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yn1323/xlkit/issues"
+  },
+  "homepage": "https://github.com/yn1323/xlkit#readme",
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.10",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.12"
+  }
+}
