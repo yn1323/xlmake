@@ -30,3 +30,6 @@ coverage/
 .nyc_output/ss
 
 CLAUDE.local.md
+
+# Claude
+.claude/settings.local.json
