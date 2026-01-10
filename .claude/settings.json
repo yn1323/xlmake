@@ -15,7 +15,8 @@
       "Bash(pnpm test:*)"
     ],
     "additionalDirectories": [
-      "c:\\Users\\yn132\\work\\xlkit\\renewal"
+      "c:\\Users\\yn132\\work\\xlkit\\renewal",
+      "c:\\Users\\yn132\\work\\xlkit\\docs"
     ]
   }
 }

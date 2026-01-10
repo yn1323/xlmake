@@ -3,7 +3,11 @@
 このファイルは、Claude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
 ## 参照ドキュメント
-- @docs/2026-01-06_xlkit-design.md
+- @docs/spec/2026-01-06_xlkit-design.md
+
+これまでの経緯のドキュメントは、下記ディレクトリに配置。
+- @docs/spec・・・仕様関連
+- @docs/impl・・・実装計画関連
 
 ## 🚨 核心制約
 
