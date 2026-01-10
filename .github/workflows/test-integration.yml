@@ -1,0 +1,11 @@
+name: Test (Integration)
+
+on: push
+
+jobs:
+  test-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: pnpm vitest run tests/

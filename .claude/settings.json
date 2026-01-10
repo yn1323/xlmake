@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(npx biome migrate)",
+      "Bash(npx biome:*)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm dev)",
+      "Bash(pnpm test:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\yn132\\work\\xlkit\\renewal",
+      "c:\\Users\\yn132\\work\\xlkit\\docs"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+name: Test (Unit)
+
+on: push
+
+jobs:
+  test-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: pnpm vitest run src/

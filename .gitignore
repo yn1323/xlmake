@@ -12,7 +12,6 @@ test/output/
 .env.local
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -28,4 +27,9 @@ npm-debug.log*
 
 # Coverage
 coverage/
-.nyc_output/
+.nyc_output/ss
+
+CLAUDE.local.md
+
+# Claude
+.claude/settings.local.json
