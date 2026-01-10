@@ -3,8 +3,7 @@
 このファイルは、Claude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
 ## 参照ドキュメント
-- @doc/claude/basic.md
-- @doc/claude/self.md
+- @docs/2026-01-06_xlkit-design.md
 
 ## 🚨 核心制約
 
@@ -15,7 +14,7 @@
    - `pnpm format` - Biomeフォーマット（作業完了前に必ず実行）
    - `pnpm lint` - Biomeリンティング（作業完了前に必ず実行）
    - `pnpm type-check` - TypeScript型チェック（作業完了前に必ず実行）
-   - `pnpm test` - Vitestテスト（ロジック、UI修正時のみ）
+   - `pnpm test` - Vitestテスト（ロジック修正時のみ）
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: 3ステップ以上でTodoWrite使用
@@ -47,9 +46,8 @@
 ### テストアーキテクチャ
 プロジェクトでは多層テスト手法を採用:
 
-1. **ロジックテスト**: Vitestを使用したユーティリティ・ビジネスロジックのユニットテスト
-   - `test/*.test.ts`に配置
-   - 分離されたNode.js環境で実行
+1. **ロジックテスト**: Vitestを使用したユニットテスト
+   - コロケーションでテストを実行する
 
 ## コード品質基準
 
