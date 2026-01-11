@@ -1,6 +1,11 @@
 // xlkit - Declarative Excel generation library
 
 export { xlkit } from "./core/workbook-builder";
+export type { CellReader } from "./reader/cell-reader";
+export type { SheetReader } from "./reader/sheet-reader";
+// 読み取りAPI用の型
+export type { WorkbookReader } from "./reader/workbook-reader";
+export { read } from "./reader/workbook-reader";
 export type { Column, LeafColumn, ParentColumn } from "./types/column";
 export type { ImageOptions, ImageSource } from "./types/image";
 // 型定義をエクスポート（ユーザーが使用できるように）
