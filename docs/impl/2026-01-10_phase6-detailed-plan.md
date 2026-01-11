@@ -86,12 +86,16 @@ export class CellReader {
 
     // リッチテキストの場合
     if (val && typeof val === "object" && "richText" in val) {
-      return val.richText.map((rt: any) => rt.text).join("");
+      return val.richText.map((rt: { text: string }) => rt.text).join("");
     }
 
     // 数式の場合（結果を返す）
     if (val && typeof val === "object" && "result" in val) {
-      return val.result as any;
+      const result = val.result;
+      if (typeof result === "string" || typeof result === "number" || typeof result === "boolean") {
+        return result;
+      }
+      return null;
     }
 
     // プリミティブ値
@@ -284,7 +288,9 @@ export class SheetReader {
    */
   get mergedCells(): string[] {
     // ExcelJSは "A1:B2" 形式の配列を返す
-    return (this.worksheet as any)._merges?.map((m: any) => m) || [];
+    // Note: modelは内部プロパティのため型定義にない
+    const model = (this.worksheet as unknown as { model?: { merges?: string[] } }).model;
+    return model?.merges || [];
   }
 
   /**

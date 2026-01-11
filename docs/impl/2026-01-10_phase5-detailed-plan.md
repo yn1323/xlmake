@@ -254,12 +254,12 @@ export function writeCell(
   style?: CellStyle
 ): void {
   // 値を設定
-  cell.value = value as any;
+  cell.value = value as CellValue;
 
   // スタイルを適用
   if (style) {
     const excelStyle = convertToExcelJSStyle(style);
-    cell.style = excelStyle as any;
+    cell.style = excelStyle;
   }
 }
 
@@ -321,7 +321,7 @@ function numberToColumnLetter(num: number): string {
 
 **セルの値の型**:
 - ExcelJSは `string | number | boolean | Date | null` を受け付ける
-- `as any` でキャスト（ExcelJSの型定義が厳密すぎるため）
+- `as CellValue` でキャスト（ExcelJSのCellValue型を使用）
 
 **マージの座標系**:
 - ExcelJSは1-indexed（1行目、1列目から始まる）
@@ -454,11 +454,11 @@ export class SheetWriter {
    * ヘッダーを書き込む（マルチヘッダー対応）
    */
   private writeHeaders<T>(
-    columns: Column<T>[],
+    _columns: Column<T>[],
     leafColumns: LeafColumn<T>[],
     depth: number,
-    presetConfig: any,
-    tableStyle: any
+    presetConfig: TablePresetConfig | undefined,
+    tableStyle: TableStyle | undefined
   ): void {
     // TODO: マルチヘッダーの詳細実装（再帰的な処理）
     // シンプルなケース（1階層）のみ実装
@@ -491,10 +491,9 @@ export class SheetWriter {
    */
   private writeDataRows<T>(
     leafColumns: LeafColumn<T>[],
-    data: (T & { _style?: any })[],
-    presetConfig: any,
-    tableStyle: any,
-    conditionalStyle?: (row: T, col: keyof T) => any
+    data: (T & { _style?: Partial<Record<keyof T, CellStyle>> })[],
+    presetConfig: TablePresetConfig | undefined,
+    tableStyle: TableStyle | undefined
   ): void {
     for (const [rowIndex, rowData] of data.entries()) {
       const row = getOrCreateRow(this.worksheet, this.currentRow);
@@ -570,7 +569,7 @@ export class SheetWriter {
     startRow: number,
     endRow: number,
     columnCount: number,
-    border: any
+    border: BorderStyle | undefined
   ): void {
     // TODO: 罫線の詳細実装
     // ExcelJSの罫線APIを使用して、指定範囲に罫線を適用
