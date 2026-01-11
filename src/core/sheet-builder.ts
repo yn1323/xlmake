@@ -91,16 +91,16 @@ export class SheetBuilder {
   }
 
   /**
-   * ブラウザ向け出力オブジェクト（WorkbookBuilderに委譲）
+   * ブラウザ向け出力オブジェクトを取得（WorkbookBuilderに委譲）
    */
-  get browser() {
-    return this.workbook.browser;
+  getBrowser() {
+    return this.workbook.getBrowser();
   }
 
   /**
-   * Node.js向け出力オブジェクト（WorkbookBuilderに委譲）
+   * Node.js向け出力オブジェクトを取得（WorkbookBuilderに委譲）
    */
-  get node() {
-    return this.workbook.node;
+  getNode() {
+    return this.workbook.getNode();
   }
 }

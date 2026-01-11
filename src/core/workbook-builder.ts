@@ -1,3 +1,6 @@
+import { writeWorkbook } from "../engine/writer";
+import { BrowserOutput } from "../output/browser";
+import { NodeOutput } from "../output/node";
 import type { WorkbookState } from "../types/workbook";
 import { SheetBuilder } from "./sheet-builder";
 
@@ -39,21 +42,19 @@ export class WorkbookBuilder {
   }
 
   /**
-   * ブラウザ向け出力オブジェクト
-   * Phase 5 で実装
+   * ブラウザ向け出力オブジェクトを取得
    */
-  get browser() {
-    // TODO: Phase 5 で実装
-    throw new Error("Not implemented yet");
+  async getBrowser(): Promise<BrowserOutput> {
+    const workbook = await writeWorkbook(this.state);
+    return new BrowserOutput(workbook);
   }
 
   /**
-   * Node.js向け出力オブジェクト
-   * Phase 5 で実装
+   * Node.js向け出力オブジェクトを取得
    */
-  get node() {
-    // TODO: Phase 5 で実装
-    throw new Error("Not implemented yet");
+  async getNode(): Promise<NodeOutput> {
+    const workbook = await writeWorkbook(this.state);
+    return new NodeOutput(workbook);
   }
 }
 
