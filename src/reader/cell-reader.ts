@@ -1,6 +1,6 @@
 import type { Cell } from "exceljs";
 import { argbToHex } from "../styles/converter";
-import type { CellStyle } from "../types/style";
+import type { CellStyle, LineStyle } from "../types/style";
 
 /**
  * セルの値とスタイルを保持
@@ -107,4 +107,51 @@ export class CellReader {
     }
     return undefined;
   }
+
+  /**
+   * セルの罫線情報を取得
+   */
+  get border(): CellBorder | undefined {
+    const cellBorder = this.cell.border;
+    if (!cellBorder) return undefined;
+
+    const result: CellBorder = {};
+
+    if (cellBorder.top?.style) {
+      result.top = {
+        style: cellBorder.top.style as LineStyle,
+        color: cellBorder.top.color?.argb ? argbToHex(cellBorder.top.color.argb) : undefined,
+      };
+    }
+    if (cellBorder.bottom?.style) {
+      result.bottom = {
+        style: cellBorder.bottom.style as LineStyle,
+        color: cellBorder.bottom.color?.argb ? argbToHex(cellBorder.bottom.color.argb) : undefined,
+      };
+    }
+    if (cellBorder.left?.style) {
+      result.left = {
+        style: cellBorder.left.style as LineStyle,
+        color: cellBorder.left.color?.argb ? argbToHex(cellBorder.left.color.argb) : undefined,
+      };
+    }
+    if (cellBorder.right?.style) {
+      result.right = {
+        style: cellBorder.right.style as LineStyle,
+        color: cellBorder.right.color?.argb ? argbToHex(cellBorder.right.color.argb) : undefined,
+      };
+    }
+
+    return Object.keys(result).length > 0 ? result : undefined;
+  }
 }
+
+/**
+ * セルの罫線情報
+ */
+export type CellBorder = {
+  top?: { style: LineStyle; color?: string };
+  bottom?: { style: LineStyle; color?: string };
+  left?: { style: LineStyle; color?: string };
+  right?: { style: LineStyle; color?: string };
+};

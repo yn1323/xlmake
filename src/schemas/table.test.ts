@@ -29,7 +29,7 @@ describe("tableOptionsSchema", () => {
           header: { bold: true, color: "#FFFFFF", fill: "#4472C4" },
           body: { fontSize: 10 },
         },
-        border: { top: true, bottom: true, color: "#000000" },
+        border: { outline: "thin", headerBody: "medium", borderColor: "#000000" },
         conditionalStyle: (_row: Record<string, unknown>, _col: string) => ({}),
       };
       const result = tableOptionsSchema.safeParse(options);

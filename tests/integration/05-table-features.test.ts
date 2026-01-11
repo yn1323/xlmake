@@ -46,28 +46,7 @@ describe("05-table-features.xlsx", () => {
           { category: "家電", name: "テレビ" },
         ],
       })
-      // Border
-      .sheet("Border")
-      .table({
-        columns: [
-          { key: "name", label: "名前" },
-          { key: "value", label: "値" },
-        ],
-        data: [
-          { name: "項目A", value: 100 },
-          { name: "項目B", value: 200 },
-        ],
-        border: {
-          top: true,
-          bottom: true,
-          left: true,
-          right: true,
-          horizontal: true,
-          vertical: true,
-          style: "medium",
-          color: "#000000",
-        },
-      })
+      // Note: Border は 08-borders.test.ts に移動
       // Note: MultiHeader は未実装のため、テストから除外
       .getNode();
 
@@ -94,11 +73,7 @@ describe("05-table-features.xlsx", () => {
     expect(mergeSheet.cell("A2").value).toBe("食品");
     // Note: mergeSameValues でのマージ処理は別途検証が必要
 
-    // Border シート検証（値の確認）
-    const borderSheet = workbook.sheet("Border");
-    expect(borderSheet.cell("A1").value).toBe("名前");
-    expect(borderSheet.cell("A2").value).toBe("項目A");
-
+    // Note: Border は 08-borders.test.ts に移動
     // Note: MultiHeader は未実装のため、テストから除外
   });
 });

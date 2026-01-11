@@ -1,11 +1,13 @@
-import type { Worksheet } from "exceljs";
+import { readFileSync } from "node:fs";
+import type { Workbook, Worksheet } from "exceljs";
+import { createBodyCellBorder, createHeaderCellBorder } from "../styles/converter";
 import { mergeStyles } from "../styles/merger";
 import type { TablePresetConfig } from "../styles/presets";
 import { getPreset } from "../styles/presets";
 import type { Column, LeafColumn } from "../types/column";
 import { isLeafColumn } from "../types/column";
 import type { ImageOptions } from "../types/image";
-import type { CellStyle, TableStyle } from "../types/style";
+import type { BorderStyle, CellStyle, TableStyle } from "../types/style";
 import type { TableOptions } from "../types/table";
 import type { TextInput } from "../types/text";
 import { isStyledCell } from "../types/text";
@@ -19,10 +21,12 @@ import { calculateColumnWidths } from "./width-calculator";
  * シートにブロックを書き込む
  */
 export class SheetWriter {
+  private workbook: Workbook;
   private worksheet: Worksheet;
   private currentRow: number;
 
-  constructor(worksheet: Worksheet) {
+  constructor(workbook: Workbook, worksheet: Worksheet) {
+    this.workbook = workbook;
     this.worksheet = worksheet;
     this.currentRow = 1; // 1行目から開始（1-indexed）
   }
@@ -55,10 +59,13 @@ export class SheetWriter {
    * テーブルを書き込む
    */
   private writeTable<T>(options: TableOptions<T>): void {
-    const { preset, columns, data, autoWidth, style } = options;
+    const { preset, columns, data, autoWidth, style, border } = options;
 
     // プリセット取得
     const presetConfig = preset ? getPreset(preset) : undefined;
+
+    // 罫線の優先度: options.border > presetConfig.border
+    const effectiveBorder = border ?? presetConfig?.border;
 
     // リーフカラムをフラット化
     const leafColumns = flattenColumns(columns);
@@ -70,10 +77,10 @@ export class SheetWriter {
 
     // ヘッダー書き込み（マルチヘッダー対応）
     const headerDepth = calculateHeaderDepth(columns);
-    this.writeHeaders(columns, leafColumns, headerDepth, presetConfig, style);
+    this.writeHeaders(columns, leafColumns, headerDepth, presetConfig, style, effectiveBorder);
 
     // データ行書き込み
-    this.writeDataRows(leafColumns, data, presetConfig, style);
+    this.writeDataRows(leafColumns, data, presetConfig, style, effectiveBorder);
   }
 
   /**
@@ -85,12 +92,14 @@ export class SheetWriter {
     depth: number,
     presetConfig: TablePresetConfig | undefined,
     tableStyle: TableStyle | undefined,
+    borderStyle: BorderStyle | undefined,
   ): void {
     // シンプルなケース（1階層）のみ実装
     if (depth === 1) {
       const row = getOrCreateRow(this.worksheet, this.currentRow);
+      const colCount = leafColumns.length;
 
-      for (let i = 0; i < leafColumns.length; i++) {
+      for (let i = 0; i < colCount; i++) {
         const col = leafColumns[i];
         const cell = row.getCell(i + 1);
 
@@ -98,6 +107,16 @@ export class SheetWriter {
         const finalStyle = mergeStyles(presetConfig?.style?.header, col.style, tableStyle?.header);
 
         writeCell(cell, col.label, finalStyle);
+
+        // 罫線を適用
+        const border = createHeaderCellBorder(
+          borderStyle,
+          { isFirstCol: i === 0, isLastCol: i === colCount - 1 },
+          true, // 1階層なので常に最後のヘッダー行
+        );
+        if (border) {
+          cell.border = border;
+        }
       }
 
       this.currentRow++;
@@ -115,11 +134,15 @@ export class SheetWriter {
     data: (T & { _style?: Partial<Record<keyof T, CellStyle>> })[],
     presetConfig: TablePresetConfig | undefined,
     tableStyle: TableStyle | undefined,
+    borderStyle: BorderStyle | undefined,
   ): void {
+    const dataLength = data.length;
+    const colCount = leafColumns.length;
+
     for (const [rowIndex, rowData] of data.entries()) {
       const row = getOrCreateRow(this.worksheet, this.currentRow);
 
-      for (let colIndex = 0; colIndex < leafColumns.length; colIndex++) {
+      for (let colIndex = 0; colIndex < colCount; colIndex++) {
         const col = leafColumns[colIndex];
         const cell = row.getCell(colIndex + 1);
         const value = rowData[col.key];
@@ -138,6 +161,17 @@ export class SheetWriter {
         const finalStyle = mergeStyles(baseStyle, stripeStyle, columnStyle, rowStyle, cellStyle);
 
         writeCell(cell, value, finalStyle);
+
+        // 罫線を適用
+        const border = createBodyCellBorder(borderStyle, {
+          isFirstCol: colIndex === 0,
+          isLastCol: colIndex === colCount - 1,
+          isFirstRow: rowIndex === 0,
+          isLastRow: rowIndex === dataLength - 1,
+        });
+        if (border) {
+          cell.border = border;
+        }
       }
 
       this.currentRow++;
@@ -189,10 +223,35 @@ export class SheetWriter {
   /**
    * 画像を書き込む
    */
-  private writeImage(_options: ImageOptions): void {
-    // TODO: 画像の実装
-    // ExcelJSの addImage() を使用
-    this.currentRow++; // 仮実装
+  private writeImage(options: ImageOptions): void {
+    const { source, width = 100, height = 100, row, col = 0 } = options;
+
+    // 画像ソースの処理
+    let imageBuffer: Buffer;
+    if (Buffer.isBuffer(source)) {
+      imageBuffer = source;
+    } else {
+      // ファイルパスとして読み込み
+      imageBuffer = readFileSync(source);
+    }
+
+    // ExcelJSで画像追加（ExcelJSの型定義との互換性のためキャスト）
+    const imageId = this.workbook.addImage({
+      buffer: imageBuffer,
+      extension: "png",
+    } as unknown as Parameters<typeof this.workbook.addImage>[0]);
+
+    // 配置位置（row指定がなければ現在行を使用）
+    const targetRow = row ?? this.currentRow;
+
+    this.worksheet.addImage(imageId, {
+      tl: { col, row: targetRow - 1 }, // 0-indexedに変換
+      ext: { width, height },
+    });
+
+    // 行位置の更新（画像の高さに応じて概算、約20pxで1行）
+    const rowsToSkip = Math.ceil(height / 20);
+    this.currentRow += rowsToSkip;
   }
 
   /**

@@ -104,7 +104,7 @@ describe("cellStyleSchema", () => {
 describe("borderStyleSchema", () => {
   describe("正常系", () => {
     it("should validate valid border style", () => {
-      const border = { top: true, bottom: true, color: "#000000" };
+      const border = { outline: "thin", headerBody: "medium" };
       const result = borderStyleSchema.safeParse(border);
       expect(result.success).toBe(true);
     });
@@ -117,35 +117,47 @@ describe("borderStyleSchema", () => {
 
     it("should validate all properties", () => {
       const border = {
-        top: true,
-        bottom: true,
-        left: true,
-        right: true,
-        horizontal: true,
-        vertical: true,
-        color: "#000000",
-        style: "medium" as const,
+        outline: "medium" as const,
+        headerBody: "double" as const,
+        headerInner: "thin" as const,
+        bodyInner: "thin" as const,
+        borderColor: "#000000",
       };
       const result = borderStyleSchema.safeParse(border);
       expect(result.success).toBe(true);
+    });
+
+    it("should validate all line styles", () => {
+      const lineStyles = ["thin", "medium", "thick", "dotted", "dashed", "double"] as const;
+      for (const style of lineStyles) {
+        const border = { outline: style };
+        const result = borderStyleSchema.safeParse(border);
+        expect(result.success).toBe(true);
+      }
     });
   });
 
   describe("異常系", () => {
     it("should reject invalid color format", () => {
-      const border = { color: "black" };
+      const border = { borderColor: "black" };
       const result = borderStyleSchema.safeParse(border);
       expect(result.success).toBe(false);
     });
 
-    it("should reject invalid style value", () => {
-      const border = { style: "solid" };
+    it("should reject invalid line style value", () => {
+      const border = { outline: "solid" };
       const result = borderStyleSchema.safeParse(border);
       expect(result.success).toBe(false);
     });
 
     it("should reject unknown properties", () => {
       const border = { unknownProp: true };
+      const result = borderStyleSchema.safeParse(border);
+      expect(result.success).toBe(false);
+    });
+
+    it("should reject old format properties", () => {
+      const border = { top: true, bottom: true };
       const result = borderStyleSchema.safeParse(border);
       expect(result.success).toBe(false);
     });

@@ -9,13 +9,10 @@ describe("TABLE_PRESETS", () => {
     expect(TABLE_PRESETS.basic.style?.header?.color).toBe("#FFFFFF");
     expect(TABLE_PRESETS.basic.style?.header?.align).toBe("center");
     expect(TABLE_PRESETS.basic.style?.body?.align).toBe("left");
-    expect(TABLE_PRESETS.basic.border?.top).toBe(true);
-    expect(TABLE_PRESETS.basic.border?.bottom).toBe(true);
-    expect(TABLE_PRESETS.basic.border?.left).toBe(true);
-    expect(TABLE_PRESETS.basic.border?.right).toBe(true);
-    expect(TABLE_PRESETS.basic.border?.horizontal).toBe(true);
-    expect(TABLE_PRESETS.basic.border?.vertical).toBe(true);
-    expect(TABLE_PRESETS.basic.border?.style).toBe("thin");
+    expect(TABLE_PRESETS.basic.border?.outline).toBe("thin");
+    expect(TABLE_PRESETS.basic.border?.headerBody).toBe("thin");
+    expect(TABLE_PRESETS.basic.border?.headerInner).toBe("thin");
+    expect(TABLE_PRESETS.basic.border?.bodyInner).toBe("thin");
     expect(TABLE_PRESETS.basic.stripedRowColor).toBeUndefined();
   });
 
@@ -24,11 +21,8 @@ describe("TABLE_PRESETS", () => {
     expect(TABLE_PRESETS.minimal.style?.header?.bold).toBe(true);
     expect(TABLE_PRESETS.minimal.style?.header?.align).toBe("left");
     expect(TABLE_PRESETS.minimal.style?.body?.align).toBe("left");
-    expect(TABLE_PRESETS.minimal.border?.bottom).toBe(true);
-    expect(TABLE_PRESETS.minimal.border?.style).toBe("thin");
-    expect(TABLE_PRESETS.minimal.border?.top).toBeUndefined();
-    expect(TABLE_PRESETS.minimal.border?.left).toBeUndefined();
-    expect(TABLE_PRESETS.minimal.border?.right).toBeUndefined();
+    // 罫線なし
+    expect(TABLE_PRESETS.minimal.border).toBeUndefined();
     expect(TABLE_PRESETS.minimal.stripedRowColor).toBeUndefined();
   });
 
@@ -39,13 +33,10 @@ describe("TABLE_PRESETS", () => {
     expect(TABLE_PRESETS.striped.style?.header?.color).toBe("#FFFFFF");
     expect(TABLE_PRESETS.striped.style?.header?.align).toBe("center");
     expect(TABLE_PRESETS.striped.style?.body?.align).toBe("left");
-    expect(TABLE_PRESETS.striped.border?.top).toBe(true);
-    expect(TABLE_PRESETS.striped.border?.bottom).toBe(true);
-    expect(TABLE_PRESETS.striped.border?.left).toBe(true);
-    expect(TABLE_PRESETS.striped.border?.right).toBe(true);
-    expect(TABLE_PRESETS.striped.border?.horizontal).toBe(true);
-    expect(TABLE_PRESETS.striped.border?.vertical).toBe(true);
-    expect(TABLE_PRESETS.striped.border?.style).toBe("thin");
+    expect(TABLE_PRESETS.striped.border?.outline).toBe("thin");
+    expect(TABLE_PRESETS.striped.border?.headerBody).toBe("thin");
+    expect(TABLE_PRESETS.striped.border?.headerInner).toBe("thin");
+    expect(TABLE_PRESETS.striped.border?.bodyInner).toBe("thin");
     expect(TABLE_PRESETS.striped.stripedRowColor).toBe("#F2F2F2");
   });
 });

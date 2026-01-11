@@ -1,5 +1,5 @@
-import type { Alignment, Fill, Font, Style } from "exceljs";
-import type { CellStyle } from "../types/style";
+import type { Alignment, Border, Borders, Fill, Font, Style } from "exceljs";
+import type { BorderStyle, CellStyle, LineStyle } from "../types/style";
 
 /**
  * xlkitのCellStyleをExcelJSのStyleに変換
@@ -131,4 +131,98 @@ function hexToArgb(hex: string): string {
 export function argbToHex(argb: string): string {
   // "FFRRGGBB" → "#RRGGBB"
   return `#${argb.slice(2).toUpperCase()}`;
+}
+
+/**
+ * ExcelJS Border オブジェクトを生成
+ */
+function createBorder(style: LineStyle, color?: string): Partial<Border> {
+  const border: Partial<Border> = { style };
+  if (color) {
+    border.color = { argb: hexToArgb(color) };
+  }
+  return border;
+}
+
+/**
+ * ヘッダーセル用のボーダーを生成
+ */
+export function createHeaderCellBorder(
+  border: BorderStyle | undefined,
+  position: { isFirstCol: boolean; isLastCol: boolean },
+  isLastHeaderRow: boolean,
+): Partial<Borders> | undefined {
+  if (!border) return undefined;
+
+  const { outline, headerBody, headerInner, borderColor } = border;
+  const borders: Partial<Borders> = {};
+
+  // 上罫線（常にoutline）
+  if (outline) {
+    borders.top = createBorder(outline, borderColor);
+  }
+
+  // 下罫線（最後のヘッダー行 → headerBody、それ以外 → headerInner）
+  if (isLastHeaderRow && headerBody) {
+    borders.bottom = createBorder(headerBody, borderColor);
+  } else if (!isLastHeaderRow && headerInner) {
+    borders.bottom = createBorder(headerInner, borderColor);
+  }
+
+  // 左罫線
+  if (position.isFirstCol && outline) {
+    borders.left = createBorder(outline, borderColor);
+  } else if (!position.isFirstCol && headerInner) {
+    borders.left = createBorder(headerInner, borderColor);
+  }
+
+  // 右罫線
+  if (position.isLastCol && outline) {
+    borders.right = createBorder(outline, borderColor);
+  } else if (!position.isLastCol && headerInner) {
+    borders.right = createBorder(headerInner, borderColor);
+  }
+
+  return Object.keys(borders).length > 0 ? borders : undefined;
+}
+
+/**
+ * ボディセル用のボーダーを生成
+ */
+export function createBodyCellBorder(
+  border: BorderStyle | undefined,
+  position: { isFirstCol: boolean; isLastCol: boolean; isFirstRow: boolean; isLastRow: boolean },
+): Partial<Borders> | undefined {
+  if (!border) return undefined;
+
+  const { outline, bodyInner, borderColor } = border;
+  const borders: Partial<Borders> = {};
+
+  // 上罫線（最初の行はheaderBodyで対応済みなのでbodyInnerのみ）
+  if (!position.isFirstRow && bodyInner) {
+    borders.top = createBorder(bodyInner, borderColor);
+  }
+
+  // 下罫線
+  if (position.isLastRow && outline) {
+    borders.bottom = createBorder(outline, borderColor);
+  } else if (!position.isLastRow && bodyInner) {
+    borders.bottom = createBorder(bodyInner, borderColor);
+  }
+
+  // 左罫線
+  if (position.isFirstCol && outline) {
+    borders.left = createBorder(outline, borderColor);
+  } else if (!position.isFirstCol && bodyInner) {
+    borders.left = createBorder(bodyInner, borderColor);
+  }
+
+  // 右罫線
+  if (position.isLastCol && outline) {
+    borders.right = createBorder(outline, borderColor);
+  } else if (!position.isLastCol && bodyInner) {
+    borders.right = createBorder(bodyInner, borderColor);
+  }
+
+  return Object.keys(borders).length > 0 ? borders : undefined;
 }

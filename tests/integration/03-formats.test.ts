@@ -54,6 +54,19 @@ describe("03-formats.xlsx", () => {
         ],
         data: [{ amount: 1000000, formatted: 1000000 }],
       })
+      // StringFormat シート（0始まり文字列の検証）
+      .sheet("StringFormat")
+      .table({
+        columns: [
+          { key: "raw", label: "元値" },
+          { key: "formatted", label: "文字列書式", style: { format: "string" } },
+        ],
+        data: [
+          { raw: "01234", formatted: "01234" },
+          { raw: "00100", formatted: "00100" },
+          { raw: "0", formatted: "0" },
+        ],
+      })
       .getNode();
 
     // ファイル保存（目視確認用）
@@ -76,5 +89,12 @@ describe("03-formats.xlsx", () => {
     // CurrencyFormat シート検証
     const currencySheet = workbook.sheet("CurrencyFormat");
     expect(currencySheet.cell("A2").value).toBe(1000000);
+
+    // StringFormat シート検証（0始まり文字列が保持されているか）
+    const stringSheet = workbook.sheet("StringFormat");
+    expect(stringSheet.cell("B2").value).toBe("01234");
+    expect(stringSheet.cell("B3").value).toBe("00100");
+    expect(stringSheet.cell("B4").value).toBe("0");
+    expect(stringSheet.cell("B2").style?.format).toBe("string");
   });
 });

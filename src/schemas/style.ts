@@ -29,17 +29,17 @@ export const cellStyleSchema = z
   })
   .strict();
 
+// LineStyle
+const lineStyleSchema = z.enum(["thin", "medium", "thick", "dotted", "dashed", "double"]);
+
 // BorderStyle
 export const borderStyleSchema = z
   .object({
-    top: z.boolean().optional(),
-    bottom: z.boolean().optional(),
-    left: z.boolean().optional(),
-    right: z.boolean().optional(),
-    horizontal: z.boolean().optional(),
-    vertical: z.boolean().optional(),
-    color: hexColorSchema.optional(),
-    style: z.enum(["thin", "medium", "thick", "dotted", "dashed"]).optional(),
+    outline: lineStyleSchema.optional(),
+    headerBody: lineStyleSchema.optional(),
+    headerInner: lineStyleSchema.optional(),
+    bodyInner: lineStyleSchema.optional(),
+    borderColor: hexColorSchema.optional(),
   })
   .strict();
 

@@ -25,16 +25,16 @@ export type CellStyle = {
   thousandsSeparator?: boolean;
 };
 
-// 罫線スタイル
+// 罫線のスタイル
+export type LineStyle = "thin" | "medium" | "thick" | "dotted" | "dashed" | "double";
+
+// 罫線スタイル（テーブル構造ベース）
 export type BorderStyle = {
-  top?: boolean;
-  bottom?: boolean;
-  left?: boolean;
-  right?: boolean;
-  horizontal?: boolean; // 内部の水平線
-  vertical?: boolean; // 内部の垂直線
-  color?: string; // 罫線色 "#RRGGBB"
-  style?: "thin" | "medium" | "thick" | "dotted" | "dashed";
+  outline?: LineStyle; // 外枠（テーブル全体の外周）
+  headerBody?: LineStyle; // ヘッダーとボディの境目
+  headerInner?: LineStyle; // ヘッダー内部の罫線
+  bodyInner?: LineStyle; // ボディ内部の罫線
+  borderColor?: string; // 罫線色 "#RRGGBB"
 };
 
 // テーブル全体のスタイル

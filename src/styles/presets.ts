@@ -26,13 +26,10 @@ export const TABLE_PRESETS: Record<string, TablePresetConfig> = {
       },
     },
     border: {
-      top: true,
-      bottom: true,
-      left: true,
-      right: true,
-      horizontal: true,
-      vertical: true,
-      style: "thin",
+      outline: "thin",
+      headerBody: "thin",
+      headerInner: "thin",
+      bodyInner: "thin",
     },
   },
 
@@ -46,10 +43,7 @@ export const TABLE_PRESETS: Record<string, TablePresetConfig> = {
         align: "left",
       },
     },
-    border: {
-      bottom: true, // ヘッダーの下線のみ
-      style: "thin",
-    },
+    // 罫線なし
   },
 
   striped: {
@@ -65,13 +59,10 @@ export const TABLE_PRESETS: Record<string, TablePresetConfig> = {
       },
     },
     border: {
-      top: true,
-      bottom: true,
-      left: true,
-      right: true,
-      horizontal: true,
-      vertical: true,
-      style: "thin",
+      outline: "thin",
+      headerBody: "thin",
+      headerInner: "thin",
+      bodyInner: "thin",
     },
     stripedRowColor: "#F2F2F2", // 奇数行の背景色（薄いグレー）
   },
