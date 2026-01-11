@@ -9,6 +9,7 @@ import type { TextInput } from "../types/text";
 import { isStyledCell } from "../types/text";
 import type { Block, SheetState } from "../types/workbook";
 import { isImageBlock, isSpaceBlock, isTableBlock, isTextBlock } from "../types/workbook";
+import { flattenColumns } from "../utils/column";
 import { getOrCreateRow, writeCell } from "./cell-writer";
 import { calculateColumnWidths } from "./width-calculator";
 
@@ -214,21 +215,4 @@ function calculateHeaderDepth<T>(columns: Column<T>[]): number {
   }
 
   return maxDepth;
-}
-
-/**
- * カラムツリーをフラット化（リーフカラムのみ抽出）
- */
-function flattenColumns<T>(columns: Column<T>[]): LeafColumn<T>[] {
-  const result: LeafColumn<T>[] = [];
-
-  for (const col of columns) {
-    if (isLeafColumn(col)) {
-      result.push(col);
-    } else {
-      result.push(...flattenColumns(col.children));
-    }
-  }
-
-  return result;
 }

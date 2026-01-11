@@ -5,6 +5,8 @@ import type { ImageOptions } from "../types/image";
 import type { TableOptions } from "../types/table";
 import type { TextInput } from "../types/text";
 import type { Block, SheetState } from "../types/workbook";
+import { flattenColumns } from "../utils/column";
+import { validateDataSize } from "../validators/excel-constraints";
 import type { WorkbookBuilder } from "./workbook-builder";
 
 export class SheetBuilder {
@@ -25,6 +27,10 @@ export class SheetBuilder {
     if (!result.success) {
       throw new Error(`Invalid table options: ${result.error.message}`);
     }
+
+    // データサイズのExcel制約チェック
+    const leafColumns = flattenColumns(options.columns);
+    validateDataSize(options.data.length, leafColumns.length);
 
     // ブロックを追加
     const block: Block = { type: "table", options };

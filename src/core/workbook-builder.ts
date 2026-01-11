@@ -2,6 +2,7 @@ import { writeWorkbook } from "../engine/writer";
 import { BrowserOutput } from "../output/browser";
 import { NodeOutput } from "../output/node";
 import type { WorkbookState } from "../types/workbook";
+import { validateSheetName } from "../validators/excel-constraints";
 import { SheetBuilder } from "./sheet-builder";
 
 export class WorkbookBuilder {
@@ -20,6 +21,9 @@ export class WorkbookBuilder {
   sheet(name?: string): SheetBuilder {
     // シート名が省略された場合、自動生成
     const sheetName = name ?? `Sheet${this.state.sheets.length + 1}`;
+
+    // シート名のExcel制約チェック
+    validateSheetName(sheetName);
 
     // 既存のシート名と重複チェック
     if (this.state.sheets.some((s) => s.name === sheetName)) {
