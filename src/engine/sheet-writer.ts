@@ -5,7 +5,6 @@ import { mergeStyles } from "../styles/merger";
 import type { TablePresetConfig } from "../styles/presets";
 import { getPreset } from "../styles/presets";
 import type { Column, LeafColumn } from "../types/column";
-import { isLeafColumn } from "../types/column";
 import type { ImageOptions } from "../types/image";
 import type { BorderStyle, CellStyle, TableStyle } from "../types/style";
 import type { TableOptions } from "../types/table";
@@ -13,8 +12,8 @@ import type { TextInput } from "../types/text";
 import { isStyledCell } from "../types/text";
 import type { Block, SheetState } from "../types/workbook";
 import { isImageBlock, isSpaceBlock, isTableBlock, isTextBlock } from "../types/workbook";
-import { flattenColumns } from "../utils/column";
-import { getOrCreateRow, writeCell } from "./cell-writer";
+import { buildHeaderRows, flattenColumns, getHeaderDepth } from "../utils/column";
+import { getOrCreateRow, mergeCells, writeCell } from "./cell-writer";
 import { calculateColumnWidths } from "./width-calculator";
 
 /**
@@ -59,7 +58,7 @@ export class SheetWriter {
    * テーブルを書き込む
    */
   private writeTable<T>(options: TableOptions<T>): void {
-    const { preset, columns, data, autoWidth, style, border } = options;
+    const { preset, columns, data, autoWidth, style, border, mergeSameValues } = options;
 
     // プリセット取得
     const presetConfig = preset ? getPreset(preset) : undefined;
@@ -76,53 +75,122 @@ export class SheetWriter {
     }
 
     // ヘッダー書き込み（マルチヘッダー対応）
-    const headerDepth = calculateHeaderDepth(columns);
+    const headerDepth = getHeaderDepth(columns);
     this.writeHeaders(columns, leafColumns, headerDepth, presetConfig, style, effectiveBorder);
 
     // データ行書き込み
-    this.writeDataRows(leafColumns, data, presetConfig, style, effectiveBorder);
+    this.writeDataRows(leafColumns, data, presetConfig, style, effectiveBorder, mergeSameValues);
   }
 
   /**
    * ヘッダーを書き込む（マルチヘッダー対応）
    */
   private writeHeaders<T>(
-    _columns: Column<T>[],
+    columns: Column<T>[],
     leafColumns: LeafColumn<T>[],
     depth: number,
     presetConfig: TablePresetConfig | undefined,
     tableStyle: TableStyle | undefined,
     borderStyle: BorderStyle | undefined,
   ): void {
-    // シンプルなケース（1階層）のみ実装
-    if (depth === 1) {
-      const row = getOrCreateRow(this.worksheet, this.currentRow);
-      const colCount = leafColumns.length;
+    const headerRows = buildHeaderRows(columns, depth);
+    const colCount = leafColumns.length;
+    const startRow = this.currentRow;
 
-      for (let i = 0; i < colCount; i++) {
-        const col = leafColumns[i];
-        const cell = row.getCell(i + 1);
+    // 各ヘッダー行を書き込む
+    for (let rowIndex = 0; rowIndex < headerRows.length; rowIndex++) {
+      const headerRow = headerRows[rowIndex];
+      const row = getOrCreateRow(this.worksheet, this.currentRow);
+
+      let colPosition = 1; // 現在の列位置（1-indexed）
+
+      for (const headerCell of headerRow) {
+        const cell = row.getCell(colPosition);
 
         // スタイルのカスケーディング
-        const finalStyle = mergeStyles(presetConfig?.style?.header, col.style, tableStyle?.header);
+        const finalStyle = mergeStyles(presetConfig?.style?.header, headerCell.style, tableStyle?.header);
 
-        writeCell(cell, col.label, finalStyle);
+        writeCell(cell, headerCell.label, finalStyle);
 
-        // 罫線を適用
+        // マージ処理
+        if (headerCell.colSpan > 1 || headerCell.rowSpan > 1) {
+          const endCol = colPosition + headerCell.colSpan - 1;
+          const endRow = this.currentRow + headerCell.rowSpan - 1;
+          mergeCells(this.worksheet, this.currentRow, colPosition, endRow, endCol);
+        }
+
+        // 罫線を適用（マージされたセルの左上に設定）
+        const isLastHeaderRow = rowIndex === headerRows.length - 1;
         const border = createHeaderCellBorder(
           borderStyle,
-          { isFirstCol: i === 0, isLastCol: i === colCount - 1 },
-          true, // 1階層なので常に最後のヘッダー行
+          {
+            isFirstCol: colPosition === 1,
+            isLastCol: colPosition + headerCell.colSpan - 1 === colCount,
+            isFirstRow: rowIndex === 0,
+          },
+          isLastHeaderRow && headerCell.rowSpan === 1,
         );
         if (border) {
           cell.border = border;
         }
+
+        // 次の列位置に移動
+        colPosition += headerCell.colSpan;
       }
 
       this.currentRow++;
-    } else {
-      // マルチヘッダーは後で実装
-      throw new Error("マルチヘッダーは未実装です");
+    }
+
+    // マージされたセルの罫線を補完（rowSpan > 1 のセルの下端）
+    this.applyMergedCellBorders(headerRows, startRow, colCount, borderStyle);
+  }
+
+  /**
+   * マージされたセルの罫線を補完
+   */
+  private applyMergedCellBorders(
+    headerRows: ReturnType<typeof buildHeaderRows>,
+    startRow: number,
+    colCount: number,
+    borderStyle: BorderStyle | undefined,
+  ): void {
+    const totalRows = headerRows.length;
+
+    for (let rowIndex = 0; rowIndex < totalRows; rowIndex++) {
+      const headerRow = headerRows[rowIndex];
+      let colPosition = 1;
+
+      for (const headerCell of headerRow) {
+        // rowSpan > 1 のセルは、マージ範囲の最後の行に罫線を適用
+        if (headerCell.rowSpan > 1) {
+          const lastRowOfMerge = startRow + rowIndex + headerCell.rowSpan - 1;
+          const isLastHeaderRow = lastRowOfMerge === startRow + totalRows - 1;
+
+          // マージ範囲内の各列に罫線を設定（見える辺のみ）
+          for (let col = colPosition; col < colPosition + headerCell.colSpan; col++) {
+            const targetCell = this.worksheet.getCell(lastRowOfMerge, col);
+            const border = createHeaderCellBorder(
+              borderStyle,
+              {
+                isFirstCol: col === 1,
+                isLastCol: col === colCount,
+                isFirstRow: false, // マージ補完は常に2行目以降
+              },
+              isLastHeaderRow,
+            );
+            if (border) {
+              // top は見えない辺なので削除（マージ範囲の内部）
+              delete border.top;
+              if (Object.keys(border).length > 0) {
+                // 既存の罫線設定を保持しつつ、必要な辺のみ追加
+                targetCell.border = { ...targetCell.border, ...border };
+              }
+            }
+          }
+        }
+
+        colPosition += headerCell.colSpan;
+      }
     }
   }
 
@@ -135,9 +203,21 @@ export class SheetWriter {
     presetConfig: TablePresetConfig | undefined,
     tableStyle: TableStyle | undefined,
     borderStyle: BorderStyle | undefined,
+    tableMergeSameValues?: boolean,
   ): void {
     const dataLength = data.length;
     const colCount = leafColumns.length;
+    const startRow = this.currentRow;
+
+    // マージ範囲を記録: 各列ごとに { startRow, endRow, value } のリスト
+    const mergeRanges: { colIndex: number; startRow: number; endRow: number }[][] = leafColumns.map(() => []);
+
+    // 各列でマージが有効かどうかを判定
+    const shouldMergeColumn = leafColumns.map((col) => tableMergeSameValues === true || col.mergeSameValues === true);
+
+    // マージ範囲をトラッキングするための変数
+    const currentMergeStart: number[] = leafColumns.map(() => 0);
+    const currentMergeValue: unknown[] = leafColumns.map(() => undefined);
 
     for (const [rowIndex, rowData] of data.entries()) {
       const row = getOrCreateRow(this.worksheet, this.currentRow);
@@ -172,9 +252,100 @@ export class SheetWriter {
         if (border) {
           cell.border = border;
         }
+
+        // マージ範囲のトラッキング
+        if (shouldMergeColumn[colIndex]) {
+          if (rowIndex === 0) {
+            // 最初の行：開始位置を記録
+            currentMergeStart[colIndex] = rowIndex;
+            currentMergeValue[colIndex] = value;
+          } else if (value !== currentMergeValue[colIndex]) {
+            // 値が変わった：前のマージ範囲を確定
+            const start = currentMergeStart[colIndex];
+            if (rowIndex - 1 > start) {
+              mergeRanges[colIndex].push({
+                colIndex,
+                startRow: startRow + start,
+                endRow: startRow + rowIndex - 1,
+              });
+            }
+            // 新しいマージ範囲を開始
+            currentMergeStart[colIndex] = rowIndex;
+            currentMergeValue[colIndex] = value;
+          }
+          // 最後の行：現在のマージ範囲を確定
+          if (rowIndex === dataLength - 1) {
+            const start = currentMergeStart[colIndex];
+            if (rowIndex > start) {
+              mergeRanges[colIndex].push({
+                colIndex,
+                startRow: startRow + start,
+                endRow: startRow + rowIndex,
+              });
+            }
+          }
+        }
       }
 
       this.currentRow++;
+    }
+
+    // マージを適用
+    for (let colIndex = 0; colIndex < colCount; colIndex++) {
+      for (const range of mergeRanges[colIndex]) {
+        mergeCells(this.worksheet, range.startRow, colIndex + 1, range.endRow, colIndex + 1);
+      }
+    }
+
+    // マージセルの罫線を補完
+    this.applyBodyMergedCellBorders(mergeRanges, colCount, dataLength, startRow, borderStyle);
+  }
+
+  /**
+   * ボディのマージセルの罫線を補完
+   * マージ範囲内の各行に「見える辺のみ」罫線を設定
+   */
+  private applyBodyMergedCellBorders(
+    mergeRanges: { colIndex: number; startRow: number; endRow: number }[][],
+    colCount: number,
+    dataLength: number,
+    dataStartRow: number,
+    borderStyle: BorderStyle | undefined,
+  ): void {
+    if (!borderStyle) return;
+
+    for (let colIndex = 0; colIndex < colCount; colIndex++) {
+      for (const range of mergeRanges[colIndex]) {
+        // マージ範囲の各行に罫線を設定（見える辺のみ）
+        for (let row = range.startRow; row <= range.endRow; row++) {
+          const cell = this.worksheet.getCell(row, colIndex + 1);
+          const isLastRow = row === dataStartRow + dataLength - 1;
+          const isFirstRowOfMerge = row === range.startRow;
+          const isLastRowOfMerge = row === range.endRow;
+
+          const border = createBodyCellBorder(borderStyle, {
+            isFirstCol: colIndex === 0,
+            isLastCol: colIndex === colCount - 1,
+            isFirstRow: row === dataStartRow,
+            isLastRow: isLastRow,
+          });
+
+          if (border) {
+            // マージ範囲内で見えない辺を削除
+            if (!isFirstRowOfMerge) {
+              delete border.top; // マージ範囲の最初の行以外は top が見えない
+            }
+            if (!isLastRowOfMerge) {
+              delete border.bottom; // マージ範囲の最後の行以外は bottom が見えない
+            }
+
+            if (Object.keys(border).length > 0) {
+              // 既存の罫線設定を保持しつつ、必要な辺のみ追加
+              cell.border = { ...cell.border, ...border };
+            }
+          }
+        }
+      }
     }
   }
 
@@ -260,20 +431,4 @@ export class SheetWriter {
   private writeSpace(lines: number): void {
     this.currentRow += lines;
   }
-}
-
-/**
- * カラムツリーの深さを計算
- */
-function calculateHeaderDepth<T>(columns: Column<T>[]): number {
-  let maxDepth = 1;
-
-  for (const col of columns) {
-    if (!isLeafColumn(col)) {
-      const childDepth = calculateHeaderDepth(col.children);
-      maxDepth = Math.max(maxDepth, childDepth + 1);
-    }
-  }
-
-  return maxDepth;
 }

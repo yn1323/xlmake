@@ -149,7 +149,7 @@ function createBorder(style: LineStyle, color?: string): Partial<Border> {
  */
 export function createHeaderCellBorder(
   border: BorderStyle | undefined,
-  position: { isFirstCol: boolean; isLastCol: boolean },
+  position: { isFirstCol: boolean; isLastCol: boolean; isFirstRow: boolean },
   isLastHeaderRow: boolean,
 ): Partial<Borders> | undefined {
   if (!border) return undefined;
@@ -157,9 +157,11 @@ export function createHeaderCellBorder(
   const { outline, headerBody, headerInner, borderColor } = border;
   const borders: Partial<Borders> = {};
 
-  // 上罫線（常にoutline）
-  if (outline) {
+  // 上罫線（最初の行 → outline、それ以外 → headerInner）
+  if (position.isFirstRow && outline) {
     borders.top = createBorder(outline, borderColor);
+  } else if (!position.isFirstRow && headerInner) {
+    borders.top = createBorder(headerInner, borderColor);
   }
 
   // 下罫線（最後のヘッダー行 → headerBody、それ以外 → headerInner）

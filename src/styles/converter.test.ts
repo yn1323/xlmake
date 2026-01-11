@@ -167,13 +167,13 @@ describe("argbToHex", () => {
 
 describe("createHeaderCellBorder", () => {
   it("should return undefined for undefined border", () => {
-    const result = createHeaderCellBorder(undefined, { isFirstCol: true, isLastCol: false }, true);
+    const result = createHeaderCellBorder(undefined, { isFirstCol: true, isLastCol: false, isFirstRow: true }, true);
     expect(result).toBeUndefined();
   });
 
   it("should create outline borders for first column", () => {
     const border = { outline: "medium" as const };
-    const result = createHeaderCellBorder(border, { isFirstCol: true, isLastCol: false }, true);
+    const result = createHeaderCellBorder(border, { isFirstCol: true, isLastCol: false, isFirstRow: true }, true);
 
     expect(result?.top?.style).toBe("medium");
     expect(result?.left?.style).toBe("medium");
@@ -182,7 +182,7 @@ describe("createHeaderCellBorder", () => {
 
   it("should create outline borders for last column", () => {
     const border = { outline: "medium" as const };
-    const result = createHeaderCellBorder(border, { isFirstCol: false, isLastCol: true }, true);
+    const result = createHeaderCellBorder(border, { isFirstCol: false, isLastCol: true, isFirstRow: true }, true);
 
     expect(result?.top?.style).toBe("medium");
     expect(result?.right?.style).toBe("medium");
@@ -191,14 +191,14 @@ describe("createHeaderCellBorder", () => {
 
   it("should create headerBody border for last header row", () => {
     const border = { headerBody: "double" as const };
-    const result = createHeaderCellBorder(border, { isFirstCol: false, isLastCol: false }, true);
+    const result = createHeaderCellBorder(border, { isFirstCol: false, isLastCol: false, isFirstRow: true }, true);
 
     expect(result?.bottom?.style).toBe("double");
   });
 
   it("should create headerInner border for non-last header row", () => {
     const border = { headerInner: "thin" as const };
-    const result = createHeaderCellBorder(border, { isFirstCol: false, isLastCol: false }, false);
+    const result = createHeaderCellBorder(border, { isFirstCol: false, isLastCol: false, isFirstRow: false }, false);
 
     expect(result?.bottom?.style).toBe("thin");
     expect(result?.left?.style).toBe("thin");
@@ -207,7 +207,7 @@ describe("createHeaderCellBorder", () => {
 
   it("should apply borderColor to all borders", () => {
     const border = { outline: "medium" as const, borderColor: "#FF0000" };
-    const result = createHeaderCellBorder(border, { isFirstCol: true, isLastCol: true }, true);
+    const result = createHeaderCellBorder(border, { isFirstCol: true, isLastCol: true, isFirstRow: true }, true);
 
     expect(result?.top?.color?.argb).toBe("FFFF0000");
     expect(result?.left?.color?.argb).toBe("FFFF0000");
@@ -216,9 +216,17 @@ describe("createHeaderCellBorder", () => {
 
   it("should return undefined for empty border config", () => {
     const border = {};
-    const result = createHeaderCellBorder(border, { isFirstCol: true, isLastCol: true }, true);
+    const result = createHeaderCellBorder(border, { isFirstCol: true, isLastCol: true, isFirstRow: true }, true);
 
     expect(result).toBeUndefined();
+  });
+
+  it("should create headerInner top border for non-first row", () => {
+    const border = { outline: "medium" as const, headerInner: "thin" as const };
+    const result = createHeaderCellBorder(border, { isFirstCol: false, isLastCol: false, isFirstRow: false }, false);
+
+    expect(result?.top?.style).toBe("thin"); // headerInner for non-first row
+    expect(result?.bottom?.style).toBe("thin");
   });
 });
 

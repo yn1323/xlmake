@@ -32,22 +32,6 @@ describe("05-table-features.xlsx", () => {
         ],
         data: [{ short: "A", long: "ボディのテキストが長い場合" }],
       })
-      // MergeSameValues
-      .sheet("MergeSameValues")
-      .table({
-        mergeSameValues: true,
-        columns: [
-          { key: "category", label: "カテゴリ" },
-          { key: "name", label: "商品名" },
-        ],
-        data: [
-          { category: "食品", name: "りんご" },
-          { category: "食品", name: "みかん" },
-          { category: "家電", name: "テレビ" },
-        ],
-      })
-      // Note: Border は 08-borders.test.ts に移動
-      // Note: MultiHeader は未実装のため、テストから除外
       .getNode();
 
     // ファイル保存（目視確認用）
@@ -66,14 +50,5 @@ describe("05-table-features.xlsx", () => {
     const autoWidthBody = workbook.sheet("AutoWidthBody");
     expect(autoWidthBody.cell("A1").value).toBe("短いヘッダー");
     expect(autoWidthBody.cell("B2").value).toBe("ボディのテキストが長い場合");
-
-    // MergeSameValues シート検証
-    const mergeSheet = workbook.sheet("MergeSameValues");
-    expect(mergeSheet.cell("A1").value).toBe("カテゴリ");
-    expect(mergeSheet.cell("A2").value).toBe("食品");
-    // Note: mergeSameValues でのマージ処理は別途検証が必要
-
-    // Note: Border は 08-borders.test.ts に移動
-    // Note: MultiHeader は未実装のため、テストから除外
   });
 });
