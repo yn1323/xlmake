@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import type { Workbook, Worksheet } from "exceljs";
 import { createBodyCellBorder, createHeaderCellBorder } from "../styles/converter";
 import { mergeStyles } from "../styles/merger";
@@ -402,8 +401,17 @@ export class SheetWriter {
     if (Buffer.isBuffer(source)) {
       imageBuffer = source;
     } else {
-      // ファイルパスとして読み込み
-      imageBuffer = readFileSync(source);
+      // ファイルパスとして読み込み（Node.js環境のみ）
+      // ブラウザ環境では動作しないため、エラーをスローする
+      if (typeof window !== "undefined") {
+        throw new Error(
+          "File path image source is not supported in browser environment. Please provide a Buffer instead.",
+        );
+      }
+      // Node.js環境での動的require
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const fs = require("node:fs") as typeof import("node:fs");
+      imageBuffer = fs.readFileSync(source);
     }
 
     // ExcelJSで画像追加（ExcelJSの型定義との互換性のためキャスト）
