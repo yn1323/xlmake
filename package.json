@@ -1,6 +1,6 @@
 {
   "name": "xlkit",
-  "version": "0.0.0",
+  "version": "1.2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -13,13 +13,8 @@
     }
   },
   "files": [
-    "dist",
-    "demo",
-    "bin"
+    "dist"
   ],
-  "bin": {
-    "xlkit": "./bin/cli.js"
-  },
   "scripts": {
     "build": "tsup",
     "demo": "vite demo",

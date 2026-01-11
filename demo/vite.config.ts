@@ -3,5 +3,16 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
-  root: __dirname,
+  base: process.env.NODE_ENV === "production" ? "/xlkit/" : "/",
+  define: {
+    global: "globalThis",
+  },
+  resolve: {
+    alias: {
+      buffer: "buffer/",
+    },
+  },
+  optimizeDeps: {
+    include: ["buffer"],
+  },
 });
