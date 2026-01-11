@@ -33,7 +33,7 @@ export class SheetBuilder {
     validateDataSize(options.data.length, leafColumns.length);
 
     // ブロックを追加
-    const block: Block = { type: "table", options };
+    const block: Block = { type: "table", options: options as TableOptions<Record<string, unknown>> };
     this.sheetState.blocks.push(block);
 
     return this;

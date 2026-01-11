@@ -83,9 +83,9 @@ describe("SheetBuilder", () => {
     const sb = wb.sheet();
     expect(() =>
       sb.table({
-        columns: [], // 空配列はNG
+        columns: [], // 空配列はNG - ランタイムでバリデーションエラー
         data: [],
-      } as any),
+      }),
     ).toThrow("Invalid table options");
   });
 

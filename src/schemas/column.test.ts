@@ -147,7 +147,7 @@ describe("columnsSchema", () => {
 
   describe("異常系", () => {
     it("should reject empty array", () => {
-      const columns: any[] = [];
+      const columns: unknown[] = [];
       const result = columnsSchema.safeParse(columns);
       expect(result.success).toBe(false);
     });

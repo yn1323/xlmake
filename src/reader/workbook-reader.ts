@@ -52,7 +52,8 @@ export async function read(source: Buffer | string): Promise<WorkbookReader> {
 
   if (Buffer.isBuffer(source)) {
     // Bufferから読み取り
-    await workbook.xlsx.load(source as any);
+    // @ts-expect-error Node.js Buffer<ArrayBufferLike>とExcelJSのBuffer型に互換性問題
+    await workbook.xlsx.load(source);
   } else {
     // ファイルパスから読み取り
     await workbook.xlsx.readFile(source);

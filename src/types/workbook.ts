@@ -7,7 +7,7 @@ export type BlockType = "table" | "text" | "image" | "space";
 
 // ブロック（Union型）
 export type Block =
-  | { type: "table"; options: TableOptions<any> }
+  | { type: "table"; options: TableOptions<Record<string, unknown>> }
   | { type: "text"; input: TextInput }
   | { type: "image"; options: ImageOptions }
   | { type: "space"; lines: number };
@@ -24,7 +24,7 @@ export type WorkbookState = {
 };
 
 // 型ガード関数
-export function isTableBlock(block: Block): block is { type: "table"; options: TableOptions<any> } {
+export function isTableBlock(block: Block): block is { type: "table"; options: TableOptions<Record<string, unknown>> } {
   return block.type === "table";
 }
 

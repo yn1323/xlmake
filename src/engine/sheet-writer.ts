@@ -1,9 +1,11 @@
 import type { Worksheet } from "exceljs";
 import { mergeStyles } from "../styles/merger";
+import type { TablePresetConfig } from "../styles/presets";
 import { getPreset } from "../styles/presets";
 import type { Column, LeafColumn } from "../types/column";
 import { isLeafColumn } from "../types/column";
 import type { ImageOptions } from "../types/image";
+import type { CellStyle, TableStyle } from "../types/style";
 import type { TableOptions } from "../types/table";
 import type { TextInput } from "../types/text";
 import { isStyledCell } from "../types/text";
@@ -78,11 +80,11 @@ export class SheetWriter {
    * ヘッダーを書き込む（マルチヘッダー対応）
    */
   private writeHeaders<T>(
-    columns: Column<T>[],
+    _columns: Column<T>[],
     leafColumns: LeafColumn<T>[],
     depth: number,
-    presetConfig: any,
-    tableStyle: any,
+    presetConfig: TablePresetConfig | undefined,
+    tableStyle: TableStyle | undefined,
   ): void {
     // シンプルなケース（1階層）のみ実装
     if (depth === 1) {
@@ -110,9 +112,9 @@ export class SheetWriter {
    */
   private writeDataRows<T>(
     leafColumns: LeafColumn<T>[],
-    data: (T & { _style?: any })[],
-    presetConfig: any,
-    tableStyle: any,
+    data: (T & { _style?: Partial<Record<keyof T, CellStyle>> })[],
+    presetConfig: TablePresetConfig | undefined,
+    tableStyle: TableStyle | undefined,
   ): void {
     for (const [rowIndex, rowData] of data.entries()) {
       const row = getOrCreateRow(this.worksheet, this.currentRow);

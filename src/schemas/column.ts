@@ -11,10 +11,17 @@ const leafColumnSchema = z
   })
   .strict();
 
+// 再帰型の定義
+export type ColumnShape = {
+  key?: string;
+  label: string;
+  children?: ColumnShape[];
+};
+
 // ParentColumn（再帰的な定義）
 const parentColumnSchema: z.ZodType<{
   label: string;
-  children: Array<{ key?: string; label: string; children?: any[] }>;
+  children: ColumnShape[];
 }> = z.lazy(() =>
   z
     .object({

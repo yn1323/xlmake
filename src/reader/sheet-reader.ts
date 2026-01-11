@@ -35,7 +35,8 @@ export class SheetReader {
    */
   get mergedCells(): string[] {
     // ExcelJSは "A1:B2" 形式の配列を返す
-    const model = (this.worksheet as any).model;
+    // Note: modelは内部プロパティのため型定義にない
+    const model = (this.worksheet as unknown as { model?: { merges?: string[] } }).model;
     return model?.merges || [];
   }
 

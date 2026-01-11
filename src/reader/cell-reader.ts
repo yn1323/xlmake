@@ -16,12 +16,16 @@ export class CellReader {
 
     // リッチテキストの場合
     if (val && typeof val === "object" && "richText" in val) {
-      return val.richText.map((rt: any) => rt.text).join("");
+      return val.richText.map((rt: { text: string }) => rt.text).join("");
     }
 
     // 数式の場合（結果を返す）
     if (val && typeof val === "object" && "result" in val) {
-      return val.result as any;
+      const result = val.result;
+      if (typeof result === "string" || typeof result === "number" || typeof result === "boolean") {
+        return result;
+      }
+      return null;
     }
 
     // プリミティブ値

@@ -1,4 +1,4 @@
-import type { Cell, Row, Worksheet } from "exceljs";
+import type { Cell, CellValue, Row, Worksheet } from "exceljs";
 import { convertToExcelJSStyle } from "../styles/converter";
 import type { CellStyle } from "../types/style";
 
@@ -7,12 +7,12 @@ import type { CellStyle } from "../types/style";
  */
 export function writeCell(cell: Cell, value: unknown, style?: CellStyle): void {
   // 値を設定
-  cell.value = value as any;
+  cell.value = value as CellValue;
 
   // スタイルを適用
   if (style) {
     const excelStyle = convertToExcelJSStyle(style);
-    cell.style = excelStyle as any;
+    cell.style = excelStyle;
   }
 }
 

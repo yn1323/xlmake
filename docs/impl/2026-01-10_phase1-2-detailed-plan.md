@@ -389,7 +389,7 @@ export type BlockType = "table" | "text" | "image" | "space";
 
 // ブロック（Union型）
 export type Block =
-  | { type: "table"; options: TableOptions<any> }
+  | { type: "table"; options: TableOptions<Record<string, unknown>> }
   | { type: "text"; input: TextInput }
   | { type: "image"; options: ImageOptions }
   | { type: "space"; lines: number };
@@ -406,7 +406,7 @@ export type WorkbookState = {
 };
 
 // 型ガード関数
-export function isTableBlock(block: Block): block is { type: "table"; options: TableOptions<any> } {
+export function isTableBlock(block: Block): block is { type: "table"; options: TableOptions<Record<string, unknown>> } {
   return block.type === "table";
 }
 
@@ -595,10 +595,17 @@ const leafColumnSchema = z.object({
   mergeSameValues: z.boolean().optional(),
 }).strict();
 
+// 再帰型の定義
+type ColumnShape = {
+  key?: string;
+  label: string;
+  children?: ColumnShape[];
+};
+
 // ParentColumn（再帰的な定義）
 const parentColumnSchema: z.ZodType<{
   label: string;
-  children: Array<{ key?: string; label: string; children?: any[] }>;
+  children: ColumnShape[];
 }> = z.lazy(() =>
   z.object({
     label: z.string(),
@@ -674,7 +681,7 @@ const autoWidthOptionSchema = z.union([
 export const tableOptionsSchema = z.object({
   preset: tablePresetSchema.optional(),
   columns: columnsSchema,
-  data: z.array(z.record(z.any())),  // any[] の配列
+  data: z.array(z.record(z.unknown())),  // unknown[] の配列
   autoWidth: autoWidthOptionSchema.optional(),
   mergeSameValues: z.boolean().optional(),
   style: tableStyleSchema.optional(),
@@ -684,7 +691,7 @@ export const tableOptionsSchema = z.object({
 ```
 
 **実装上の注意**:
-- `data` は `z.record(z.any())` で任意のオブジェクト配列として扱う
+- `data` は `z.record(z.unknown())` で任意のオブジェクト配列として扱う
   - ジェネリック型 `<T>` はランタイムでは扱えないため
 - `conditionalStyle` は `z.function()` でバリデーション
   - 関数の引数や戻り値の型検証はZodでは困難（TypeScriptの型に任せる）

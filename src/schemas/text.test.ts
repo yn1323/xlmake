@@ -65,7 +65,7 @@ describe("textInputSchema", () => {
     });
 
     it("should reject array", () => {
-      const input: any[] = [];
+      const input: unknown[] = [];
       const result = textInputSchema.safeParse(input);
       expect(result.success).toBe(false);
     });
