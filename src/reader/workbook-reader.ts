@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs";
+import { isBuffer } from "../utils/buffer";
 import { SheetReader } from "./sheet-reader";
 
 /**
@@ -20,7 +21,7 @@ export class WorkbookReader {
   sheet(name: string): SheetReader {
     const worksheet = this.workbook.getWorksheet(name);
     if (!worksheet) {
-      throw new Error(`シート "${name}" が見つかりません`);
+      throw new Error(`Sheet "${name}" not found`);
     }
     return new SheetReader(worksheet);
   }
@@ -31,7 +32,7 @@ export class WorkbookReader {
   sheetAt(index: number): SheetReader {
     const worksheet = this.workbook.worksheets[index];
     if (!worksheet) {
-      throw new Error(`インデックス ${index} のシートが見つかりません`);
+      throw new Error(`Sheet at index ${index} not found`);
     }
     return new SheetReader(worksheet);
   }
@@ -50,7 +51,7 @@ export class WorkbookReader {
 export async function read(source: Buffer | string): Promise<WorkbookReader> {
   const workbook = new ExcelJS.Workbook();
 
-  if (Buffer.isBuffer(source)) {
+  if (isBuffer(source)) {
     // Bufferから読み取り
     // @ts-expect-error Node.js Buffer<ArrayBufferLike>とExcelJSのBuffer型に互換性問題
     await workbook.xlsx.load(source);

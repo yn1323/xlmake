@@ -10,7 +10,7 @@ Adds an image.
 
 ```typescript
 .image({
-  source: Buffer | string,  // Buffer or file path
+  source: Buffer | string,  // Buffer, URL, or file path
   width?: number,           // Width (pixels)
   height?: number,          // Height (pixels)
   row?: number,             // Row position (0-indexed)
@@ -20,7 +20,7 @@ Adds an image.
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `source` | `Buffer` \| `string` | Image data or file path |
+| `source` | `Buffer` \| `string` | Image data, URL, or file path (Node.js only) |
 | `width` | `number` | Image width (pixels) |
 | `height` | `number` | Image height (pixels) |
 | `row` | `number` | Row to place (starting from 0) |
@@ -47,6 +47,16 @@ const logoBuffer = readFileSync("./logo.png");
 ```typescript
 .image({
   source: "./logo.png",
+  width: 150,
+  height: 75,
+})
+```
+
+### Using URL (Browser & Node.js)
+
+```typescript
+.image({
+  source: "https://example.com/logo.png",
   width: 150,
   height: 75,
 })

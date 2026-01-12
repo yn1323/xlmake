@@ -74,8 +74,8 @@ describe("SheetBuilder", () => {
   it("should throw error for invalid space argument", () => {
     const wb = xlkit();
     const sb = wb.sheet();
-    expect(() => sb.space(0)).toThrow("正の整数である必要があります");
-    expect(() => sb.space(-1)).toThrow("正の整数である必要があります");
+    expect(() => sb.space(0)).toThrow("space() argument must be a positive integer");
+    expect(() => sb.space(-1)).toThrow("space() argument must be a positive integer");
   });
 
   it("should throw error for invalid table options", () => {

@@ -35,7 +35,7 @@ describe("WorkbookReader", () => {
     const workbook = new ExcelJS.Workbook();
     const reader = new WorkbookReader(workbook);
 
-    expect(() => reader.sheet("NotFound")).toThrow('シート "NotFound" が見つかりません');
+    expect(() => reader.sheet("NotFound")).toThrow('Sheet "NotFound" not found');
   });
 
   it("should get sheet count", () => {

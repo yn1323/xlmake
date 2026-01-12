@@ -62,6 +62,39 @@ const imageBuffer = readFileSync("./image.png");
 })
 ```
 
+### URLを使用（ブラウザ・Node.js両対応）
+
+```typescript
+.image({
+  source: "https://example.com/image.png",
+  width: 200,
+  height: 100,
+})
+```
+
+## ブラウザでの使用
+
+ブラウザ環境では、URL指定で画像を挿入できます。
+
+```typescript
+import { xlkit } from "xlkit";
+
+const output = await xlkit()
+  .sheet("レポート")
+  .image({
+    source: "https://example.com/logo.png",
+    width: 150,
+    height: 75,
+  })
+  .getBrowser();
+
+await output.download("report.xlsx");
+```
+
+:::note
+ファイルパス指定はNode.js環境でのみ使用できます。ブラウザ環境ではURLまたはBufferを使用してください。
+:::
+
 ## サイズの指定
 
 画像のサイズはピクセル単位で指定します。
