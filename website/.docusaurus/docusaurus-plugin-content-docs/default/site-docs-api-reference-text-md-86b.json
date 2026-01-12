@@ -1,0 +1,27 @@
+{
+  "id": "api-reference/text",
+  "title": ".text()",
+  "description": "テキストを追加します。",
+  "source": "@site/docs/api-reference/text.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/text",
+  "permalink": "/xlkit/docs/api-reference/text",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/api-reference/text.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": ".table()",
+    "permalink": "/xlkit/docs/api-reference/table"
+  },
+  "next": {
+    "title": ".image()",
+    "permalink": "/xlkit/docs/api-reference/image"
+  }
+}

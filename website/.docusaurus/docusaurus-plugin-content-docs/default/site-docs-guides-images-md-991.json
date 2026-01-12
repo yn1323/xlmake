@@ -1,0 +1,27 @@
+{
+  "id": "guides/images",
+  "title": "画像挿入",
+  "description": "xlkitでExcelに画像を挿入する方法を説明します。",
+  "source": "@site/docs/guides/images.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/images",
+  "permalink": "/xlkit/docs/guides/images",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/guides/images.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "複数シート",
+    "permalink": "/xlkit/docs/guides/multi-sheet"
+  },
+  "next": {
+    "title": "読み取りAPI",
+    "permalink": "/xlkit/docs/guides/reading"
+  }
+}

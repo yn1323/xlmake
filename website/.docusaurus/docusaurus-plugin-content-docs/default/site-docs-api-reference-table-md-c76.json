@@ -1,0 +1,27 @@
+{
+  "id": "api-reference/table",
+  "title": ".table()",
+  "description": "テーブルを追加します。",
+  "source": "@site/docs/api-reference/table.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/table",
+  "permalink": "/xlkit/docs/api-reference/table",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/api-reference/table.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "xlkit()",
+    "permalink": "/xlkit/docs/api-reference/xlkit"
+  },
+  "next": {
+    "title": ".text()",
+    "permalink": "/xlkit/docs/api-reference/text"
+  }
+}

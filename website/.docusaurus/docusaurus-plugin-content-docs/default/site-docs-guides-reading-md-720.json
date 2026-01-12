@@ -1,0 +1,27 @@
+{
+  "id": "guides/reading",
+  "title": "読み取りAPI",
+  "description": "xlkitでは既存のExcelファイルを読み込んで、セルの値やスタイルを取得できます。",
+  "source": "@site/docs/guides/reading.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/reading",
+  "permalink": "/xlkit/docs/guides/reading",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/guides/reading.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "画像挿入",
+    "permalink": "/xlkit/docs/guides/images"
+  },
+  "next": {
+    "title": "API概要",
+    "permalink": "/xlkit/docs/api-reference/overview"
+  }
+}

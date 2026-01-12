@@ -1,0 +1,27 @@
+{
+  "id": "api-reference/reading",
+  "title": "読み取りAPI",
+  "description": "既存のExcelファイルを読み込むためのAPIです。",
+  "source": "@site/docs/api-reference/reading.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/reading",
+  "permalink": "/xlkit/docs/api-reference/reading",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/api-reference/reading.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {
+    "sidebar_position": 7
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "スタイルAPI",
+    "permalink": "/xlkit/docs/api-reference/styling"
+  },
+  "next": {
+    "title": "基本的なテーブル",
+    "permalink": "/xlkit/docs/examples/basic-table"
+  }
+}

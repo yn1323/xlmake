@@ -1,0 +1,27 @@
+{
+  "id": "guides/multi-sheet",
+  "title": "複数シート",
+  "description": "xlkitでは複数のシートを持つExcelファイルを簡単に作成できます。",
+  "source": "@site/docs/guides/multi-sheet.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/multi-sheet",
+  "permalink": "/xlkit/docs/guides/multi-sheet",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/guides/multi-sheet.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "スタイリング",
+    "permalink": "/xlkit/docs/guides/styling"
+  },
+  "next": {
+    "title": "画像挿入",
+    "permalink": "/xlkit/docs/guides/images"
+  }
+}

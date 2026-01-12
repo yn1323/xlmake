@@ -1,0 +1,28 @@
+{
+  "defaultLocale": "ja",
+  "locales": ["ja", "en"],
+  "path": "i18n",
+  "currentLocale": "ja",
+  "localeConfigs": {
+    "ja": {
+      "label": "日本語",
+      "direction": "ltr",
+      "htmlLang": "ja",
+      "calendar": "gregory",
+      "path": "ja",
+      "translate": false,
+      "url": "https://yn1323.github.io",
+      "baseUrl": "/xlkit/"
+    },
+    "en": {
+      "label": "English",
+      "direction": "ltr",
+      "htmlLang": "en",
+      "calendar": "gregory",
+      "path": "en",
+      "translate": true,
+      "url": "https://yn1323.github.io",
+      "baseUrl": "/xlkit/en/"
+    }
+  }
+}

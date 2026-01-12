@@ -1,0 +1,23 @@
+{
+  "id": "reference/excel-constraints",
+  "title": "Excel制約",
+  "description": "xlkitはExcelの仕様に基づく制約を自動でチェックし、違反時はエラーをスローします。",
+  "source": "@site/docs/reference/excel-constraints.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/excel-constraints",
+  "permalink": "/xlkit/docs/reference/excel-constraints",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/reference/excel-constraints.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "サポートしていない機能",
+    "permalink": "/xlkit/docs/reference/limitations"
+  }
+}

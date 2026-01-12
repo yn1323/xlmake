@@ -1,0 +1,27 @@
+{
+  "id": "examples/cell-merge",
+  "title": "セルマージ",
+  "description": "同じ値のセルを縦方向にマージする例です。",
+  "source": "@site/docs/examples/cell-merge.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/cell-merge",
+  "permalink": "/xlkit/docs/examples/cell-merge",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/examples/cell-merge.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "マルチヘッダー",
+    "permalink": "/xlkit/docs/examples/multi-header"
+  },
+  "next": {
+    "title": "罫線",
+    "permalink": "/xlkit/docs/examples/borders"
+  }
+}

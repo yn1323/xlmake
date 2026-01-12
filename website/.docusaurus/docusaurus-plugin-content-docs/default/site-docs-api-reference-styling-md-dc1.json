@@ -1,0 +1,27 @@
+{
+  "id": "api-reference/styling",
+  "title": "スタイルAPI",
+  "description": "セルやテーブルのスタイルを定義するための型です。",
+  "source": "@site/docs/api-reference/styling.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/styling",
+  "permalink": "/xlkit/docs/api-reference/styling",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/api-reference/styling.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": ".image()",
+    "permalink": "/xlkit/docs/api-reference/image"
+  },
+  "next": {
+    "title": "読み取りAPI",
+    "permalink": "/xlkit/docs/api-reference/reading"
+  }
+}

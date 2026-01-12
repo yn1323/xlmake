@@ -1,0 +1,148 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/xlkit/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/xlkit/docs",
+          "mainDocId": "intro",
+          "docs": [
+            {
+              "id": "api-reference/image",
+              "path": "/xlkit/docs/api-reference/image",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api-reference/overview",
+              "path": "/xlkit/docs/api-reference/overview",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api-reference/reading",
+              "path": "/xlkit/docs/api-reference/reading",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api-reference/styling",
+              "path": "/xlkit/docs/api-reference/styling",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api-reference/table",
+              "path": "/xlkit/docs/api-reference/table",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api-reference/text",
+              "path": "/xlkit/docs/api-reference/text",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api-reference/xlkit",
+              "path": "/xlkit/docs/api-reference/xlkit",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/basic-table",
+              "path": "/xlkit/docs/examples/basic-table",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/borders",
+              "path": "/xlkit/docs/examples/borders",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/cell-merge",
+              "path": "/xlkit/docs/examples/cell-merge",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/conditional-styling",
+              "path": "/xlkit/docs/examples/conditional-styling",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/multi-header",
+              "path": "/xlkit/docs/examples/multi-header",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/presets",
+              "path": "/xlkit/docs/examples/presets",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/basic-usage",
+              "path": "/xlkit/docs/guides/basic-usage",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/images",
+              "path": "/xlkit/docs/guides/images",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/multi-sheet",
+              "path": "/xlkit/docs/guides/multi-sheet",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/reading",
+              "path": "/xlkit/docs/guides/reading",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/styling",
+              "path": "/xlkit/docs/guides/styling",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "installation",
+              "path": "/xlkit/docs/installation",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/xlkit/docs/intro",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start",
+              "path": "/xlkit/docs/quick-start",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "reference/excel-constraints",
+              "path": "/xlkit/docs/reference/excel-constraints",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "reference/limitations",
+              "path": "/xlkit/docs/reference/limitations",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "reference/presets",
+              "path": "/xlkit/docs/reference/presets",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/xlkit/docs/intro",
+                "label": "intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

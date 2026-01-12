@@ -1,0 +1,27 @@
+{
+  "id": "quick-start",
+  "title": "クイックスタート",
+  "description": "xlkitを使って、シンプルなExcelファイルを生成してみましょう。",
+  "source": "@site/docs/quick-start.md",
+  "sourceDirName": ".",
+  "slug": "/quick-start",
+  "permalink": "/xlkit/docs/quick-start",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/quick-start.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "インストール",
+    "permalink": "/xlkit/docs/installation"
+  },
+  "next": {
+    "title": "基本的な使い方",
+    "permalink": "/xlkit/docs/guides/basic-usage"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "examples/multi-header",
+  "title": "マルチヘッダー",
+  "description": "階層的なヘッダー（マルチヘッダー）を作成する例です。",
+  "source": "@site/docs/examples/multi-header.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/multi-header",
+  "permalink": "/xlkit/docs/examples/multi-header",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/examples/multi-header.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "プリセット使用",
+    "permalink": "/xlkit/docs/examples/presets"
+  },
+  "next": {
+    "title": "セルマージ",
+    "permalink": "/xlkit/docs/examples/cell-merge"
+  }
+}

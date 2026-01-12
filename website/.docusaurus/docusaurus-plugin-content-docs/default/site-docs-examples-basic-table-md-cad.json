@@ -1,0 +1,27 @@
+{
+  "id": "examples/basic-table",
+  "title": "基本的なテーブル",
+  "description": "最もシンプルなテーブルの作成例です。",
+  "source": "@site/docs/examples/basic-table.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/basic-table",
+  "permalink": "/xlkit/docs/examples/basic-table",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/yn1323/xlkit/tree/main/website/docs/examples/basic-table.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "読み取りAPI",
+    "permalink": "/xlkit/docs/api-reference/reading"
+  },
+  "next": {
+    "title": "プリセット使用",
+    "permalink": "/xlkit/docs/examples/presets"
+  }
+}
