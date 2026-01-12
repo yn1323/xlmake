@@ -97,6 +97,20 @@ export class SheetBuilder {
   }
 
   /**
+   * 複数のワークブックをマージする（WorkbookBuilderに委譲）
+   */
+  merge(workbooks: (WorkbookBuilder | SheetBuilder)[]): WorkbookBuilder {
+    return this.workbook.merge(workbooks);
+  }
+
+  /**
+   * ワークブックの状態を取得（WorkbookBuilderに委譲）
+   */
+  getState() {
+    return this.workbook.getState();
+  }
+
+  /**
    * ブラウザ向け出力オブジェクトを取得（WorkbookBuilderに委譲）
    */
   getBrowser() {
