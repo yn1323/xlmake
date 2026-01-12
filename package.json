@@ -17,7 +17,6 @@
   ],
   "scripts": {
     "build": "tsup",
-    "demo": "vite demo",
     "test": "vitest run",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
@@ -50,11 +49,6 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.0",
-    "@vitejs/plugin-react": "^4.4.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.7",

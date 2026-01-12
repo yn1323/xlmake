@@ -1,0 +1,46 @@
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroDescription {
+  font-size: 1.5rem;
+  margin: 1rem 0 2rem;
+  color: var(--ifm-hero-text-color);
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.codeExample {
+  padding: 4rem 0;
+  background-color: var(--ifm-background-surface-color);
+}
+
+.codeBlock {
+  background-color: var(--ifm-code-background);
+  border-radius: var(--ifm-code-border-radius);
+  padding: 1.5rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+
+.codeBlock code {
+  background-color: transparent;
+  padding: 0;
+  border: none;
+}
