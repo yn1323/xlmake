@@ -1,44 +1,50 @@
 # xlkit
 
-**宣言的なExcel生成ライブラリ** - コードを見れば最終的なExcelの構造がわかる
+<p align="center">
+  <img src="logo.png" alt="xlkit logo" width="200">
+</p>
 
-ExcelJSをベースに、より直感的で宣言的なAPIを提供します。
+**Declarative Excel generation library** - See the final Excel structure from your code
 
-## ExcelJSとの比較
+[Documentation](https://yn1323.github.io/xlkit/)
 
-| 観点 | ExcelJS（命令的） | xlkit（宣言的） |
-|------|------------------|----------------|
-| 書き方 | セルを1つずつ操作 | 最終形を宣言 |
-| 見通し | コードから結果が見えづらい | コードから結果が見える |
-| 例え | jQuery | React |
+Built on top of ExcelJS, providing a more intuitive and declarative API.
 
-## インストール
+## Comparison with ExcelJS
+
+| Aspect | ExcelJS (Imperative) | xlkit (Declarative) |
+|--------|---------------------|---------------------|
+| Style | Operate cells one by one | Declare the final structure |
+| Clarity | Hard to see the result from code | Easy to see the result from code |
+| Analogy | jQuery | React |
+
+## Installation
 
 ```bash
 npm install xlkit
-# または
+# or
 pnpm add xlkit
-# または
+# or
 yarn add xlkit
 ```
 
-## クイックスタート
+## Quick Start
 
 ```typescript
 import { xlkit } from "xlkit";
 
 const output = await xlkit()
-  .sheet("売上")
+  .sheet("Sales")
   .table({
     preset: "basic",
     columns: [
-      { key: "name", label: "商品名" },
-      { key: "price", label: "価格" },
-      { key: "quantity", label: "数量" },
+      { key: "name", label: "Product" },
+      { key: "price", label: "Price" },
+      { key: "quantity", label: "Quantity" },
     ],
     data: [
-      { name: "りんご", price: 100, quantity: 50 },
-      { name: "みかん", price: 80, quantity: 100 },
+      { name: "Apple", price: 100, quantity: 50 },
+      { name: "Orange", price: 80, quantity: 100 },
     ],
   })
   .getNode();
@@ -46,10 +52,6 @@ const output = await xlkit()
 await output.saveToFile("report.xlsx");
 ```
 
-## ドキュメント
-
-詳細なAPIリファレンス、使用例、ガイドは[公式ドキュメント](https://yn1323.github.io/xlkit/)をご覧ください。
-
-## ライセンス
+## License
 
 MIT
