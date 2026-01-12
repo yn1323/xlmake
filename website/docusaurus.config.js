@@ -4,7 +4,7 @@
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "xlkit",
-  tagline: "宣言的なExcel生成ライブラリ",
+  tagline: "Declarative Excel Generation Library",
   favicon: "img/favicon.ico",
 
   url: "https://yn1323.github.io",
@@ -17,8 +17,8 @@ const config = {
   onBrokenMarkdownLinks: "warn",
 
   i18n: {
-    defaultLocale: "ja",
-    locales: ["ja", "en"],
+    defaultLocale: "en",
+    locales: ["en", "ja"],
     localeConfigs: {
       ja: {
         label: "日本語",
