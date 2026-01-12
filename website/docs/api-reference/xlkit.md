@@ -23,6 +23,7 @@ const builder = xlkit();
 | メソッド | 戻り値 | 説明 |
 |---------|--------|------|
 | `sheet(name?)` | `SheetBuilder` | シートを追加 |
+| `merge(workbooks)` | `this` | 複数のワークブックをマージ |
 | `getNode()` | `Promise<NodeOutput>` | Node.js用出力を取得 |
 | `getBrowser()` | `Promise<BrowserOutput>` | ブラウザ用出力を取得 |
 
@@ -35,6 +36,7 @@ const builder = xlkit();
 | `image(options)` | `this` | 画像を追加 |
 | `space(lines?)` | `this` | 空行を追加（デフォルト: 1行） |
 | `sheet(name?)` | `SheetBuilder` | 別のシートに切り替え |
+| `merge(workbooks)` | `WorkbookBuilder` | 複数のワークブックをマージ |
 | `getNode()` | `Promise<NodeOutput>` | Node.js用出力を取得 |
 | `getBrowser()` | `Promise<BrowserOutput>` | ブラウザ用出力を取得 |
 
@@ -48,6 +50,58 @@ xlkit().sheet("売上データ")
 
 // 名前を省略（Sheet1, Sheet2... と自動生成）
 xlkit().sheet()
+```
+
+## merge()
+
+複数のワークブックを1つにマージします。
+
+**パラメータ:**
+- `workbooks: (WorkbookBuilder | SheetBuilder)[]` - マージするワークブックの配列
+
+**戻り値:**
+- `WorkbookBuilder` または `this`（メソッドチェーン用）
+
+**エラー:**
+- シート名が重複する場合は `Error` をスロー
+- 空のワークブック（シートが0個）は無視される
+
+**使用例:**
+
+```typescript
+// 基本的な使い方
+const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlkit().merge([bookA, bookB]);
+```
+
+```typescript
+// モジュール化されたシート作成
+function createSalesSheet() {
+  return xlkit().sheet("売上").table({ ... });
+}
+
+function createStockSheet() {
+  return xlkit().sheet("在庫").table({ ... });
+}
+
+// マージして1つのファイルに
+const merged = xlkit().merge([
+  createSalesSheet(),
+  createStockSheet(),
+]);
+
+await merged.getNode().saveToFile("report.xlsx");
+```
+
+```typescript
+// メソッドチェーンで使用
+const merged = xlkit()
+  .sheet("Start")
+  .text("Start")
+  .merge([bookA, bookB])
+  .sheet("End")
+  .text("End");
 ```
 
 ## getNode()

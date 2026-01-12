@@ -88,6 +88,71 @@ const output = await xlkit()
   .getNode();
 ```
 
+## ワークブックのマージ
+
+別々に作成したワークブックを後からマージできます。
+
+### 基本的な使い方
+
+```typescript
+const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlkit().merge([bookA, bookB]);
+```
+
+### ユースケース
+
+#### モジュール化
+
+各シートを関数で分離して、コードを整理できます:
+
+```typescript
+// 各シートを関数で分離
+function createSalesSheet() {
+  return xlkit()
+    .sheet("売上")
+    .table({ columns: [...], data: salesData });
+}
+
+function createStockSheet() {
+  return xlkit()
+    .sheet("在庫")
+    .table({ columns: [...], data: stockData });
+}
+
+// マージして出力
+const report = xlkit().merge([
+  createSalesSheet(),
+  createStockSheet(),
+]);
+
+await report.getNode().saveToFile("report.xlsx");
+```
+
+#### 条件付きシート追加
+
+条件に応じてシートを動的に追加できます:
+
+```typescript
+const baseBook = xlkit().sheet("基本データ").table({ ... });
+const sheets = [baseBook];
+
+if (includeDetails) {
+  sheets.push(xlkit().sheet("詳細").table({ ... }));
+}
+
+if (includeSummary) {
+  sheets.push(xlkit().sheet("集計").table({ ... }));
+}
+
+const report = xlkit().merge(sheets);
+```
+
+### 注意点
+
+- **シート名の重複**: 同じシート名がある場合はエラーになります
+- **空のワークブック**: シートが1つもないワークブックは無視されます
+
 ## シート名の制約
 
 Excelの仕様により、シート名には以下の制約があります:
