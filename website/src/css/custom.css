@@ -1,30 +1,133 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * xlkit Custom Styles
+ * Excel-inspired design with green color palette
  */
 
-/* You can override the default Infima variables here. */
+/* Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap");
+
+/* Excel Green Color Palette */
 :root {
-  --ifm-color-primary: #4472c4;
-  --ifm-color-primary-dark: #3863b7;
-  --ifm-color-primary-darker: #355eb0;
-  --ifm-color-primary-darkest: #2c4d91;
-  --ifm-color-primary-light: #5081d1;
-  --ifm-color-primary-lighter: #5986d8;
-  --ifm-color-primary-lightest: #6f9ae0;
+  --ifm-color-primary: #217346;
+  --ifm-color-primary-dark: #1d6540;
+  --ifm-color-primary-darker: #1a5c3a;
+  --ifm-color-primary-darkest: #154a2f;
+  --ifm-color-primary-light: #28854f;
+  --ifm-color-primary-lighter: #2e9458;
+  --ifm-color-primary-lightest: #3aad6a;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgba(33, 115, 70, 0.1);
+
+  /* xlkit custom variables */
+  --xlkit-grid-color: rgba(33, 115, 70, 0.08);
+  --xlkit-grid-border: rgba(33, 115, 70, 0.15);
+  --xlkit-cell-border: rgba(33, 115, 70, 0.3);
+  --xlkit-card-shadow: 0 4px 20px rgba(33, 115, 70, 0.1);
+  --xlkit-card-hover-shadow: 0 8px 30px rgba(33, 115, 70, 0.2);
+  --xlkit-bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+  --xlkit-hero-gradient: linear-gradient(135deg, #217346 0%, #28854f 50%, #3aad6a 100%);
+  --xlkit-header-bg: #f3f3f3;
+  --xlkit-header-color: #666;
+
+  /* Typography */
+  --ifm-font-family-base: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ifm-font-family-monospace: "JetBrains Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ifm-heading-font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Dark mode */
 [data-theme="dark"] {
-  --ifm-color-primary: #6f9ae0;
-  --ifm-color-primary-dark: #5081d1;
-  --ifm-color-primary-darker: #4472c4;
-  --ifm-color-primary-darkest: #3863b7;
-  --ifm-color-primary-light: #8db3e9;
-  --ifm-color-primary-lighter: #a2c0ed;
-  --ifm-color-primary-lightest: #b7cdf1;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #3aad6a;
+  --ifm-color-primary-dark: #2e9458;
+  --ifm-color-primary-darker: #28854f;
+  --ifm-color-primary-darkest: #217346;
+  --ifm-color-primary-light: #4eba7a;
+  --ifm-color-primary-lighter: #62c78a;
+  --ifm-color-primary-lightest: #7ed49e;
+  --docusaurus-highlighted-code-line-bg: rgba(58, 173, 106, 0.2);
+
+  --xlkit-grid-color: rgba(58, 173, 106, 0.08);
+  --xlkit-grid-border: rgba(58, 173, 106, 0.15);
+  --xlkit-cell-border: rgba(58, 173, 106, 0.3);
+  --xlkit-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --xlkit-card-hover-shadow: 0 8px 30px rgba(58, 173, 106, 0.3);
+  --xlkit-bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #1f2f25 50%, #1a2f22 100%);
+  --xlkit-hero-gradient: linear-gradient(135deg, #154a2f 0%, #1d6540 50%, #217346 100%);
+  --xlkit-header-bg: #2a2a2a;
+  --xlkit-header-color: #999;
+}
+
+/* Global heading styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Code block enhancements */
+.prism-code {
+  font-family: var(--ifm-font-family-monospace);
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Button enhancements */
+.button {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.button--primary {
+  background: var(--xlkit-hero-gradient);
+  border: none;
+}
+
+.button--primary:hover {
+  background: var(--ifm-color-primary-light);
+}
+
+/* Hero button overrides */
+.hero .button--secondary {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ifm-color-primary-darkest);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+}
+
+.hero .button--secondary:hover {
+  background: #fff;
+  color: var(--ifm-color-primary-darkest);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Navbar enhancements */
+.navbar {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.navbar__title {
+  font-family: var(--ifm-font-family-monospace);
+  font-weight: 700;
+}
+
+/* Footer enhancements */
+.footer--dark {
+  background: linear-gradient(180deg, var(--ifm-color-primary-darkest) 0%, #0f2e1e 100%);
 }

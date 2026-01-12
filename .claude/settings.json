@@ -15,11 +15,6 @@
       "Bash(pnpm test:*)",
       "Bash(dir:*)",
       "Bash(pnpm biome check:*)"
-    ],
-    "additionalDirectories": [
-      "c:\\Users\\yn132\\work\\xlkit\\renewal",
-      "c:\\Users\\yn132\\work\\xlkit\\docs",
-      "c:\\Users\\yn132\\work\\xlkit"
     ]
   }
 }
