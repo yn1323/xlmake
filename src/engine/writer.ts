@@ -13,7 +13,7 @@ export async function writeWorkbook(state: WorkbookState): Promise<ExcelJS.Workb
   for (const sheetState of state.sheets) {
     const worksheet = workbook.addWorksheet(sheetState.name);
     const writer = new SheetWriter(workbook, worksheet);
-    writer.writeSheet(sheetState);
+    await writer.writeSheet(sheetState);
   }
 
   return workbook;

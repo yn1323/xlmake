@@ -42,10 +42,12 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        working-directory: website
         run: pnpm install --frozen-lockfile
 
-      - name: Build
+      - name: Build xlkit
+        run: pnpm build
+
+      - name: Build website
         working-directory: website
         run: pnpm build
 

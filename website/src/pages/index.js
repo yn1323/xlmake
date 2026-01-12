@@ -96,6 +96,14 @@ function DownloadButton() {
       const { xlkit } = await import("xlkit");
       const browserOutput = await xlkit()
         .sheet("売上")
+        .text({ value: "xlkit サンプル", style: { bold: true, fontSize: 16 } })
+        .space(1)
+        .image({
+          source: "https://raw.githubusercontent.com/yn1323/xlkit/main/logo.png",
+          width: 150,
+          height: 150,
+        })
+        .space(2)
         .table({
           preset: "basic",
           columns: [
@@ -107,7 +115,7 @@ function DownloadButton() {
         })
         .getBrowser();
 
-      await browserOutput.download("report.xlsx");
+      await browserOutput.download("sample.xlsx");
     } catch (error) {
       console.error("Download failed:", error);
     } finally {

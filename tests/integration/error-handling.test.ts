@@ -4,7 +4,7 @@ import { xlkit } from "../../src/index";
 describe("エラーハンドリング", () => {
   describe("既存エラー", () => {
     it("同名シート作成でエラー", () => {
-      expect(() => xlkit().sheet("A").sheet("A")).toThrow('シート名 "A" は既に存在します');
+      expect(() => xlkit().sheet("A").sheet("A")).toThrow('Sheet name "A" already exists');
     });
 
     it("不正なプリセット名でエラー", () => {
@@ -17,49 +17,49 @@ describe("エラーハンドリング", () => {
     });
 
     it("space(0)でエラー", () => {
-      expect(() => xlkit().sheet("Test").space(0)).toThrow("space() の引数は正の整数である必要があります");
+      expect(() => xlkit().sheet("Test").space(0)).toThrow("space() argument must be a positive integer");
     });
 
     it("space(-1)でエラー", () => {
-      expect(() => xlkit().sheet("Test").space(-1)).toThrow("space() の引数は正の整数である必要があります");
+      expect(() => xlkit().sheet("Test").space(-1)).toThrow("space() argument must be a positive integer");
     });
   });
 
   describe("Excel制約エラー", () => {
     it("シート名32文字でエラー", () => {
-      expect(() => xlkit().sheet("a".repeat(32))).toThrow("シート名は31文字以内である必要があります");
+      expect(() => xlkit().sheet("a".repeat(32))).toThrow("Sheet name must be 31 characters or less");
     });
 
     it("シート名に : を含むとエラー", () => {
-      expect(() => xlkit().sheet("Sheet:1")).toThrow("シート名に使用できない文字が含まれています");
+      expect(() => xlkit().sheet("Sheet:1")).toThrow("Sheet name contains invalid character");
     });
 
     it("シート名に / を含むとエラー", () => {
-      expect(() => xlkit().sheet("Sheet/1")).toThrow("シート名に使用できない文字が含まれています");
+      expect(() => xlkit().sheet("Sheet/1")).toThrow("Sheet name contains invalid character");
     });
 
     it("シート名に \\ を含むとエラー", () => {
-      expect(() => xlkit().sheet("Sheet\\1")).toThrow("シート名に使用できない文字が含まれています");
+      expect(() => xlkit().sheet("Sheet\\1")).toThrow("Sheet name contains invalid character");
     });
 
     it("シート名に ? を含むとエラー", () => {
-      expect(() => xlkit().sheet("Sheet?1")).toThrow("シート名に使用できない文字が含まれています");
+      expect(() => xlkit().sheet("Sheet?1")).toThrow("Sheet name contains invalid character");
     });
 
     it("シート名に * を含むとエラー", () => {
-      expect(() => xlkit().sheet("Sheet*1")).toThrow("シート名に使用できない文字が含まれています");
+      expect(() => xlkit().sheet("Sheet*1")).toThrow("Sheet name contains invalid character");
     });
 
     it("シート名に [ を含むとエラー", () => {
-      expect(() => xlkit().sheet("Sheet[1")).toThrow("シート名に使用できない文字が含まれています");
+      expect(() => xlkit().sheet("Sheet[1")).toThrow("Sheet name contains invalid character");
     });
 
     it("シート名に ] を含むとエラー", () => {
-      expect(() => xlkit().sheet("Sheet]1")).toThrow("シート名に使用できない文字が含まれています");
+      expect(() => xlkit().sheet("Sheet]1")).toThrow("Sheet name contains invalid character");
     });
 
     it("シート名が空白のみでエラー", () => {
-      expect(() => xlkit().sheet("   ")).toThrow("シート名を空白のみにすることはできません");
+      expect(() => xlkit().sheet("   ")).toThrow("Sheet name cannot be only whitespace");
     });
 
     // 注: 行数・列数超過テストはメモリ使用量が大きいためスキップ

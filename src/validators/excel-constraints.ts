@@ -12,19 +12,19 @@ export const EXCEL_LIMITS = {
 export function validateSheetName(name: string): void {
   // 文字数チェック
   if (name.length > EXCEL_LIMITS.SHEET_NAME_MAX_LENGTH) {
-    throw new Error("シート名は31文字以内である必要があります");
+    throw new Error("Sheet name must be 31 characters or less");
   }
 
   // 禁止文字チェック
   for (const char of EXCEL_LIMITS.SHEET_NAME_INVALID_CHARS) {
     if (name.includes(char)) {
-      throw new Error(`シート名に使用できない文字が含まれています: ${char}`);
+      throw new Error(`Sheet name contains invalid character: ${char}`);
     }
   }
 
   // 空白のみチェック
   if (name.trim().length === 0) {
-    throw new Error("シート名を空白のみにすることはできません");
+    throw new Error("Sheet name cannot be only whitespace");
   }
 }
 
@@ -33,10 +33,10 @@ export function validateSheetName(name: string): void {
  */
 export function validateDataSize(rowCount: number, columnCount: number): void {
   if (rowCount > EXCEL_LIMITS.MAX_ROWS) {
-    throw new Error("データ行数がExcelの上限(1,048,576行)を超えています");
+    throw new Error("Row count exceeds Excel limit (1,048,576 rows)");
   }
 
   if (columnCount > EXCEL_LIMITS.MAX_COLUMNS) {
-    throw new Error("列数がExcelの上限(16,384列)を超えています");
+    throw new Error("Column count exceeds Excel limit (16,384 columns)");
   }
 }

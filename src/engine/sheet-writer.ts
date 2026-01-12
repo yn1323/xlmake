@@ -11,6 +11,7 @@ import type { TextInput } from "../types/text";
 import { isStyledCell } from "../types/text";
 import type { Block, SheetState } from "../types/workbook";
 import { isImageBlock, isSpaceBlock, isTableBlock, isTextBlock } from "../types/workbook";
+import { isBuffer, isUrl } from "../utils/buffer";
 import { buildHeaderRows, flattenColumns, getHeaderDepth } from "../utils/column";
 import { getOrCreateRow, mergeCells, writeCell } from "./cell-writer";
 import { calculateColumnWidths } from "./width-calculator";
@@ -32,22 +33,22 @@ export class SheetWriter {
   /**
    * SheetStateを書き込む
    */
-  writeSheet(sheetState: SheetState): void {
+  async writeSheet(sheetState: SheetState): Promise<void> {
     for (const block of sheetState.blocks) {
-      this.writeBlock(block);
+      await this.writeBlock(block);
     }
   }
 
   /**
    * ブロックを書き込む
    */
-  private writeBlock(block: Block): void {
+  private async writeBlock(block: Block): Promise<void> {
     if (isTableBlock(block)) {
       this.writeTable(block.options);
     } else if (isTextBlock(block)) {
       this.writeText(block.input);
     } else if (isImageBlock(block)) {
-      this.writeImage(block.options);
+      await this.writeImage(block.options);
     } else if (isSpaceBlock(block)) {
       this.writeSpace(block.lines);
     }
@@ -393,20 +394,23 @@ export class SheetWriter {
   /**
    * 画像を書き込む
    */
-  private writeImage(options: ImageOptions): void {
+  private async writeImage(options: ImageOptions): Promise<void> {
     const { source, width = 100, height = 100, row, col = 0 } = options;
 
     // 画像ソースの処理
-    let imageBuffer: Buffer;
-    if (Buffer.isBuffer(source)) {
+    let imageBuffer: Buffer | ArrayBuffer;
+
+    if (isBuffer(source)) {
+      // Node.js Buffer
       imageBuffer = source;
+    } else if (isUrl(source)) {
+      // URL - fetch APIで取得（ブラウザ・Node.js両対応）
+      const response = await fetch(source);
+      imageBuffer = await response.arrayBuffer();
     } else {
       // ファイルパスとして読み込み（Node.js環境のみ）
-      // ブラウザ環境では動作しないため、エラーをスローする
       if (typeof window !== "undefined") {
-        throw new Error(
-          "File path image source is not supported in browser environment. Please provide a Buffer instead.",
-        );
+        throw new Error("File path is not supported in browser. Use URL or Buffer.");
       }
       // Node.js環境での動的require
       // eslint-disable-next-line @typescript-eslint/no-require-imports

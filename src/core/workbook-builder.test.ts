@@ -32,7 +32,7 @@ describe("WorkbookBuilder", () => {
   it("should throw error for duplicate sheet names", () => {
     const wb = xlkit();
     wb.sheet("売上");
-    expect(() => wb.sheet("売上")).toThrow('シート名 "売上" は既に存在します');
+    expect(() => wb.sheet("売上")).toThrow('Sheet name "売上" already exists');
   });
 
   it("should return SheetBuilder from sheet()", () => {

@@ -74,7 +74,7 @@ export const TABLE_PRESETS: Record<string, TablePresetConfig> = {
 export function getPreset(presetName: string): TablePresetConfig {
   const preset = TABLE_PRESETS[presetName];
   if (!preset) {
-    throw new Error(`不明なプリセット名: ${presetName}`);
+    throw new Error(`Unknown preset name: ${presetName}`);
   }
   return preset;
 }

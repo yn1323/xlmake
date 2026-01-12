@@ -27,7 +27,7 @@ export class WorkbookBuilder {
 
     // 既存のシート名と重複チェック
     if (this.state.sheets.some((s) => s.name === sheetName)) {
-      throw new Error(`シート名 "${sheetName}" は既に存在します`);
+      throw new Error(`Sheet name "${sheetName}" already exists`);
     }
 
     // 新しいシートを追加

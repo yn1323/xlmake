@@ -79,7 +79,7 @@ export class SheetBuilder {
   space(lines = 1): this {
     // バリデーション
     if (lines <= 0) {
-      throw new Error("space() の引数は正の整数である必要があります");
+      throw new Error("space() argument must be a positive integer");
     }
 
     // ブロックを追加
