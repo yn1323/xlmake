@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Tokyo",
+  "labels": ["renovate"],
+  "baseBranches": ["develop"],
+  "automerge": true,
+  "schedule": ["every weekend"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "minimumReleaseAge": "14 days"
+    }
+  ]
+}
