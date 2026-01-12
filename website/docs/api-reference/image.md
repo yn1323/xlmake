@@ -10,7 +10,7 @@ sidebar_position: 6
 
 ```typescript
 .image({
-  source: Buffer | string,  // Bufferまたはファイルパス
+  source: Buffer | string,  // Buffer、URL、またはファイルパス
   width?: number,           // 幅（ピクセル）
   height?: number,          // 高さ（ピクセル）
   row?: number,             // 行位置（0-indexed）
@@ -20,7 +20,7 @@ sidebar_position: 6
 
 | プロパティ | 型 | 説明 |
 |-----------|-----|------|
-| `source` | `Buffer` \| `string` | 画像データまたはファイルパス |
+| `source` | `Buffer` \| `string` | 画像データ、URL、またはファイルパス（Node.jsのみ） |
 | `width` | `number` | 画像の幅（ピクセル） |
 | `height` | `number` | 画像の高さ（ピクセル） |
 | `row` | `number` | 配置する行（0から開始） |
@@ -47,6 +47,16 @@ const logoBuffer = readFileSync("./logo.png");
 ```typescript
 .image({
   source: "./logo.png",
+  width: 150,
+  height: 75,
+})
+```
+
+### URLを使用（ブラウザ・Node.js両対応）
+
+```typescript
+.image({
+  source: "https://example.com/logo.png",
   width: 150,
   height: 75,
 })

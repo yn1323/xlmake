@@ -62,6 +62,39 @@ const imageBuffer = readFileSync("./image.png");
 })
 ```
 
+### Using URL (Browser & Node.js)
+
+```typescript
+.image({
+  source: "https://example.com/image.png",
+  width: 200,
+  height: 100,
+})
+```
+
+## Browser Usage
+
+In browser environments, you can insert images using URL.
+
+```typescript
+import { xlkit } from "xlkit";
+
+const output = await xlkit()
+  .sheet("Report")
+  .image({
+    source: "https://example.com/logo.png",
+    width: 150,
+    height: 75,
+  })
+  .getBrowser();
+
+await output.download("report.xlsx");
+```
+
+:::note
+File path specification is only available in Node.js environment. Use URL or Buffer in browser environments.
+:::
+
 ## Specifying Size
 
 Image size is specified in pixels.

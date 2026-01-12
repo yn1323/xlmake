@@ -58,11 +58,11 @@ describe("getPreset", () => {
   });
 
   it("should throw error for unknown preset", () => {
-    expect(() => getPreset("unknown")).toThrow("不明なプリセット名: unknown");
+    expect(() => getPreset("unknown")).toThrow("Unknown preset name: unknown");
   });
 
   it("should throw error for empty string", () => {
-    expect(() => getPreset("")).toThrow("不明なプリセット名: ");
+    expect(() => getPreset("")).toThrow("Unknown preset name: ");
   });
 });
 

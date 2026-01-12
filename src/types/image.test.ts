@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { isBuffer } from "../utils/buffer";
 import type { ImageSource } from "./image";
-import { isBuffer } from "./image";
 
 describe("isBuffer", () => {
   it("should return true for Buffer", () => {

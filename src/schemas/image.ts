@@ -1,8 +1,12 @@
 import { z } from "zod";
+import { isBuffer } from "../utils/buffer";
 
 // ImageSource（Buffer or string）
+// ブラウザ環境でも動作するようにカスタムバリデーターを使用
 const imageSourceSchema = z.union([
-  z.instanceof(Buffer),
+  z.custom<Buffer>((val) => isBuffer(val), {
+    message: "Expected Buffer",
+  }),
   z
     .string()
     .url(), // URL形式
