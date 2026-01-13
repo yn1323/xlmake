@@ -23,6 +23,7 @@ const builder = xlkit();
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `sheet(name?)` | `SheetBuilder` | Add sheet |
+| `merge(workbooks)` | `this` | Merge multiple workbooks |
 | `getNode()` | `Promise<NodeOutput>` | Get Node.js output |
 | `getBrowser()` | `Promise<BrowserOutput>` | Get browser output |
 
@@ -35,6 +36,7 @@ const builder = xlkit();
 | `image(options)` | `this` | Add image |
 | `space(lines?)` | `this` | Add empty rows (default: 1) |
 | `sheet(name?)` | `SheetBuilder` | Switch to another sheet |
+| `merge(workbooks)` | `WorkbookBuilder` | Merge multiple workbooks |
 | `getNode()` | `Promise<NodeOutput>` | Get Node.js output |
 | `getBrowser()` | `Promise<BrowserOutput>` | Get browser output |
 
@@ -48,6 +50,58 @@ xlkit().sheet("Sales Data")
 
 // Without name (Sheet1, Sheet2... auto-generated)
 xlkit().sheet()
+```
+
+## merge()
+
+Merges multiple workbooks into one.
+
+**Parameters:**
+- `workbooks: (WorkbookBuilder | SheetBuilder)[]` - Array of workbooks to merge
+
+**Returns:**
+- `WorkbookBuilder` or `this` (for method chaining)
+
+**Errors:**
+- Throws `Error` if sheet names are duplicated
+- Empty workbooks (0 sheets) are ignored
+
+**Usage:**
+
+```typescript
+// Basic usage
+const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlkit().merge([bookA, bookB]);
+```
+
+```typescript
+// Modularized sheet creation
+function createSalesSheet() {
+  return xlkit().sheet("Sales").table({ ... });
+}
+
+function createStockSheet() {
+  return xlkit().sheet("Stock").table({ ... });
+}
+
+// Merge into one file
+const merged = xlkit().merge([
+  createSalesSheet(),
+  createStockSheet(),
+]);
+
+await merged.getNode().saveToFile("report.xlsx");
+```
+
+```typescript
+// Method chaining
+const merged = xlkit()
+  .sheet("Start")
+  .text("Start")
+  .merge([bookA, bookB])
+  .sheet("End")
+  .text("End");
 ```
 
 ## getNode()
