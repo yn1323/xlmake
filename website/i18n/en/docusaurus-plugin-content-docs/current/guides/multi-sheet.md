@@ -88,6 +88,71 @@ const output = await xlkit()
   .getNode();
 ```
 
+## Merging Workbooks
+
+You can merge separately created workbooks later.
+
+### Basic Usage
+
+```typescript
+const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlkit().merge([bookA, bookB]);
+```
+
+### Use Cases
+
+#### Modularization
+
+Separate each sheet into functions to organize your code:
+
+```typescript
+// Separate each sheet into functions
+function createSalesSheet() {
+  return xlkit()
+    .sheet("Sales")
+    .table({ columns: [...], data: salesData });
+}
+
+function createStockSheet() {
+  return xlkit()
+    .sheet("Stock")
+    .table({ columns: [...], data: stockData });
+}
+
+// Merge and output
+const report = xlkit().merge([
+  createSalesSheet(),
+  createStockSheet(),
+]);
+
+await report.getNode().saveToFile("report.xlsx");
+```
+
+#### Conditional Sheet Addition
+
+Dynamically add sheets based on conditions:
+
+```typescript
+const baseBook = xlkit().sheet("Base Data").table({ ... });
+const sheets = [baseBook];
+
+if (includeDetails) {
+  sheets.push(xlkit().sheet("Details").table({ ... }));
+}
+
+if (includeSummary) {
+  sheets.push(xlkit().sheet("Summary").table({ ... }));
+}
+
+const report = xlkit().merge(sheets);
+```
+
+### Notes
+
+- **Duplicate sheet names**: An error is thrown if the same sheet name exists
+- **Empty workbooks**: Workbooks with no sheets are ignored
+
 ## Sheet Name Constraints
 
 Due to Excel specifications, sheet names have these constraints:
