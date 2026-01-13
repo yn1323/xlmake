@@ -39,6 +39,38 @@ export class WorkbookBuilder {
   }
 
   /**
+   * 複数のワークブックをマージする
+   * @param workbooks マージするワークブックの配列
+   * @returns this（メソッドチェーン用）
+   */
+  merge(workbooks: (WorkbookBuilder | SheetBuilder)[]): this {
+    for (const workbook of workbooks) {
+      const sourceState = workbook.getState();
+
+      // 空のワークブックは無視
+      if (sourceState.sheets.length === 0) {
+        continue;
+      }
+
+      // 各シートを自身のワークブックに追加
+      for (const sheet of sourceState.sheets) {
+        // シート名の重複チェック
+        if (this.state.sheets.some((s) => s.name === sheet.name)) {
+          throw new Error(`Sheet name "${sheet.name}" already exists`);
+        }
+
+        // シート名のExcel制約チェック（念のため）
+        validateSheetName(sheet.name);
+
+        // シートを追加
+        this.state.sheets.push(sheet);
+      }
+    }
+
+    return this;
+  }
+
+  /**
    * ワークブックの状態を取得（内部用）
    */
   getState(): WorkbookState {
