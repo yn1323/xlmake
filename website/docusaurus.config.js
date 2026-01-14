@@ -8,10 +8,10 @@ const config = {
   favicon: "img/favicon.ico",
 
   url: "https://yn1323.github.io",
-  baseUrl: "/xlkit/",
+  baseUrl: "/xlmake/",
 
   organizationName: "yn1323",
-  projectName: "xlkit",
+  projectName: "xlmake",
 
   onBrokenLinks: "throw",
 
@@ -43,7 +43,7 @@ const config = {
       ({
         docs: {
           sidebarPath: "./sidebars.js",
-          editUrl: "https://github.com/yn1323/xlkit/tree/main/website/",
+          editUrl: "https://github.com/yn1323/xlmake/tree/main/website/",
         },
         blog: false,
         theme: {
@@ -70,7 +70,7 @@ const config = {
             position: "right",
           },
           {
-            href: "https://github.com/yn1323/xlkit",
+            href: "https://github.com/yn1323/xlmake",
             label: "GitHub",
             position: "right",
           },
@@ -93,7 +93,7 @@ const config = {
             items: [
               {
                 label: "GitHub",
-                href: "https://github.com/yn1323/xlkit",
+                href: "https://github.com/yn1323/xlmake",
               },
               {
                 label: "npm",
