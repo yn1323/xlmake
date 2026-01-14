@@ -2,7 +2,7 @@ import type { Alignment, Border, Borders, Fill, Font, Style } from "exceljs";
 import type { BorderStyle, CellStyle, LineStyle } from "../types/style";
 
 /**
- * xlkitのCellStyleをExcelJSのStyleに変換
+ * xlmakeのCellStyleをExcelJSのStyleに変換
  */
 export function convertToExcelJSStyle(style: CellStyle | undefined): Partial<Style> {
   if (!style) return {};

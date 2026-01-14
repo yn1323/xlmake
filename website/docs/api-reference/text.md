@@ -33,7 +33,7 @@ sidebar_position: 5
 ## 使用例
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("レポート")
   .text({ value: "売上レポート", style: { bold: true, fontSize: 16 } })
   .text("2024年1月分")

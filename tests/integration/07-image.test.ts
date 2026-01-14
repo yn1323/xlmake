@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { read, xlkit } from "../../src/index";
+import { read, xlmake } from "../../src/index";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outputDir = join(__dirname, "..", "output");
@@ -16,7 +16,7 @@ describe("07-image.xlsx", () => {
 
   it("should generate image file (visual confirmation)", async () => {
     // 生成
-    const node = await xlkit()
+    const node = await xlmake()
       .sheet("ImageTest")
       .text({ value: "画像テスト", style: { bold: true, fontSize: 14 } })
       .space(1)

@@ -1,6 +1,6 @@
 {
-  "name": "xlkit",
-  "version": "1.3.0",
+  "name": "xlmake",
+  "version": "1.3.1",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -33,15 +33,15 @@
   ],
   "author": "",
   "license": "MIT",
-  "description": "xlkit - Declarative schema-based wrapper for ExcelJS with type safety and intuitive styling",
+  "description": "xlmake - Declarative schema-based wrapper for ExcelJS with type safety and intuitive styling",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yn1323/xlkit.git"
+    "url": "git+https://github.com/yn1323/xlmake.git"
   },
   "bugs": {
-    "url": "https://github.com/yn1323/xlkit/issues"
+    "url": "https://github.com/yn1323/xlmake/issues"
   },
-  "homepage": "https://github.com/yn1323/xlkit#readme",
+  "homepage": "https://github.com/yn1323/xlmake#readme",
   "dependencies": {
     "exceljs": "^4.4.0",
     "zod": "^4.3.5"

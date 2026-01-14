@@ -33,7 +33,7 @@ Adds text.
 ## Example
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   .text({ value: "Sales Report", style: { bold: true, fontSize: 16 } })
   .text("January 2024")

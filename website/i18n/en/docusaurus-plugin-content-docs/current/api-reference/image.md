@@ -69,7 +69,7 @@ import { readFileSync } from "fs";
 
 const logoBuffer = readFileSync("./logo.png");
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   .text({ value: "Monthly Report", style: { bold: true, fontSize: 16 } })
   .space(1)

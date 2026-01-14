@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Unsupported Features
 
-xlkit is primarily designed for "data export" and does not support the following features.
+xlmake is primarily designed for "data export" and does not support the following features.
 
 ## Unsupported Features List
 
@@ -21,11 +21,11 @@ xlkit is primarily designed for "data export" and does not support the following
 
 ### Charts
 
-xlkit is designed for data export, so chart functionality is not supported. If you need charts, consider generating them as images and inserting with `.image()`.
+xlmake is designed for data export, so chart functionality is not supported. If you need charts, consider generating them as images and inserting with `.image()`.
 
 ### Formulas
 
-xlkit does not support formulas. Perform calculations in JavaScript/TypeScript and pass the results as data.
+xlmake does not support formulas. Perform calculations in JavaScript/TypeScript and pass the results as data.
 
 ```typescript
 // NG: Formulas don't work
@@ -37,7 +37,7 @@ xlkit does not support formulas. Perform calculations in JavaScript/TypeScript a
 
 ### Appending to Existing Excel
 
-xlkit always generates new Excel files. Appending to existing files is not supported.
+xlmake always generates new Excel files. Appending to existing files is not supported.
 
 ### Column Width/Row Height Reading
 
@@ -45,11 +45,11 @@ When reading existing Excel files with `read()`, column width and row height inf
 
 ### Pivot Tables / Macros
 
-xlkit is designed for simple data export, so pivot tables and macros are not supported.
+xlmake is designed for simple data export, so pivot tables and macros are not supported.
 
 ## Alternatives
 
-For more advanced Excel operations, consider using [ExcelJS](https://github.com/exceljs/exceljs) directly. xlkit is built on ExcelJS but focuses on providing a more declarative and user-friendly API.
+For more advanced Excel operations, consider using [ExcelJS](https://github.com/exceljs/exceljs) directly. xlmake is built on ExcelJS but focuses on providing a more declarative and user-friendly API.
 
 ## Related
 

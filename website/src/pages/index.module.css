@@ -6,7 +6,7 @@
   padding: 5rem 0 4rem;
   text-align: center;
   overflow: hidden;
-  background: var(--xlkit-hero-gradient);
+  background: var(--xlmake-hero-gradient);
 }
 
 /* Grid pattern background */
@@ -85,7 +85,7 @@
    ============================================ */
 .features {
   padding: 4rem 0;
-  background: var(--xlkit-bg-gradient);
+  background: var(--xlmake-bg-gradient);
 }
 
 .featuresContainer {
@@ -98,11 +98,11 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
-  border: 2px solid var(--xlkit-cell-border);
+  border: 2px solid var(--xlmake-cell-border);
   border-radius: 8px;
   overflow: hidden;
   background: var(--ifm-background-color);
-  box-shadow: var(--xlkit-card-shadow);
+  box-shadow: var(--xlmake-card-shadow);
 }
 
 @media (max-width: 768px) {
@@ -114,7 +114,7 @@
 .featureCard {
   position: relative;
   padding: 2rem 1.5rem 1.5rem;
-  border-right: 1px solid var(--xlkit-grid-border);
+  border-right: 1px solid var(--xlmake-grid-border);
   transition: all 0.2s ease;
   background: var(--ifm-background-color);
 }
@@ -126,7 +126,7 @@
 @media (max-width: 768px) {
   .featureCard {
     border-right: none;
-    border-bottom: 1px solid var(--xlkit-grid-border);
+    border-bottom: 1px solid var(--xlmake-grid-border);
   }
 
   .featureCard:last-child {
@@ -135,7 +135,7 @@
 }
 
 .featureCard:hover {
-  background: var(--xlkit-grid-color);
+  background: var(--xlmake-grid-color);
   box-shadow: inset 0 0 0 2px var(--ifm-color-primary);
 }
 
@@ -302,8 +302,8 @@
   background: var(--ifm-background-color);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: var(--xlkit-card-shadow);
-  border: 1px solid var(--xlkit-grid-border);
+  box-shadow: var(--xlmake-card-shadow);
+  border: 1px solid var(--xlmake-grid-border);
 }
 
 .excelPreviewHeader {
@@ -343,13 +343,13 @@
 
 .excelTable th,
 .excelTable td {
-  border: 1px solid var(--xlkit-grid-border);
+  border: 1px solid var(--xlmake-grid-border);
   padding: 0.6rem 0.75rem;
   text-align: left;
 }
 
 .excelTable th {
-  background: var(--xlkit-grid-color);
+  background: var(--xlmake-grid-color);
   font-weight: 600;
   color: var(--ifm-heading-color);
 }
@@ -359,21 +359,21 @@
 }
 
 .excelTable tr:hover td {
-  background: var(--xlkit-grid-color);
+  background: var(--xlmake-grid-color);
 }
 
 /* Row/Column headers */
 .excelRowHeader {
-  background: var(--xlkit-header-bg, #f3f3f3);
-  color: var(--xlkit-header-color, #666);
+  background: var(--xlmake-header-bg, #f3f3f3);
+  color: var(--xlmake-header-color, #666);
   font-weight: 500;
   text-align: center;
   width: 30px;
 }
 
 .excelColHeader {
-  background: var(--xlkit-header-bg, #f3f3f3);
-  color: var(--xlkit-header-color, #666);
+  background: var(--xlmake-header-bg, #f3f3f3);
+  color: var(--xlmake-header-color, #666);
   font-weight: 500;
   text-align: center;
 }
@@ -403,8 +403,8 @@
 /* Download Button in Excel Preview */
 .excelPreviewFooter {
   padding: 0.75rem 1rem;
-  background: var(--xlkit-grid-color);
-  border-top: 1px solid var(--xlkit-grid-border);
+  background: var(--xlmake-grid-color);
+  border-top: 1px solid var(--xlmake-grid-border);
   display: flex;
   justify-content: center;
 }

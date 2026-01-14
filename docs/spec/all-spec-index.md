@@ -1,12 +1,12 @@
 
-## xlkitドキュメント（website/docs）
+## xlmakeドキュメント（website/docs）
 
 ドキュメントサイトの修正・実装時は以下を参照。
 
 ### 入門（Getting Started）
 | ファイル | 説明 |
 |---------|------|
-| `docs/intro.md` | xlkitの紹介、ExcelJSとの比較、主な特徴 |
+| `docs/intro.md` | xlmakeの紹介、ExcelJSとの比較、主な特徴 |
 | `docs/installation.md` | インストール方法、動作環境 |
 | `docs/quick-start.md` | 基本的な使い方、Node.js/ブラウザでの使用例 |
 
@@ -22,8 +22,8 @@
 ### APIリファレンス（API Reference）
 | ファイル | 説明 |
 |---------|------|
-| `docs/api-reference/overview.md` | API全体像、xlkit()/read()、メソッド一覧 |
-| `docs/api-reference/xlkit.md` | xlkit()ファクトリ、WorkbookBuilder/SheetBuilder |
+| `docs/api-reference/overview.md` | API全体像、xlmake()/read()、メソッド一覧 |
+| `docs/api-reference/xlmake.md` | xlmake()ファクトリ、WorkbookBuilder/SheetBuilder |
 | `docs/api-reference/table.md` | .table() API、TableOptions、Column定義 |
 | `docs/api-reference/text.md` | .text() API、TextInput |
 | `docs/api-reference/image.md` | .image() API、ImageOptions |

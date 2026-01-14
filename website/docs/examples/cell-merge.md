@@ -11,7 +11,7 @@ sidebar_position: 4
 `mergeSameValues: true`を指定すると、全ての列で同じ値のセルがマージされます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",
@@ -45,7 +45,7 @@ const output = await xlkit()
 特定の列だけマージしたい場合は、カラム定義で`mergeSameValues`を指定します。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",
@@ -69,7 +69,7 @@ const output = await xlkit()
 複数の列でそれぞれマージすることもできます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",

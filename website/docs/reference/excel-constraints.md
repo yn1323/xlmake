@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Excel制約
 
-xlkitはExcelの仕様に基づく制約を自動でチェックし、違反時はエラーをスローします。
+xlmakeはExcelの仕様に基づく制約を自動でチェックし、違反時はエラーをスローします。
 
 ## 制約一覧
 
@@ -23,10 +23,10 @@ xlkitはExcelの仕様に基づく制約を自動でチェックし、違反時�
 
 ```typescript
 // OK
-xlkit().sheet("売上データ2024年1月分")  // 14文字
+xlmake().sheet("売上データ2024年1月分")  // 14文字
 
 // NG: エラーがスローされる
-xlkit().sheet("これは31文字を超える非常に長いシート名です")
+xlmake().sheet("これは31文字を超える非常に長いシート名です")
 ```
 
 ### 禁止文字
@@ -43,15 +43,15 @@ xlkit().sheet("これは31文字を超える非常に長いシート名です")
 
 ```typescript
 // NG: エラーがスローされる
-xlkit().sheet("売上/在庫")    // スラッシュを含む
-xlkit().sheet("データ[2024]") // 角括弧を含む
+xlmake().sheet("売上/在庫")    // スラッシュを含む
+xlmake().sheet("データ[2024]") // 角括弧を含む
 ```
 
 ## 行数・列数の制約
 
 Excelの最大行数は1,048,576行、最大列数は16,384列（XFD列）です。
 
-xlkitはこれらの制約を自動でチェックし、超過した場合はエラーをスローします。
+xlmakeはこれらの制約を自動でチェックし、超過した場合はエラーをスローします。
 
 ## エラーハンドリング
 
@@ -59,7 +59,7 @@ xlkitはこれらの制約を自動でチェックし、超過した場合はエ
 
 ```typescript
 try {
-  const output = await xlkit()
+  const output = await xlmake()
     .sheet("これは31文字を超える非常に長いシート名です")
     .table({ ... })
     .getNode();
@@ -71,4 +71,4 @@ try {
 ## 関連
 
 - [複数シート](../guides/multi-sheet.md) - 複数シートの作成方法
-- [サポートしていない機能](./limitations.md) - xlkitの制限事項
+- [サポートしていない機能](./limitations.md) - xlmakeの制限事項

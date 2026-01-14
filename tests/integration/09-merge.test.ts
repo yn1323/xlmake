@@ -1,7 +1,7 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { read, xlkit } from "../../src/index";
+import { read, xlmake } from "../../src/index";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outputDir = join(__dirname, "..", "output");
@@ -20,7 +20,7 @@ describe("09-merge.xlsx", () => {
 
   it("should generate and verify merge features", async () => {
     // 生成
-    const node = await xlkit()
+    const node = await xlmake()
       // MergeSameValues: ボディの垂直マージ（テーブル全体設定）
       .sheet("MergeSameValues")
       .table({

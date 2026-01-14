@@ -2,7 +2,7 @@ import { existsSync, readFileSync, unlinkSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
-import { read, xlkit } from "../../src/index";
+import { read, xlmake } from "../../src/index";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outputDir = join(__dirname, "..", "output");
@@ -18,7 +18,7 @@ describe("00-output.xlsx - 出力形式テスト", () => {
   });
 
   it("toBuffer() should return valid Excel buffer", async () => {
-    const node = await xlkit()
+    const node = await xlmake()
       .sheet("Test")
       .table({
         columns: [
@@ -42,7 +42,7 @@ describe("00-output.xlsx - 出力形式テスト", () => {
   });
 
   it("saveToFile() should create valid Excel file", async () => {
-    const node = await xlkit()
+    const node = await xlmake()
       .sheet("Test")
       .table({
         columns: [
@@ -66,7 +66,7 @@ describe("00-output.xlsx - 出力形式テスト", () => {
   });
 
   it("toBuffer() and saveToFile() should produce equivalent content", async () => {
-    const node = await xlkit()
+    const node = await xlmake()
       .sheet("Test")
       .table({
         columns: [

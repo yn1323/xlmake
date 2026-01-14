@@ -4,16 +4,16 @@ sidebar_position: 3
 
 # Multiple Sheets
 
-xlkit makes it easy to create Excel files with multiple sheets.
+xlmake makes it easy to create Excel files with multiple sheets.
 
 ## Basic Usage
 
 Call `sheet()` consecutively to create multiple sheets.
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",
@@ -42,7 +42,7 @@ await output.saveToFile("report.xlsx");
 ### Explicit Names
 
 ```typescript
-xlkit()
+xlmake()
   .sheet("Sales Data")
   .sheet("Stock Data")
   .sheet("Customer Master")
@@ -53,7 +53,7 @@ xlkit()
 When omitted, names are auto-generated as Sheet1, Sheet2...
 
 ```typescript
-xlkit()
+xlmake()
   .sheet()  // Sheet1
   .sheet()  // Sheet2
   .sheet()  // Sheet3
@@ -64,7 +64,7 @@ xlkit()
 Each sheet can have independent tables, text, and images.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Summary")
   .text({ value: "Monthly Report", style: { bold: true, fontSize: 16 } })
   .space(2)
@@ -95,9 +95,9 @@ You can merge separately created workbooks later.
 ### Basic Usage
 
 ```typescript
-const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
-const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
-const merged = xlkit().merge([bookA, bookB]);
+const bookA = xlmake().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlmake().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlmake().merge([bookA, bookB]);
 ```
 
 ### Use Cases
@@ -109,19 +109,19 @@ Separate each sheet into functions to organize your code:
 ```typescript
 // Separate each sheet into functions
 function createSalesSheet() {
-  return xlkit()
+  return xlmake()
     .sheet("Sales")
     .table({ columns: [...], data: salesData });
 }
 
 function createStockSheet() {
-  return xlkit()
+  return xlmake()
     .sheet("Stock")
     .table({ columns: [...], data: stockData });
 }
 
 // Merge and output
-const report = xlkit().merge([
+const report = xlmake().merge([
   createSalesSheet(),
   createStockSheet(),
 ]);
@@ -134,18 +134,18 @@ await report.getNode().saveToFile("report.xlsx");
 Dynamically add sheets based on conditions:
 
 ```typescript
-const baseBook = xlkit().sheet("Base Data").table({ ... });
+const baseBook = xlmake().sheet("Base Data").table({ ... });
 const sheets = [baseBook];
 
 if (includeDetails) {
-  sheets.push(xlkit().sheet("Details").table({ ... }));
+  sheets.push(xlmake().sheet("Details").table({ ... }));
 }
 
 if (includeSummary) {
-  sheets.push(xlkit().sheet("Summary").table({ ... }));
+  sheets.push(xlmake().sheet("Summary").table({ ... }));
 }
 
-const report = xlkit().merge(sheets);
+const report = xlmake().merge(sheets);
 ```
 
 ### Notes
@@ -160,12 +160,12 @@ Due to Excel specifications, sheet names have these constraints:
 - Maximum 31 characters
 - Cannot contain: `: \ / ? * [ ]`
 
-xlkit throws an error when these constraints are violated.
+xlmake throws an error when these constraints are violated.
 
 ## Complete Example
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 const salesData = [
   { name: "Apple", sales: 50000 },
@@ -177,7 +177,7 @@ const stockData = [
   { name: "Orange", stock: 200 },
 ];
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .text({ value: "Sales Data", style: { bold: true, fontSize: 14 } })
   .space(1)
@@ -207,5 +207,5 @@ await output.saveToFile("multi-sheet.xlsx");
 
 ## Related
 
-- [Basic Usage](./basic-usage.md) - xlkit basics
+- [Basic Usage](./basic-usage.md) - xlmake basics
 - [Excel Constraints](../reference/excel-constraints.md) - Excel constraints

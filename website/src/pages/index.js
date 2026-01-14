@@ -93,10 +93,10 @@ function DownloadButton() {
   const handleDownload = async () => {
     setIsLoading(true);
     try {
-      const { xlkit } = await import("xlkit");
-      const browserOutput = await xlkit()
+      const { xlmake } = await import("xlmake");
+      const browserOutput = await xlmake()
         .sheet("売上")
-        .text({ value: "xlkit サンプル", style: { bold: true, fontSize: 16 } })
+        .text({ value: "xlmake サンプル", style: { bold: true, fontSize: 16 } })
         .space(1)
         .image({
           source: "https://raw.githubusercontent.com/yn1323/xlkit/main/logo.png",
@@ -151,12 +151,12 @@ function CodeExample() {
             </div>
             <pre className={styles.codeBlock}>
               <code>
-                <span className={styles.codeKeyword}>import</span> {"{ xlkit }"}{" "}
-                <span className={styles.codeKeyword}>from</span> <span className={styles.codeString}>"xlkit"</span>;
+                <span className={styles.codeKeyword}>import</span> {"{ xlmake }"}{" "}
+                <span className={styles.codeKeyword}>from</span> <span className={styles.codeString}>"xlmake"</span>
                 {"\n"}
                 {"\n"}
                 <span className={styles.codeKeyword}>const</span> <span className={styles.codeVariable}>output</span> ={" "}
-                <span className={styles.codeKeyword}>await</span> <span className={styles.codeFunction}>xlkit</span>()
+                <span className={styles.codeKeyword}>await</span> <span className={styles.codeFunction}>xlmake</span>()
                 {"\n"}
                 {"  "}.<span className={styles.codeFunction}>sheet</span>(
                 <span className={styles.codeString}>"売上"</span>){"\n"}
@@ -274,7 +274,7 @@ function CodeExample() {
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <Layout title={`${siteConfig.title} - ${siteConfig.tagline}`} description="xlkit - 宣言的なExcel生成ライブラリ">
+    <Layout title={`${siteConfig.title} - ${siteConfig.tagline}`} description="xlmake - 宣言的なExcel生成ライブラリ">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

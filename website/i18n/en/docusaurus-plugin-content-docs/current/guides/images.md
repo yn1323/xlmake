@@ -4,17 +4,17 @@ sidebar_position: 4
 
 # Images
 
-Learn how to insert images into Excel with xlkit.
+Learn how to insert images into Excel with xlmake.
 
 ## Basic Usage
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 import { readFileSync } from "fs";
 
 const logoBuffer = readFileSync("./logo.png");
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   .image({
     source: logoBuffer,
@@ -77,9 +77,9 @@ const imageBuffer = readFileSync("./image.png");
 In browser environments, you can insert images using URL.
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   .image({
     source: "https://example.com/logo.png",
@@ -124,7 +124,7 @@ Use `row` and `col` to specify placement position (starting from 0).
 ## Combining with Text and Tables
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   .text({ value: "Monthly Report", style: { bold: true, fontSize: 16 } })
   .space(1)
@@ -145,13 +145,13 @@ const output = await xlkit()
 ## Complete Example
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 import { readFileSync } from "fs";
 
 const logoBuffer = readFileSync("./company-logo.png");
 const chartBuffer = readFileSync("./sales-chart.png");
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   // Header section
   .text({ value: "Sample Corporation", style: { bold: true, fontSize: 18 } })
@@ -194,4 +194,4 @@ await output.saveToFile("report-with-images.xlsx");
 ## Related
 
 - [.image() API](../api-reference/image.md) - Image API details
-- [Basic Usage](./basic-usage.md) - xlkit basics
+- [Basic Usage](./basic-usage.md) - xlmake basics

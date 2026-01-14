@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { read, xlkit } from "../../src";
+import { read, xlmake } from "../../src";
 
 describe("Workbook merge integration", () => {
   it("should correctly output merged workbook to Excel", async () => {
     // 別々にワークブックを作成
-    const salesBook = xlkit()
+    const salesBook = xlmake()
       .sheet("売上")
       .table({
         preset: "basic",
@@ -18,7 +18,7 @@ describe("Workbook merge integration", () => {
         ],
       });
 
-    const stockBook = xlkit()
+    const stockBook = xlmake()
       .sheet("在庫")
       .table({
         preset: "basic",
@@ -33,7 +33,7 @@ describe("Workbook merge integration", () => {
       });
 
     // マージして出力
-    const merged = xlkit().merge([salesBook, stockBook]);
+    const merged = xlmake().merge([salesBook, stockBook]);
     const output = await merged.getNode();
     const buffer = await output.toBuffer();
 
@@ -60,16 +60,16 @@ describe("Workbook merge integration", () => {
   });
 
   it("should merge with text blocks", async () => {
-    const book1 = xlkit().sheet("Sheet1").text("Hello").space(1).text("World");
+    const book1 = xlmake().sheet("Sheet1").text("Hello").space(1).text("World");
 
-    const book2 = xlkit()
+    const book2 = xlmake()
       .sheet("Sheet2")
       .table({
         columns: [{ key: "value", label: "Value" }],
         data: [{ value: 123 }],
       });
 
-    const merged = xlkit().merge([book1, book2]);
+    const merged = xlmake().merge([book1, book2]);
     const output = await merged.getNode();
     const buffer = await output.toBuffer();
 
@@ -92,11 +92,11 @@ describe("Workbook merge integration", () => {
   });
 
   it("should merge multiple workbooks with method chaining", async () => {
-    const book1 = xlkit().sheet("A").text("A");
-    const book2 = xlkit().sheet("B").text("B");
-    const book3 = xlkit().sheet("C").text("C");
+    const book1 = xlmake().sheet("A").text("A");
+    const book2 = xlmake().sheet("B").text("B");
+    const book3 = xlmake().sheet("C").text("C");
 
-    const merged = xlkit().sheet("Start").text("Start").merge([book1, book2, book3]).sheet("End").text("End");
+    const merged = xlmake().sheet("Start").text("Start").merge([book1, book2, book3]).sheet("End").text("End");
 
     const output = await merged.getNode();
     const buffer = await output.toBuffer();
@@ -115,7 +115,7 @@ describe("Workbook merge integration", () => {
   });
 
   it("should preserve table data when merged", async () => {
-    const book1 = xlkit()
+    const book1 = xlmake()
       .sheet("Sheet1")
       .table({
         preset: "basic",
@@ -123,7 +123,7 @@ describe("Workbook merge integration", () => {
         data: [{ value: 123 }],
       });
 
-    const merged = xlkit().merge([book1]);
+    const merged = xlmake().merge([book1]);
     const output = await merged.getNode();
     const buffer = await output.toBuffer();
 

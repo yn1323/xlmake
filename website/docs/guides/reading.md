@@ -4,12 +4,12 @@ sidebar_position: 5
 
 # 読み取りAPI
 
-xlkitでは既存のExcelファイルを読み込んで、セルの値やスタイルを取得できます。
+xlmakeでは既存のExcelファイルを読み込んで、セルの値やスタイルを取得できます。
 
 ## 基本的な使い方
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 const workbook = await read("report.xlsx");
 ```
@@ -119,7 +119,7 @@ console.log(border?.right);   // { style: "thin", color: "#000000" }
 ## 完全な例
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 async function analyzeExcel() {
   const workbook = await read("./report.xlsx");

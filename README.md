@@ -1,18 +1,18 @@
-# xlkit
+# xlmake
 
 <p align="center">
-  <img src="logo.png" alt="xlkit logo" width="200">
+  <img src="logo.png" alt="xlmake logo" width="200">
 </p>
 
 **Declarative Excel generation library** - See the final Excel structure from your code
 
-[Documentation](https://yn1323.github.io/xlkit/)
+[Documentation](https://yn1323.github.io/xlmake/)
 
 Built on top of ExcelJS, providing a more intuitive and declarative API.
 
 ## Comparison with ExcelJS
 
-| Aspect | ExcelJS (Imperative) | xlkit (Declarative) |
+| Aspect | ExcelJS (Imperative) | xlmake (Declarative) |
 |--------|---------------------|---------------------|
 | Style | Operate cells one by one | Declare the final structure |
 | Clarity | Hard to see the result from code | Easy to see the result from code |
@@ -21,19 +21,19 @@ Built on top of ExcelJS, providing a more intuitive and declarative API.
 ## Installation
 
 ```bash
-npm install xlkit
+npm install xlmake
 # or
-pnpm add xlkit
+pnpm add xlmake
 # or
-yarn add xlkit
+yarn add xlmake
 ```
 
 ## Quick Start
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",

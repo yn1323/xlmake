@@ -3,7 +3,7 @@
 このファイルは、Claude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
 ## 参照ドキュメント
-- @docs/spec/2026-01-06_xlkit-design.md
+- @docs/spec/2026-01-06_xlmake-design.md
 - @docs/spec/all-specs-index.md 全機能のマニュアルへのインデックス
 
 これまでの経緯のドキュメントは、下記ディレクトリに配置。

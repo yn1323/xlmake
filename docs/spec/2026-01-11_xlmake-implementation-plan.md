@@ -1,9 +1,9 @@
-# xlkit 実装計画
+# xlmake 実装計画
 
 ## 概要
 
-本ドキュメントは xlkit renewal の技術実装計画を定義する。
-上流設計（2026-01-06_xlkit-design.md）に基づき、具体的なディレクトリ構成・設定ファイル・実装方針を記載する。
+本ドキュメントは xlmake renewal の技術実装計画を定義する。
+上流設計（2026-01-06_xlmake-design.md）に基づき、具体的なディレクトリ構成・設定ファイル・実装方針を記載する。
 
 ---
 
@@ -22,10 +22,10 @@
 | 開発方針 | ゼロから作り直す（既存 v1.1.0 は参考程度） |
 | パッケージ構成 | 単一パッケージ（モノレポではない） |
 | src/ 構成 | レイヤー分割（api/, core/, utils/） |
-| API 形式 | ファクトリ関数 `xlkit()` |
+| API 形式 | ファクトリ関数 `xlmake()` |
 | ビルド | tsup（ESM + CJS 両対応） |
 | テスト | 単体: コロケーション / 結合: tests/ |
-| デモ | npm 同梱、`npx xlkit demo` で起動 |
+| デモ | npm 同梱、`npx xlmake demo` で起動 |
 
 ---
 
@@ -56,7 +56,7 @@ renewal/
 │   ├── main.tsx
 │   └── vite.config.ts
 └── bin/                      # CLI
-    └── cli.ts                # npx xlkit demo 用
+    └── cli.ts                # npx xlmake demo 用
 ```
 
 ---
@@ -67,7 +67,7 @@ renewal/
 
 ```json
 {
-  "name": "xlkit",
+  "name": "xlmake",
   "version": "0.0.0",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -82,7 +82,7 @@ renewal/
   },
   "files": ["dist", "demo", "bin"],
   "bin": {
-    "xlkit": "./bin/cli.js"
+    "xlmake": "./bin/cli.js"
   },
   "scripts": {
     "build": "tsup",
@@ -174,7 +174,7 @@ export default defineConfig({
 
 - 配置: `src/**/*.test.ts`
 - 目的: 関数内部のロジック検証
-- 例: `src/api/xlkit.test.ts`, `src/utils/color.test.ts`
+- 例: `src/api/xlmake.test.ts`, `src/utils/color.test.ts`
 
 ### 結合テスト
 
@@ -202,7 +202,7 @@ export default defineConfig({
 pnpm dev
 
 # npm パッケージインストール後
-npx xlkit demo
+npx xlmake demo
 ```
 
 ---
@@ -225,7 +225,7 @@ const command = process.argv[2];
 if (command === "demo") {
   spawn("npx", ["vite", demoDir], { stdio: "inherit", shell: true });
 } else {
-  console.log("Usage: xlkit demo");
+  console.log("Usage: xlmake demo");
 }
 ```
 
@@ -242,7 +242,7 @@ if (command === "demo") {
 5. vitest.config.ts 作成
 6. src/index.ts 作成（空 export）
 7. tests/output/.gitkeep 作成
-8. demo/ 作成（Hello xlkit 表示）
+8. demo/ 作成（Hello xlmake 表示）
 9. bin/cli.ts 作成
 
 ### Phase 2 以降（後日）
@@ -291,7 +291,7 @@ pnpm test
 
 ### API 形式について
 - Q: ファクトリ関数 vs new コンストラクタ vs ビルダーパターン？
-- A: ファクトリ関数 `xlkit()`。new 不要でシンプル、最近のライブラリのトレンドに沿っている。
+- A: ファクトリ関数 `xlmake()`。new 不要でシンプル、最近のライブラリのトレンドに沿っている。
 
 ### テスト戦略について
 - Q: テストの配置は？

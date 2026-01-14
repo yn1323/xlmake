@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { xlkit } from "./workbook-builder";
+import { xlmake } from "./workbook-builder";
 
 describe("SheetBuilder", () => {
   it("should add text block", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb = wb.sheet();
     sb.text("タイトル");
 
@@ -16,7 +16,7 @@ describe("SheetBuilder", () => {
   });
 
   it("should add table block", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb = wb.sheet();
     sb.table({
       columns: [{ key: "name", label: "名前" }],
@@ -29,7 +29,7 @@ describe("SheetBuilder", () => {
   });
 
   it("should add space block", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb = wb.sheet();
     sb.space(3);
 
@@ -42,7 +42,7 @@ describe("SheetBuilder", () => {
   });
 
   it("should add image block", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb = wb.sheet();
     sb.image({
       source: "https://example.com/logo.png",
@@ -55,7 +55,7 @@ describe("SheetBuilder", () => {
   });
 
   it("should chain methods", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     wb.sheet()
       .text("タイトル")
       .space(1)
@@ -72,14 +72,14 @@ describe("SheetBuilder", () => {
   });
 
   it("should throw error for invalid space argument", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb = wb.sheet();
     expect(() => sb.space(0)).toThrow("space() argument must be a positive integer");
     expect(() => sb.space(-1)).toThrow("space() argument must be a positive integer");
   });
 
   it("should throw error for invalid table options", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb = wb.sheet();
     expect(() =>
       sb.table({
@@ -90,7 +90,7 @@ describe("SheetBuilder", () => {
   });
 
   it("should delegate sheet() to workbook", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb1 = wb.sheet("Sheet1");
     sb1.sheet("Sheet2");
 

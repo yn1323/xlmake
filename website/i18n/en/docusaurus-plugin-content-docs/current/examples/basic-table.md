@@ -9,9 +9,9 @@ The simplest table creation example.
 ## Basic Example
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     columns: [
@@ -33,7 +33,7 @@ await output.saveToFile("basic.xlsx");
 Specify `preset` to automatically apply styles.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     preset: "basic",  // Blue header + all borders
@@ -58,7 +58,7 @@ await output.saveToFile("basic-preset.xlsx");
 Apply styles to specific columns.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     columns: [

@@ -95,8 +95,8 @@ export class WorkbookBuilder {
 }
 
 /**
- * xlkit ファクトリ関数
+ * xlmake ファクトリ関数
  */
-export function xlkit(): WorkbookBuilder {
+export function xlmake(): WorkbookBuilder {
   return new WorkbookBuilder();
 }

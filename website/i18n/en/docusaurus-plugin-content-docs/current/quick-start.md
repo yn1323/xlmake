@@ -4,12 +4,12 @@ sidebar_position: 3
 
 # Quick Start
 
-Let's create a simple Excel file with xlkit.
+Let's create a simple Excel file with xlmake.
 
 ## Node.js Usage
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 const salesData = [
   { name: "Apple", price: 100, quantity: 50 },
@@ -17,7 +17,7 @@ const salesData = [
   { name: "Banana", price: 120, quantity: 30 },
 ];
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",
@@ -36,9 +36,9 @@ await output.saveToFile("report.xlsx");
 ## Browser Usage
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     preset: "basic",
@@ -58,10 +58,10 @@ await output.download("data.xlsx");
 
 ## Basic Usage
 
-### 1. Create builder with xlkit()
+### 1. Create builder with xlmake()
 
 ```typescript
-const builder = xlkit();
+const builder = xlmake();
 ```
 
 ### 2. Add sheet with sheet()

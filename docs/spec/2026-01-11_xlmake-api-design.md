@@ -1,8 +1,8 @@
-# xlkit API設計書
+# xlmake API設計書
 
 ## 概要
 
-本ドキュメントは、xlkitのAPI設計について決定した事項をまとめたもの。
+本ドキュメントは、xlmakeのAPI設計について決定した事項をまとめたもの。
 
 ---
 
@@ -11,7 +11,7 @@
 ### 書き込みAPI
 
 ```typescript
-xlkit()
+xlmake()
   .sheet("シート名")
   .table({...})
   .browser.download("report.xlsx")
@@ -19,14 +19,14 @@ xlkit()
 
 | 項目 | 決定 |
 |------|------|
-| 形式 | 関数呼び出し型（`xlkit()`） |
+| 形式 | 関数呼び出し型（`xlmake()`） |
 | バリデーション | Zodを使用 |
 | ビルダーパターン | ミュータブル（同じオブジェクトを変更） |
 
 ### 読み取りAPI
 
 ```typescript
-const workbook = await xlkit.read("report.xlsx")
+const workbook = await xlmake.read("report.xlsx")
 ```
 
 ---
@@ -40,17 +40,17 @@ const workbook = await xlkit.read("report.xlsx")
 
 ```typescript
 // シート名指定
-xlkit()
+xlmake()
   .sheet("売上データ")
   .table({...})
 
 // デフォルト名
-xlkit()
+xlmake()
   .sheet()              // → "Sheet1"
   .table({...})
 
 // 複数シート
-xlkit()
+xlmake()
   .sheet("売上")
   .table({...})
   .sheet()              // → "Sheet2"
@@ -61,7 +61,7 @@ xlkit()
 
 ## 3. ブロックの種類
 
-xlkitは「ブロックを上から積み上げる」方式。
+xlmakeは「ブロックを上から積み上げる」方式。
 
 ### 3.1 テーブルブロック（`.table()`）
 
@@ -87,7 +87,7 @@ xlkitは「ブロックを上から積み上げる」方式。
 #### columnsの定義
 
 - **keyで指定**（accessor関数は不要）
-- ネストしたデータはxlkitに渡す前に解消する前提
+- ネストしたデータはxlmakeに渡す前に解消する前提
 
 ```typescript
 columns: [
@@ -234,21 +234,21 @@ columns: [
 ```typescript
 // ブラウザ
 const handleClick = async () => {
-  await xlkit()
+  await xlmake()
     .sheet("売上")
     .table({...})
     .browser.download("report.xlsx")
 }
 
 // Node.js: ファイル保存
-await xlkit()
+await xlmake()
   .sheet("売上")
   .table({...})
   .node.saveToFile("./output/report.xlsx")
 
 // Node.js: APIレスポンス
 app.get("/excel", async (req, res) => {
-  const buffer = await xlkit()
+  const buffer = await xlmake()
     .sheet("売上")
     .table({...})
     .node.toBuffer()
@@ -264,7 +264,7 @@ app.get("/excel", async (req, res) => {
 ### エントリーポイント
 
 ```typescript
-const workbook = await xlkit.read(source)
+const workbook = await xlmake.read(source)
 ```
 
 **sourceに渡せる形式:**
@@ -279,7 +279,7 @@ const workbook = await xlkit.read(source)
 ### 使用例
 
 ```typescript
-const workbook = await xlkit.read("report.xlsx")
+const workbook = await xlmake.read("report.xlsx")
 
 // シート取得
 const sheet = workbook.sheet("売上")  // or workbook.sheets[0]
@@ -384,7 +384,7 @@ conditionalStyle: (row, col) => row.price < 0 ? { color: "red" } : {}
 **不要。** 同じようなことをしたい場合は `.table().table()` で対応。
 
 ```typescript
-xlkit()
+xlmake()
   .sheet("売上")
   .text("2024年1月")
   .table({ columns: [...], data: januaryData })
@@ -399,10 +399,10 @@ xlkit()
 ## 8. 完全なAPIサンプル
 
 ```typescript
-import { xlkit } from "xlkit"
+import { xlmake } from "xlmake"
 
 // 基本的な使い方
-await xlkit()
+await xlmake()
   .sheet("売上データ")
   .text("月次売上レポート", { bold: true, fontSize: 14 })
   .space(1)
@@ -422,7 +422,7 @@ await xlkit()
   .node.saveToFile("report.xlsx")
 
 // 複雑なヘッダー（マージあり）
-await xlkit()
+await xlmake()
   .sheet("詳細レポート")
   .table({
     preset: "basic",
@@ -442,7 +442,7 @@ await xlkit()
 
 // ブラウザでダウンロード
 const handleDownload = async () => {
-  await xlkit()
+  await xlmake()
     .sheet("売上")
     .table({
       columns: [...],
@@ -452,7 +452,7 @@ const handleDownload = async () => {
 }
 
 // 読み取り
-const workbook = await xlkit.read("report.xlsx")
+const workbook = await xlmake.read("report.xlsx")
 const sheet = workbook.sheet("売上データ")
 console.log(sheet.cell("A1").value)
 console.log(sheet.cell("A1").style)
@@ -463,7 +463,7 @@ console.log(sheet.cell("A1").style)
 ## 決定の経緯
 
 ### エントリーポイント
-- 関数呼び出し型（`xlkit()`）を採用。Zodなど最近のライブラリでよく見るパターン。
+- 関数呼び出し型（`xlmake()`）を採用。Zodなど最近のライブラリでよく見るパターン。
 
 ### Zodの採用
 - ランタイムでのバリデーションが必要。JSユーザーもいる可能性があるため。
@@ -476,7 +476,7 @@ console.log(sheet.cell("A1").style)
 - ミュータブルを採用。シンプルで実装も容易。
 
 ### columnsの定義
-- keyで指定（accessor関数は不要）。ネストしたデータはxlkitに渡す前に解消する前提。
+- keyで指定（accessor関数は不要）。ネストしたデータはxlmakeに渡す前に解消する前提。
 
 ### 出力方法
 - 名前空間（`browser.*` / `node.*`）で環境を明確化。DXを重視。
@@ -494,4 +494,4 @@ console.log(sheet.cell("A1").style)
 - 不要。`.table().table()` で対応可能。シンプルさを優先。
 
 ### 読み取りAPI
-- `xlkit.read()` でエントリーポイント。URLは不要（ファイルパス / Buffer / Blob のみ）。
+- `xlmake.read()` でエントリーポイント。URLは不要（ファイルパス / Buffer / Blob のみ）。
