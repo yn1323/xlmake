@@ -92,10 +92,10 @@ function DownloadButton() {
   const handleDownload = async () => {
     setIsLoading(true);
     try {
-      const { xlkit } = await import("xlkit");
-      const browserOutput = await xlkit()
+      const { xlmake } = await import("xlmake");
+      const browserOutput = await xlmake()
         .sheet("Sales")
-        .text({ value: "xlkit Sample", style: { bold: true, fontSize: 16 } })
+        .text({ value: "xlmake Sample", style: { bold: true, fontSize: 16 } })
         .space(1)
         .image({
           source: "https://raw.githubusercontent.com/yn1323/xlkit/main/logo.png",
@@ -150,12 +150,12 @@ function CodeExample() {
             </div>
             <pre className={styles.codeBlock}>
               <code>
-                <span className={styles.codeKeyword}>import</span> {"{ xlkit }"}{" "}
-                <span className={styles.codeKeyword}>from</span> <span className={styles.codeString}>"xlkit"</span>;
+                <span className={styles.codeKeyword}>import</span> {"{ xlmake }"}{" "}
+                <span className={styles.codeKeyword}>from</span> <span className={styles.codeString}>"xlmake"</span>
                 {"\n"}
                 {"\n"}
                 <span className={styles.codeKeyword}>const</span> <span className={styles.codeVariable}>output</span> ={" "}
-                <span className={styles.codeKeyword}>await</span> <span className={styles.codeFunction}>xlkit</span>()
+                <span className={styles.codeKeyword}>await</span> <span className={styles.codeFunction}>xlmake</span>()
                 {"\n"}
                 {"  "}.<span className={styles.codeFunction}>sheet</span>(
                 <span className={styles.codeString}>"Sales"</span>){"\n"}
@@ -275,7 +275,7 @@ export default function Home() {
   return (
     <Layout
       title={`${siteConfig.title} - Declarative Excel Generation Library`}
-      description="xlkit - Declarative Excel generation library for TypeScript"
+      description="xlmake - Declarative Excel generation library for TypeScript"
     >
       <HomepageHeader />
       <main>

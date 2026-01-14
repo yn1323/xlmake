@@ -11,7 +11,7 @@ sidebar_position: 6
 `conditionalStyle`は各セルに対して呼び出され、条件に応じたスタイルを返します。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",
@@ -45,7 +45,7 @@ const output = await xlkit()
 データに`_style`プロパティを追加すると、特定のセルだけスタイルを適用できます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("商品")
   .table({
     preset: "basic",
@@ -83,7 +83,7 @@ const output = await xlkit()
 `conditionalStyle`と`_style`を組み合わせることもできます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("在庫")
   .table({
     preset: "basic",

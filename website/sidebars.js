@@ -25,7 +25,7 @@ const sidebars = {
       label: "API Reference",
       items: [
         "api-reference/overview",
-        "api-reference/xlkit",
+        "api-reference/xlmake",
         "api-reference/table",
         "api-reference/text",
         "api-reference/image",

@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Excel Constraints
 
-xlkit automatically checks Excel specification constraints and throws errors when violated.
+xlmake automatically checks Excel specification constraints and throws errors when violated.
 
 ## Constraints List
 
@@ -23,10 +23,10 @@ Sheet names can have a maximum of 31 characters.
 
 ```typescript
 // OK
-xlkit().sheet("Sales Data 2024")  // 15 characters
+xlmake().sheet("Sales Data 2024")  // 15 characters
 
 // NG: Error thrown
-xlkit().sheet("This is a very long sheet name that exceeds 31 characters")
+xlmake().sheet("This is a very long sheet name that exceeds 31 characters")
 ```
 
 ### Forbidden Characters
@@ -43,15 +43,15 @@ These characters cannot be used in sheet names:
 
 ```typescript
 // NG: Error thrown
-xlkit().sheet("Sales/Stock")    // Contains slash
-xlkit().sheet("Data[2024]")     // Contains brackets
+xlmake().sheet("Sales/Stock")    // Contains slash
+xlmake().sheet("Data[2024]")     // Contains brackets
 ```
 
 ## Row/Column Constraints
 
 Excel's maximum row count is 1,048,576 and maximum column count is 16,384 (XFD column).
 
-xlkit automatically checks these constraints and throws errors when exceeded.
+xlmake automatically checks these constraints and throws errors when exceeded.
 
 ## Error Handling
 
@@ -59,7 +59,7 @@ Constraint violations throw errors, so you can handle them with try-catch.
 
 ```typescript
 try {
-  const output = await xlkit()
+  const output = await xlmake()
     .sheet("This is a very long sheet name that exceeds 31 characters")
     .table({ ... })
     .getNode();
@@ -71,4 +71,4 @@ try {
 ## Related
 
 - [Multiple Sheets](../guides/multi-sheet.md) - Creating multiple sheets
-- [Unsupported Features](./limitations.md) - xlkit limitations
+- [Unsupported Features](./limitations.md) - xlmake limitations

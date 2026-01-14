@@ -4,20 +4,20 @@ sidebar_position: 2
 
 # Installation
 
-xlkit can be installed using npm, pnpm, or yarn.
+xlmake can be installed using npm, pnpm, or yarn.
 
 ## Install with package manager
 
 ```bash
-npm install xlkit
+npm install xlmake
 ```
 
 ```bash
-pnpm add xlkit
+pnpm add xlmake
 ```
 
 ```bash
-yarn add xlkit
+yarn add xlmake
 ```
 
 ## Requirements
@@ -27,7 +27,7 @@ yarn add xlkit
 
 ## TypeScript
 
-xlkit is written in TypeScript and includes type definitions. No additional type packages needed.
+xlmake is written in TypeScript and includes type definitions. No additional type packages needed.
 
 ## Next Steps
 

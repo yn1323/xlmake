@@ -4,17 +4,17 @@ sidebar_position: 4
 
 # 画像挿入
 
-xlkitでExcelに画像を挿入する方法を説明します。
+xlmakeでExcelに画像を挿入する方法を説明します。
 
 ## 基本的な使い方
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 import { readFileSync } from "fs";
 
 const logoBuffer = readFileSync("./logo.png");
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("レポート")
   .image({
     source: logoBuffer,
@@ -77,9 +77,9 @@ const imageBuffer = readFileSync("./image.png");
 ブラウザ環境では、URL指定で画像を挿入できます。
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("レポート")
   .image({
     source: "https://example.com/logo.png",
@@ -124,7 +124,7 @@ await output.download("report.xlsx");
 ## テキストやテーブルと組み合わせる
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("レポート")
   .text({ value: "月次レポート", style: { bold: true, fontSize: 16 } })
   .space(1)
@@ -145,13 +145,13 @@ const output = await xlkit()
 ## 完全な例
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 import { readFileSync } from "fs";
 
 const logoBuffer = readFileSync("./company-logo.png");
 const chartBuffer = readFileSync("./sales-chart.png");
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("レポート")
   // ヘッダー部分
   .text({ value: "株式会社サンプル", style: { bold: true, fontSize: 18 } })
@@ -194,4 +194,4 @@ await output.saveToFile("report-with-images.xlsx");
 ## 関連
 
 - [.image() API](../api-reference/image.md) - 画像APIの詳細
-- [基本的な使い方](./basic-usage.md) - xlkitの基本
+- [基本的な使い方](./basic-usage.md) - xlmakeの基本

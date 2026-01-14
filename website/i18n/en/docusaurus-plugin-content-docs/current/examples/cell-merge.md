@@ -11,7 +11,7 @@ Examples of merging cells with same values vertically.
 Specify `mergeSameValues: true` to merge cells with same values in all columns.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",
@@ -45,7 +45,7 @@ Result:
 To merge only specific columns, specify `mergeSameValues` in the column definition.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",
@@ -69,7 +69,7 @@ const output = await xlkit()
 You can merge multiple columns independently.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",

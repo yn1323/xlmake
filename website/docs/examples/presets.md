@@ -19,7 +19,7 @@ sidebar_position: 2
 標準的なビジネス向けスタイルです。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",
@@ -41,7 +41,7 @@ const output = await xlkit()
 シンプルなスタイルです。罫線がなく、ヘッダーが太字のみ。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     preset: "minimal",
@@ -62,7 +62,7 @@ const output = await xlkit()
 行ごとに背景色が交互に変わり、見やすいスタイルです。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("一覧")
   .table({
     preset: "striped",
@@ -86,7 +86,7 @@ const output = await xlkit()
 プリセットをベースに、追加のスタイルを適用できます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("カスタム")
   .table({
     preset: "basic",

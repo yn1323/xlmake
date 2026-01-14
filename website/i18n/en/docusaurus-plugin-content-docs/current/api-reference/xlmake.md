@@ -2,20 +2,20 @@
 sidebar_position: 2
 ---
 
-# xlkit()
+# xlmake()
 
 Factory function that returns a WorkbookBuilder.
 
 ## Import
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 ```
 
 ## Usage
 
 ```typescript
-const builder = xlkit();
+const builder = xlmake();
 ```
 
 ## WorkbookBuilder Methods
@@ -46,10 +46,10 @@ Adds a sheet. Name is auto-generated if omitted.
 
 ```typescript
 // With name
-xlkit().sheet("Sales Data")
+xlmake().sheet("Sales Data")
 
 // Without name (Sheet1, Sheet2... auto-generated)
-xlkit().sheet()
+xlmake().sheet()
 ```
 
 ## merge()
@@ -70,23 +70,23 @@ Merges multiple workbooks into one.
 
 ```typescript
 // Basic usage
-const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
-const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
-const merged = xlkit().merge([bookA, bookB]);
+const bookA = xlmake().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlmake().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlmake().merge([bookA, bookB]);
 ```
 
 ```typescript
 // Modularized sheet creation
 function createSalesSheet() {
-  return xlkit().sheet("Sales").table({ ... });
+  return xlmake().sheet("Sales").table({ ... });
 }
 
 function createStockSheet() {
-  return xlkit().sheet("Stock").table({ ... });
+  return xlmake().sheet("Stock").table({ ... });
 }
 
 // Merge into one file
-const merged = xlkit().merge([
+const merged = xlmake().merge([
   createSalesSheet(),
   createStockSheet(),
 ]);
@@ -96,7 +96,7 @@ await merged.getNode().saveToFile("report.xlsx");
 
 ```typescript
 // Method chaining
-const merged = xlkit()
+const merged = xlmake()
   .sheet("Start")
   .text("Start")
   .merge([bookA, bookB])
@@ -109,7 +109,7 @@ const merged = xlkit()
 Gets output object for Node.js environment.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({ columns: [...], data: [...] })
   .getNode();
@@ -126,7 +126,7 @@ const buffer = await output.toBuffer();
 Gets output object for browser environment.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({ columns: [...], data: [...] })
   .getBrowser();

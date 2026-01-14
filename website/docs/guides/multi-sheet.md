@@ -4,16 +4,16 @@ sidebar_position: 3
 
 # 複数シート
 
-xlkitでは複数のシートを持つExcelファイルを簡単に作成できます。
+xlmakeでは複数のシートを持つExcelファイルを簡単に作成できます。
 
 ## 基本的な使い方
 
 `sheet()`を連続して呼び出すことで、複数のシートを作成できます。
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",
@@ -42,7 +42,7 @@ await output.saveToFile("report.xlsx");
 ### 明示的に指定
 
 ```typescript
-xlkit()
+xlmake()
   .sheet("売上データ")
   .sheet("在庫データ")
   .sheet("顧客マスタ")
@@ -53,7 +53,7 @@ xlkit()
 シート名を省略すると、Sheet1, Sheet2... と自動生成されます。
 
 ```typescript
-xlkit()
+xlmake()
   .sheet()  // Sheet1
   .sheet()  // Sheet2
   .sheet()  // Sheet3
@@ -64,7 +64,7 @@ xlkit()
 各シートには独立したテーブル、テキスト、画像を追加できます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("サマリー")
   .text({ value: "月次レポート", style: { bold: true, fontSize: 16 } })
   .space(2)
@@ -95,9 +95,9 @@ const output = await xlkit()
 ### 基本的な使い方
 
 ```typescript
-const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
-const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
-const merged = xlkit().merge([bookA, bookB]);
+const bookA = xlmake().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlmake().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlmake().merge([bookA, bookB]);
 ```
 
 ### ユースケース
@@ -109,19 +109,19 @@ const merged = xlkit().merge([bookA, bookB]);
 ```typescript
 // 各シートを関数で分離
 function createSalesSheet() {
-  return xlkit()
+  return xlmake()
     .sheet("売上")
     .table({ columns: [...], data: salesData });
 }
 
 function createStockSheet() {
-  return xlkit()
+  return xlmake()
     .sheet("在庫")
     .table({ columns: [...], data: stockData });
 }
 
 // マージして出力
-const report = xlkit().merge([
+const report = xlmake().merge([
   createSalesSheet(),
   createStockSheet(),
 ]);
@@ -134,18 +134,18 @@ await report.getNode().saveToFile("report.xlsx");
 条件に応じてシートを動的に追加できます:
 
 ```typescript
-const baseBook = xlkit().sheet("基本データ").table({ ... });
+const baseBook = xlmake().sheet("基本データ").table({ ... });
 const sheets = [baseBook];
 
 if (includeDetails) {
-  sheets.push(xlkit().sheet("詳細").table({ ... }));
+  sheets.push(xlmake().sheet("詳細").table({ ... }));
 }
 
 if (includeSummary) {
-  sheets.push(xlkit().sheet("集計").table({ ... }));
+  sheets.push(xlmake().sheet("集計").table({ ... }));
 }
 
-const report = xlkit().merge(sheets);
+const report = xlmake().merge(sheets);
 ```
 
 ### 注意点
@@ -160,12 +160,12 @@ Excelの仕様により、シート名には以下の制約があります:
 - 最大31文字
 - 使用できない文字: `: \ / ? * [ ]`
 
-これらの制約に違反した場合、xlkitはエラーをスローします。
+これらの制約に違反した場合、xlmakeはエラーをスローします。
 
 ## 完全な例
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 const salesData = [
   { name: "りんご", sales: 50000 },
@@ -177,7 +177,7 @@ const stockData = [
   { name: "みかん", stock: 200 },
 ];
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .text({ value: "売上データ", style: { bold: true, fontSize: 14 } })
   .space(1)
@@ -207,5 +207,5 @@ await output.saveToFile("multi-sheet.xlsx");
 
 ## 関連
 
-- [基本的な使い方](./basic-usage.md) - xlkitの基本
+- [基本的な使い方](./basic-usage.md) - xlmakeの基本
 - [Excel制約](../reference/excel-constraints.md) - Excelの制約事項

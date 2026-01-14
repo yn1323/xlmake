@@ -1,7 +1,7 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { read, xlkit } from "../../src/index";
+import { read, xlmake } from "../../src/index";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outputDir = join(__dirname, "..", "output");
@@ -11,7 +11,7 @@ describe("03-formats.xlsx", () => {
 
   it("should generate and verify formats", async () => {
     // 生成
-    const node = await xlkit()
+    const node = await xlmake()
       // NumberFormat シート
       .sheet("NumberFormat")
       .table({

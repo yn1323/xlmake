@@ -9,7 +9,7 @@ API for reading existing Excel files.
 ## read()
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 // From file path
 const workbook = await read("report.xlsx");
@@ -94,7 +94,7 @@ console.log(border?.bottom); // { style: "thin", color: "#000000" }
 ## Complete Example
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 // Read Excel file
 const workbook = await read("./report.xlsx");

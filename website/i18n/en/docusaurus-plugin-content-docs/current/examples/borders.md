@@ -9,7 +9,7 @@ Examples of adding borders to tables.
 ## Outline Only
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     columns: [
@@ -28,7 +28,7 @@ const output = await xlkit()
 ## Header Underline Only
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     columns: [
@@ -47,7 +47,7 @@ const output = await xlkit()
 ## All Borders
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     columns: [
@@ -73,7 +73,7 @@ const output = await xlkit()
 You can configure border styles and colors in detail.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   .table({
     columns: [

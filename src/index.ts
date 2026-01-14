@@ -1,6 +1,6 @@
-// xlkit - Declarative Excel generation library
+// xlmake - Declarative Excel generation library
 
-export { xlkit } from "./core/workbook-builder";
+export { xlmake } from "./core/workbook-builder";
 export type { CellBorder, CellReader } from "./reader/cell-reader";
 export type { SheetReader } from "./reader/sheet-reader";
 // 読み取りAPI用の型

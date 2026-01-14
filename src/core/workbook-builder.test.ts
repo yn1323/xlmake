@@ -1,28 +1,28 @@
 import { describe, expect, it } from "vitest";
-import { xlkit } from "./workbook-builder";
+import { xlmake } from "./workbook-builder";
 
 describe("WorkbookBuilder", () => {
   it("should create workbook instance", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     expect(wb).toBeDefined();
     expect(wb.getState().sheets).toEqual([]);
   });
 
   it("should add sheet with default name", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     wb.sheet();
     expect(wb.getState().sheets).toHaveLength(1);
     expect(wb.getState().sheets[0].name).toBe("Sheet1");
   });
 
   it("should add sheet with custom name", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     wb.sheet("売上データ");
     expect(wb.getState().sheets[0].name).toBe("売上データ");
   });
 
   it("should auto-increment sheet names", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     wb.sheet();
     wb.sheet();
     expect(wb.getState().sheets[0].name).toBe("Sheet1");
@@ -30,13 +30,13 @@ describe("WorkbookBuilder", () => {
   });
 
   it("should throw error for duplicate sheet names", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     wb.sheet("売上");
     expect(() => wb.sheet("売上")).toThrow('Sheet name "売上" already exists');
   });
 
   it("should return SheetBuilder from sheet()", () => {
-    const wb = xlkit();
+    const wb = xlmake();
     const sb = wb.sheet();
     expect(sb).toBeDefined();
     expect(sb.constructor.name).toBe("SheetBuilder");
@@ -45,9 +45,9 @@ describe("WorkbookBuilder", () => {
 
 describe("WorkbookBuilder.merge()", () => {
   it("should merge multiple workbooks", () => {
-    const bookA = xlkit().sheet("A").text("A");
-    const bookB = xlkit().sheet("B").text("B");
-    const merged = xlkit().merge([bookA, bookB]);
+    const bookA = xlmake().sheet("A").text("A");
+    const bookB = xlmake().sheet("B").text("B");
+    const merged = xlmake().merge([bookA, bookB]);
 
     const state = merged.getState();
     expect(state.sheets).toHaveLength(2);
@@ -56,18 +56,18 @@ describe("WorkbookBuilder.merge()", () => {
   });
 
   it("should throw error when sheet names are duplicated", () => {
-    const bookA = xlkit().sheet("Sheet1").text("A");
-    const bookB = xlkit().sheet("Sheet1").text("B");
+    const bookA = xlmake().sheet("Sheet1").text("A");
+    const bookB = xlmake().sheet("Sheet1").text("B");
 
     expect(() => {
-      xlkit().merge([bookA, bookB]);
+      xlmake().merge([bookA, bookB]);
     }).toThrow('Sheet name "Sheet1" already exists');
   });
 
   it("should ignore empty workbooks", () => {
-    const empty = xlkit();
-    const bookA = xlkit().sheet("A").text("A");
-    const merged = xlkit().merge([empty, bookA]);
+    const empty = xlmake();
+    const bookA = xlmake().sheet("A").text("A");
+    const merged = xlmake().merge([empty, bookA]);
 
     const state = merged.getState();
     expect(state.sheets).toHaveLength(1);
@@ -75,9 +75,9 @@ describe("WorkbookBuilder.merge()", () => {
   });
 
   it("should merge workbooks with multiple sheets", () => {
-    const bookA = xlkit().sheet("A1").text("A1").sheet("A2").text("A2");
-    const bookB = xlkit().sheet("B1").text("B1");
-    const merged = xlkit().merge([bookA, bookB]);
+    const bookA = xlmake().sheet("A1").text("A1").sheet("A2").text("A2");
+    const bookB = xlmake().sheet("B1").text("B1");
+    const merged = xlmake().merge([bookA, bookB]);
 
     const state = merged.getState();
     expect(state.sheets).toHaveLength(3);
@@ -87,10 +87,10 @@ describe("WorkbookBuilder.merge()", () => {
   });
 
   it("should support method chaining", () => {
-    const bookA = xlkit().sheet("A").text("A");
-    const bookB = xlkit().sheet("B").text("B");
+    const bookA = xlmake().sheet("A").text("A");
+    const bookB = xlmake().sheet("B").text("B");
 
-    const merged = xlkit().sheet("Start").text("Start").merge([bookA, bookB]).sheet("End").text("End");
+    const merged = xlmake().sheet("Start").text("Start").merge([bookA, bookB]).sheet("End").text("End");
 
     const state = merged.getState();
     expect(state.sheets).toHaveLength(4);
@@ -98,10 +98,10 @@ describe("WorkbookBuilder.merge()", () => {
   });
 
   it("should work when called from SheetBuilder", () => {
-    const bookA = xlkit().sheet("A").text("A");
-    const bookB = xlkit().sheet("B").text("B");
+    const bookA = xlmake().sheet("A").text("A");
+    const bookB = xlmake().sheet("B").text("B");
 
-    const merged = xlkit().sheet("Start").text("Start").merge([bookA, bookB]);
+    const merged = xlmake().sheet("Start").text("Start").merge([bookA, bookB]);
 
     const state = merged.getState();
     expect(state.sheets).toHaveLength(3);
@@ -111,8 +111,8 @@ describe("WorkbookBuilder.merge()", () => {
   });
 
   it("should preserve blocks in merged sheets", () => {
-    const bookA = xlkit().sheet("A").text("Text1").text("Text2");
-    const merged = xlkit().merge([bookA]);
+    const bookA = xlmake().sheet("A").text("Text1").text("Text2");
+    const merged = xlmake().merge([bookA]);
 
     const state = merged.getState();
     expect(state.sheets[0].blocks).toHaveLength(2);

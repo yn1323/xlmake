@@ -4,16 +4,16 @@ sidebar_position: 1
 
 # Basic Usage
 
-Learn the basics of xlkit.
+Learn the basics of xlmake.
 
 ## Builder Pattern
 
-xlkit uses a method chaining builder pattern.
+xlmake uses a method chaining builder pattern.
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()     // 1. Create builder
+const output = await xlmake()     // 1. Create builder
   .sheet("Sheet Name")           // 2. Add sheet
   .table({ ... })                // 3. Add table
   .getNode();                    // 4. Get output object
@@ -26,14 +26,14 @@ await output.saveToFile("output.xlsx");  // 5. Save to file
 ### Adding Sheets
 
 ```typescript
-xlkit().sheet("Sales Data")  // With name
-xlkit().sheet()              // Auto-generated (Sheet1, Sheet2...)
+xlmake().sheet("Sales Data")  // With name
+xlmake().sheet()              // Auto-generated (Sheet1, Sheet2...)
 ```
 
 ### Creating Multiple Sheets
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({ ... })
   .sheet("Stock")      // Second sheet
@@ -93,7 +93,7 @@ const output = await xlkit()
 ### Node.js
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({ ... })
   .getNode();
@@ -108,7 +108,7 @@ const buffer = await output.toBuffer();
 ### Browser
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({ ... })
   .getBrowser();
@@ -120,7 +120,7 @@ await output.download("report.xlsx");
 ## Complete Example
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 const salesData = [
   { name: "Apple", price: 100, quantity: 50 },
@@ -128,7 +128,7 @@ const salesData = [
   { name: "Banana", price: 120, quantity: 30 },
 ];
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales Report")
   .text({ value: "Monthly Sales Report", style: { bold: true, fontSize: 16 } })
   .text("January 2024")

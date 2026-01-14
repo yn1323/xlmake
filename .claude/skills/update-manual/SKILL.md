@@ -1,15 +1,15 @@
 ---
 name: update-manual
-description: xlkitの機能追加、更新時に必ず参照するスキル。
+description: xlmakeの機能追加、更新時に必ず参照するスキル。
 ---
 
 ## 概要
 
-xlkitの機能追加、更新時に必ず参照するスキル。
+xlmakeの機能追加、更新時に必ず参照するスキル。
 
 ## 詳細
 
-xlkitの機能追加、更新時にマニュアルを修正する。
+xlmakeの機能追加、更新時にマニュアルを修正する。
 対象のマニュアルは下記に存在する。
 - @docs/spec/all-specs-index.md 全機能のマニュアルへのインデックス
 

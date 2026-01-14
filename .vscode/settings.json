@@ -20,7 +20,7 @@
   "[css]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "cSpell.words": ["vitest", "xlkit"],
+  "cSpell.words": ["vitest", "xlmake"],
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.addMissingImports.ts": "explicit",

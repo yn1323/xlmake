@@ -2,20 +2,20 @@
 sidebar_position: 2
 ---
 
-# xlkit()
+# xlmake()
 
 WorkbookBuilderを返すファクトリ関数です。
 
 ## インポート
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 ```
 
 ## 使用例
 
 ```typescript
-const builder = xlkit();
+const builder = xlmake();
 ```
 
 ## WorkbookBuilder メソッド
@@ -46,10 +46,10 @@ const builder = xlkit();
 
 ```typescript
 // 名前を指定
-xlkit().sheet("売上データ")
+xlmake().sheet("売上データ")
 
 // 名前を省略（Sheet1, Sheet2... と自動生成）
-xlkit().sheet()
+xlmake().sheet()
 ```
 
 ## merge()
@@ -70,23 +70,23 @@ xlkit().sheet()
 
 ```typescript
 // 基本的な使い方
-const bookA = xlkit().sheet("A").table({ columns: [...], data: [...] });
-const bookB = xlkit().sheet("B").table({ columns: [...], data: [...] });
-const merged = xlkit().merge([bookA, bookB]);
+const bookA = xlmake().sheet("A").table({ columns: [...], data: [...] });
+const bookB = xlmake().sheet("B").table({ columns: [...], data: [...] });
+const merged = xlmake().merge([bookA, bookB]);
 ```
 
 ```typescript
 // モジュール化されたシート作成
 function createSalesSheet() {
-  return xlkit().sheet("売上").table({ ... });
+  return xlmake().sheet("売上").table({ ... });
 }
 
 function createStockSheet() {
-  return xlkit().sheet("在庫").table({ ... });
+  return xlmake().sheet("在庫").table({ ... });
 }
 
 // マージして1つのファイルに
-const merged = xlkit().merge([
+const merged = xlmake().merge([
   createSalesSheet(),
   createStockSheet(),
 ]);
@@ -96,7 +96,7 @@ await merged.getNode().saveToFile("report.xlsx");
 
 ```typescript
 // メソッドチェーンで使用
-const merged = xlkit()
+const merged = xlmake()
   .sheet("Start")
   .text("Start")
   .merge([bookA, bookB])
@@ -109,7 +109,7 @@ const merged = xlkit()
 Node.js環境用の出力オブジェクトを取得します。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({ columns: [...], data: [...] })
   .getNode();
@@ -126,7 +126,7 @@ const buffer = await output.toBuffer();
 ブラウザ環境用の出力オブジェクトを取得します。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({ columns: [...], data: [...] })
   .getBrowser();

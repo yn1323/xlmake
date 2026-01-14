@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Presets Reference
 
-Table style presets provided by xlkit.
+Table style presets provided by xlmake.
 
 ## Preset Comparison
 

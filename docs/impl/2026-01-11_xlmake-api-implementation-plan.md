@@ -1,4 +1,4 @@
-# xlkit API 実装計画
+# xlmake API 実装計画
 
 ## 概要
 
@@ -15,10 +15,10 @@
 
 ## 参照ドキュメント
 
-- [設計骨子](../spec/2026-01-06_xlkit-design.md)
-- [API設計書](../spec/2026-01-11_xlkit-api-design.md)
-- [機能仕様書](../spec/2026-01-11_xlkit-feature-spec.md)
-- [実装計画書](../impl/2026-01-11_xlkit-implementation-plan.md)
+- [設計骨子](../spec/2026-01-06_xlmake-design.md)
+- [API設計書](../spec/2026-01-11_xlmake-api-design.md)
+- [機能仕様書](../spec/2026-01-11_xlmake-feature-spec.md)
+- [実装計画書](../impl/2026-01-11_xlmake-implementation-plan.md)
 
 ---
 
@@ -68,14 +68,14 @@ src/schemas/
 **作成ファイル**:
 ```
 src/core/
-├── workbook-builder.ts   # xlkit() ファクトリ関数
+├── workbook-builder.ts   # xlmake() ファクトリ関数
 └── sheet-builder.ts      # .sheet(), .table(), .text(), .image(), .space()
 
 src/index.ts              # エントリーポイント更新
 ```
 
 **実装内容**:
-- `xlkit()` → WorkbookBuilder を返す
+- `xlmake()` → WorkbookBuilder を返す
 - `.sheet(name?)` → SheetBuilder を返す
 - `.table()`, `.text()`, `.image()`, `.space()` → ブロック登録して SheetBuilder を返す
 - `.browser`, `.node` → 出力オブジェクトを返す
@@ -91,7 +91,7 @@ src/index.ts              # エントリーポイント更新
 src/styles/
 ├── presets.ts    # basic, minimal, striped
 ├── merger.ts     # スタイルマージ（優先度順）
-└── converter.ts  # xlkit → ExcelJS スタイル変換
+└── converter.ts  # xlmake → ExcelJS スタイル変換
 ```
 
 **カスケーディング優先度**（低 → 高）:
@@ -124,12 +124,12 @@ src/output/
 
 ### Phase 6: 読み取りAPI
 
-**目的**: xlkit.read() の実装
+**目的**: xlmake.read() の実装
 
 **作成ファイル**:
 ```
 src/reader/
-├── workbook-reader.ts  # xlkit.read()
+├── workbook-reader.ts  # xlmake.read()
 ├── sheet-reader.ts     # シート読み取り
 └── cell-reader.ts      # セル値・スタイル読み取り
 ```
@@ -298,7 +298,7 @@ function calculateTextWidth(text: string): number {
 ```typescript
 // 生成したExcelを読み取って検証
 it("should generate table with correct structure", async () => {
-  const buffer = await xlkit()
+  const buffer = await xlmake()
     .sheet("テスト")
     .table({
       columns: [{ key: "name", label: "名前" }],
@@ -306,7 +306,7 @@ it("should generate table with correct structure", async () => {
     })
     .node.toBuffer();
 
-  const workbook = await xlkit.read(buffer);
+  const workbook = await xlmake.read(buffer);
   const sheet = workbook.sheet("テスト");
 
   expect(sheet.cell("A1").value).toBe("名前");
@@ -350,10 +350,10 @@ pnpm add zod
 ### 書き込み
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 // 基本的な使い方
-await xlkit()
+await xlmake()
   .sheet("売上データ")
   .text("月次売上レポート", { bold: true, fontSize: 14 })
   .space(1)
@@ -374,7 +374,7 @@ await xlkit()
 ### 読み取り
 
 ```typescript
-const workbook = await xlkit.read("report.xlsx");
+const workbook = await xlmake.read("report.xlsx");
 const sheet = workbook.sheet("売上データ");
 console.log(sheet.cell("A1").value); // "月次売上レポート"
 ```

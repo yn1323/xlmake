@@ -9,9 +9,9 @@ sidebar_position: 1
 ## 基本例
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     columns: [
@@ -33,7 +33,7 @@ await output.saveToFile("basic.xlsx");
 `preset`を指定すると、スタイルが自動的に適用されます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     preset: "basic",  // 青ヘッダー + 全罫線
@@ -58,7 +58,7 @@ await output.saveToFile("basic-preset.xlsx");
 特定の列にスタイルを適用できます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     columns: [
