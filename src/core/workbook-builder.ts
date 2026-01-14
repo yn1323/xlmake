@@ -95,7 +95,34 @@ export class WorkbookBuilder {
 }
 
 /**
- * xlmake ファクトリ関数
+ * Create a new Excel workbook with a declarative, chainable API
+ *
+ * @example
+ * ```typescript
+ * import { xlmake } from 'xlmake';
+ *
+ * // Basic usage
+ * const workbook = xlmake()
+ *   .sheet('Sales')
+ *   .table({
+ *     columns: [
+ *       { key: 'name', label: 'Product' },
+ *       { key: 'price', label: 'Price' }
+ *     ],
+ *     data: [
+ *       { name: 'Widget', price: 100 },
+ *       { name: 'Gadget', price: 200 }
+ *     ]
+ *   });
+ *
+ * // Node.js: Save to file
+ * await workbook.getNode().then(output => output.saveToFile('report.xlsx'));
+ *
+ * // Browser: Download
+ * await workbook.getBrowser().then(output => output.download('report.xlsx'));
+ * ```
+ *
+ * @returns A new WorkbookBuilder instance for building Excel workbooks
  */
 export function xlmake(): WorkbookBuilder {
   return new WorkbookBuilder();
