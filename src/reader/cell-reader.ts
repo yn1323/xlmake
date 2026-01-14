@@ -43,55 +43,55 @@ export class CellReader {
     const cellStyle = this.cell.style;
     if (!cellStyle) return undefined;
 
-    const xlkitStyle: CellStyle = {};
+    const xlmakeStyle: CellStyle = {};
 
     // フォント
     if (cellStyle.font) {
-      if (cellStyle.font.name) xlkitStyle.fontFamily = cellStyle.font.name;
-      if (cellStyle.font.size) xlkitStyle.fontSize = cellStyle.font.size;
-      if (cellStyle.font.bold) xlkitStyle.bold = true;
-      if (cellStyle.font.italic) xlkitStyle.italic = true;
-      if (cellStyle.font.underline) xlkitStyle.underline = true;
-      if (cellStyle.font.strike) xlkitStyle.strike = true;
+      if (cellStyle.font.name) xlmakeStyle.fontFamily = cellStyle.font.name;
+      if (cellStyle.font.size) xlmakeStyle.fontSize = cellStyle.font.size;
+      if (cellStyle.font.bold) xlmakeStyle.bold = true;
+      if (cellStyle.font.italic) xlmakeStyle.italic = true;
+      if (cellStyle.font.underline) xlmakeStyle.underline = true;
+      if (cellStyle.font.strike) xlmakeStyle.strike = true;
 
       // 色
       if (cellStyle.font.color?.argb) {
-        xlkitStyle.color = argbToHex(cellStyle.font.color.argb);
+        xlmakeStyle.color = argbToHex(cellStyle.font.color.argb);
       }
     }
 
     // 塗りつぶし
     if (cellStyle.fill?.type === "pattern" && cellStyle.fill.fgColor?.argb) {
-      xlkitStyle.fill = argbToHex(cellStyle.fill.fgColor.argb);
+      xlmakeStyle.fill = argbToHex(cellStyle.fill.fgColor.argb);
     }
 
     // 配置
     if (cellStyle.alignment?.horizontal) {
       const align = cellStyle.alignment.horizontal;
       if (align === "left" || align === "center" || align === "right") {
-        xlkitStyle.align = align;
+        xlmakeStyle.align = align;
       }
     }
 
     // 数値フォーマット
     if (cellStyle.numFmt) {
-      xlkitStyle.format = this.detectFormat(cellStyle.numFmt);
+      xlmakeStyle.format = this.detectFormat(cellStyle.numFmt);
 
       // 小数点以下の桁数を検出
-      if (xlkitStyle.format === "number") {
+      if (xlmakeStyle.format === "number") {
         const match = cellStyle.numFmt.match(/\.(\d+)/);
         if (match) {
-          xlkitStyle.decimalPlaces = match[1].length;
+          xlmakeStyle.decimalPlaces = match[1].length;
         }
 
         // 桁区切りカンマ
         if (cellStyle.numFmt.includes(",")) {
-          xlkitStyle.thousandsSeparator = true;
+          xlmakeStyle.thousandsSeparator = true;
         }
       }
     }
 
-    return Object.keys(xlkitStyle).length > 0 ? xlkitStyle : undefined;
+    return Object.keys(xlmakeStyle).length > 0 ? xlmakeStyle : undefined;
   }
 
   /**

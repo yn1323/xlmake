@@ -4,12 +4,12 @@ sidebar_position: 5
 
 # Reading API
 
-xlkit can read existing Excel files to get cell values and styles.
+xlmake can read existing Excel files to get cell values and styles.
 
 ## Basic Usage
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 const workbook = await read("report.xlsx");
 ```
@@ -119,7 +119,7 @@ console.log(border?.right);   // { style: "thin", color: "#000000" }
 ## Complete Example
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 async function analyzeExcel() {
   const workbook = await read("./report.xlsx");

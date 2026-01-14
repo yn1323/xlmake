@@ -4,16 +4,16 @@ sidebar_position: 1
 
 # 基本的な使い方
 
-xlkitの基本的な使い方を説明します。
+xlmakeの基本的な使い方を説明します。
 
 ## ビルダーパターン
 
-xlkitはメソッドチェーンによるビルダーパターンを採用しています。
+xlmakeはメソッドチェーンによるビルダーパターンを採用しています。
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()     // 1. ビルダーを作成
+const output = await xlmake()     // 1. ビルダーを作成
   .sheet("シート名")              // 2. シートを追加
   .table({ ... })                // 3. テーブルを追加
   .getNode();                    // 4. 出力オブジェクトを取得
@@ -26,14 +26,14 @@ await output.saveToFile("output.xlsx");  // 5. ファイルに保存
 ### シートを追加する
 
 ```typescript
-xlkit().sheet("売上データ")  // 名前を指定
-xlkit().sheet()              // 名前を省略（Sheet1, Sheet2... と自動生成）
+xlmake().sheet("売上データ")  // 名前を指定
+xlmake().sheet()              // 名前を省略（Sheet1, Sheet2... と自動生成）
 ```
 
 ### 複数シートを作成する
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({ ... })
   .sheet("在庫")      // 2つ目のシート
@@ -93,7 +93,7 @@ const output = await xlkit()
 ### Node.js
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({ ... })
   .getNode();
@@ -108,7 +108,7 @@ const buffer = await output.toBuffer();
 ### ブラウザ
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({ ... })
   .getBrowser();
@@ -120,7 +120,7 @@ await output.download("report.xlsx");
 ## 完全な例
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 const salesData = [
   { name: "りんご", price: 100, quantity: 50 },
@@ -128,7 +128,7 @@ const salesData = [
   { name: "バナナ", price: 120, quantity: 30 },
 ];
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上レポート")
   .text({ value: "月次売上レポート", style: { bold: true, fontSize: 16 } })
   .text("2024年1月分")

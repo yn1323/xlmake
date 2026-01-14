@@ -1,8 +1,8 @@
-# xlkit 機能仕様書
+# xlmake 機能仕様書
 
 ## 概要
 
-本ドキュメントは、xlkit の機能仕様を定義する。
+本ドキュメントは、xlmake の機能仕様を定義する。
 ユーザーとの会話を通じて洗い出した要件をまとめたもの。
 
 ---
@@ -259,7 +259,7 @@ conditionalStyle: (row, col) => row.price < 0 ? { color: "red" } : {}
 
 ### ストリーミングの制約
 - 上から順番に書く必要がある（後から戻って修正できない）
-- xlkitの「ブロック積み上げ方式」との相性は良い
+- xlmakeの「ブロック積み上げ方式」との相性は良い
 
 ### 列幅の自動調整
 - データを先にスキャンして幅を計算
@@ -270,10 +270,10 @@ conditionalStyle: (row, col) => row.price < 0 ? { color: "red" } : {}
 ## 6. APIイメージ
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 // 基本的な使い方
-xlkit()
+xlmake()
   .sheet("売上データ")
     .text("月次売上レポート")
     .space(1)  // 1行空ける
@@ -306,7 +306,7 @@ xlkit()
   .save("report.xlsx");
 
 // 複雑なヘッダー（マージあり）
-xlkit()
+xlmake()
   .sheet("詳細レポート")
     .table({
       columns: [
@@ -330,7 +330,7 @@ const dataWithStyle = [
 ];
 
 // 条件付きスタイル
-xlkit()
+xlmake()
   .sheet("データ")
     .table({
       columns: [...],

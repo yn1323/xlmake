@@ -11,7 +11,7 @@ Examples of applying styles to cells based on conditions.
 `conditionalStyle` is called for each cell and returns styles based on conditions.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",
@@ -45,7 +45,7 @@ const output = await xlkit()
 Add `_style` property to data to apply styles to specific cells only.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Products")
   .table({
     preset: "basic",
@@ -83,7 +83,7 @@ const output = await xlkit()
 You can combine `conditionalStyle` and `_style`.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Inventory")
   .table({
     preset: "basic",

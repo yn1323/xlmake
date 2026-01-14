@@ -9,7 +9,7 @@ sidebar_position: 5
 ## 外枠のみ
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     columns: [
@@ -28,7 +28,7 @@ const output = await xlkit()
 ## ヘッダー下線のみ
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     columns: [
@@ -47,7 +47,7 @@ const output = await xlkit()
 ## 全罫線
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     columns: [
@@ -73,7 +73,7 @@ const output = await xlkit()
 罫線の種類と色を詳細に設定できます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("レポート")
   .table({
     columns: [

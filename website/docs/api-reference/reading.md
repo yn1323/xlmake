@@ -9,7 +9,7 @@ sidebar_position: 7
 ## read()
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 // ファイルパスから読み込み
 const workbook = await read("report.xlsx");
@@ -94,7 +94,7 @@ console.log(border?.bottom); // { style: "thin", color: "#000000" }
 ## 使用例
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 // Excelファイルを読み込み
 const workbook = await read("./report.xlsx");

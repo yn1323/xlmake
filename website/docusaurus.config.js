@@ -3,7 +3,7 @@
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "xlkit",
+  title: "xlmake",
   tagline: "Declarative Excel Generation Library",
   favicon: "img/favicon.ico",
 
@@ -57,7 +57,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: "xlkit",
+        title: "xlmake",
         items: [
           {
             type: "docSidebar",
@@ -97,12 +97,12 @@ const config = {
               },
               {
                 label: "npm",
-                href: "https://www.npmjs.com/package/xlkit",
+                href: "https://www.npmjs.com/package/xlmake",
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} xlkit. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} xlmake. Built with Docusaurus.`,
       },
       prism: {
         theme: require("prism-react-renderer").themes.github,

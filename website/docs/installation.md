@@ -4,20 +4,20 @@ sidebar_position: 2
 
 # インストール
 
-xlkitは、npm、pnpm、yarnのいずれかでインストールできます。
+xlmakeは、npm、pnpm、yarnのいずれかでインストールできます。
 
 ## パッケージマネージャーでインストール
 
 ```bash
-npm install xlkit
+npm install xlmake
 ```
 
 ```bash
-pnpm add xlkit
+pnpm add xlmake
 ```
 
 ```bash
-yarn add xlkit
+yarn add xlmake
 ```
 
 ## 動作環境
@@ -27,7 +27,7 @@ yarn add xlkit
 
 ## TypeScript
 
-xlkitはTypeScriptで書かれており、型定義が同梱されています。追加の型定義パッケージは不要です。
+xlmakeはTypeScriptで書かれており、型定義が同梱されています。追加の型定義パッケージは不要です。
 
 ## 次のステップ
 

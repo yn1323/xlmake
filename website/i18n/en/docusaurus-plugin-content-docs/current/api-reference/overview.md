@@ -4,18 +4,18 @@ sidebar_position: 1
 
 # API Overview
 
-xlkit's API is divided into two main parts.
+xlmake's API is divided into two main parts.
 
 ## Entry Points
 
-### xlkit()
+### xlmake()
 
 Creates a builder for generating Excel files.
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const builder = xlkit();
+const builder = xlmake();
 ```
 
 ### read()
@@ -23,7 +23,7 @@ const builder = xlkit();
 Reads existing Excel files.
 
 ```typescript
-import { read } from "xlkit";
+import { read } from "xlmake";
 
 const workbook = await read("report.xlsx");
 ```
@@ -58,11 +58,11 @@ const workbook = await read("report.xlsx");
 ## Basic Flow
 
 ```
-xlkit() → sheet() → table() / text() / image() → getNode() / getBrowser()
+xlmake() → sheet() → table() / text() / image() → getNode() / getBrowser()
 ```
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sheet Name")
   .table({ columns: [...], data: [...] })
   .getNode();
@@ -72,6 +72,6 @@ await output.saveToFile("output.xlsx");
 
 ## Next Steps
 
-- [xlkit()](./xlkit.md) - Factory function details
+- [xlmake()](./xlmake.md) - Factory function details
 - [.table()](./table.md) - Table API details
 - [Style API](./styling.md) - Styling details

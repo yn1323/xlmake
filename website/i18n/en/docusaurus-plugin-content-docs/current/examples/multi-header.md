@@ -9,7 +9,7 @@ Examples of creating hierarchical headers (multi-headers).
 ## 2-Level Header
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",
@@ -45,7 +45,7 @@ Result:
 You can create even deeper hierarchies.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Details")
   .table({
     preset: "basic",
@@ -91,7 +91,7 @@ Result:
 You can make only some columns multi-header.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Report")
   .table({
     preset: "basic",

@@ -4,17 +4,17 @@ sidebar_position: 1
 
 # Introduction
 
-**xlkit** is a declarative Excel generation library for TypeScript.
+**xlmake** is a declarative Excel generation library for TypeScript.
 
-## Why xlkit?
+## Why xlmake?
 
 Existing JS/TypeScript Excel libraries (like ExcelJS) are **imperative**, making it difficult to see the final output from the code.
 
-xlkit provides a **declarative** API, where the code clearly shows the final Excel structure.
+xlmake provides a **declarative** API, where the code clearly shows the final Excel structure.
 
 ## Comparison with ExcelJS
 
-| Aspect | ExcelJS (Imperative) | xlkit (Declarative) |
+| Aspect | ExcelJS (Imperative) | xlmake (Declarative) |
 |--------|---------------------|---------------------|
 | Style | Cell-by-cell manipulation | Declare final structure |
 | Clarity | Hard to see result from code | Code shows result clearly |

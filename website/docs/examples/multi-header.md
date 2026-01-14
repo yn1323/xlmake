@@ -9,7 +9,7 @@ sidebar_position: 3
 ## 2階層ヘッダー
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",
@@ -45,7 +45,7 @@ const output = await xlkit()
 さらに深い階層も作成できます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("詳細")
   .table({
     preset: "basic",
@@ -91,7 +91,7 @@ const output = await xlkit()
 一部だけマルチヘッダーにすることもできます。
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("レポート")
   .table({
     preset: "basic",

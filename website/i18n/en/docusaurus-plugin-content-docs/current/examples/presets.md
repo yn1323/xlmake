@@ -19,7 +19,7 @@ Presets make it easy to apply common styles.
 Standard business-style preset.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Sales")
   .table({
     preset: "basic",
@@ -41,7 +41,7 @@ const output = await xlkit()
 Simple, lightweight style. No borders, only bold header.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Data")
   .table({
     preset: "minimal",
@@ -62,7 +62,7 @@ const output = await xlkit()
 Easy-to-read style with alternating row colors.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("List")
   .table({
     preset: "striped",
@@ -86,7 +86,7 @@ const output = await xlkit()
 You can apply additional styles on top of presets.
 
 ```typescript
-const output = await xlkit()
+const output = await xlmake()
   .sheet("Custom")
   .table({
     preset: "basic",

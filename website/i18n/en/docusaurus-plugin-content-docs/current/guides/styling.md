@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Styling
 
-xlkit offers various ways to apply styles.
+xlmake offers various ways to apply styles.
 
 ## Presets
 

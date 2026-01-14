@@ -4,12 +4,12 @@ sidebar_position: 3
 
 # クイックスタート
 
-xlkitを使って、シンプルなExcelファイルを生成してみましょう。
+xlmakeを使って、シンプルなExcelファイルを生成してみましょう。
 
 ## Node.js環境での使用
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
 const salesData = [
   { name: "りんご", price: 100, quantity: 50 },
@@ -17,7 +17,7 @@ const salesData = [
   { name: "バナナ", price: 120, quantity: 30 },
 ];
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("売上")
   .table({
     preset: "basic",
@@ -36,9 +36,9 @@ await output.saveToFile("report.xlsx");
 ## ブラウザ環境での使用
 
 ```typescript
-import { xlkit } from "xlkit";
+import { xlmake } from "xlmake";
 
-const output = await xlkit()
+const output = await xlmake()
   .sheet("データ")
   .table({
     preset: "basic",
@@ -58,10 +58,10 @@ await output.download("data.xlsx");
 
 ## 基本的な使い方
 
-### 1. xlkit()でビルダーを作成
+### 1. xlmake()でビルダーを作成
 
 ```typescript
-const builder = xlkit();
+const builder = xlmake();
 ```
 
 ### 2. sheet()でシートを追加

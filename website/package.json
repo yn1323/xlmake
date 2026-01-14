@@ -1,7 +1,7 @@
 {
-  "name": "xlkit-website",
+  "name": "xlmake-website",
   "version": "1.0.0",
-  "description": "xlkit documentation website",
+  "description": "xlmake documentation website",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
@@ -24,7 +24,7 @@
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "xlkit": "workspace:*"
+    "xlmake": "workspace:*"
   },
   "engines": {
     "node": ">=18.0"
