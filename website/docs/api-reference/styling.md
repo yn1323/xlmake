@@ -25,7 +25,10 @@ sidebar_position: 4
   fill?: string,     // 背景色 "#RRGGBB"
 
   // 配置
-  align?: "left" | "center" | "right",
+  align?: "left" | "center" | "right"
+        | "top-left" | "top-center" | "top-right"
+        | "middle-left" | "middle-center" | "middle-right"
+        | "bottom-left" | "bottom-center" | "bottom-right",
 
   // 書式
   format?: "string" | "number" | "date",
@@ -44,10 +47,25 @@ sidebar_position: 4
 | `strike` | `boolean` | 取り消し線 |
 | `color` | `string` | 文字色（#RRGGBB形式） |
 | `fill` | `string` | 背景色（#RRGGBB形式） |
-| `align` | `"left"` \| `"center"` \| `"right"` | 水平配置 |
+| `align` | `AlignType` | 配置（下記参照） |
 | `format` | `"string"` \| `"number"` \| `"date"` | セル書式 |
 | `decimalPlaces` | `number` | 小数点以下の桁数 |
 | `thousandsSeparator` | `boolean` | 3桁区切りを使用 |
+
+### AlignType
+
+水平方向のみ、または垂直・水平の複合形式で指定できます。
+
+| 値 | 説明 |
+|----|------|
+| `"left"` / `"center"` / `"right"` | 水平配置のみ（垂直は中央） |
+| `"top-left"` / `"top-center"` / `"top-right"` | 上寄せ + 水平配置 |
+| `"middle-left"` / `"middle-center"` / `"middle-right"` | 中央 + 水平配置 |
+| `"bottom-left"` / `"bottom-center"` / `"bottom-right"` | 下寄せ + 水平配置 |
+
+:::info マージ時の自動上寄せ
+`mergeSameValues`でマージされたセルは、自動的に上寄せ（`top`）になります。
+:::
 
 ## TableStyle
 

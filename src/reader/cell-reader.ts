@@ -1,6 +1,6 @@
 import type { Cell } from "exceljs";
 import { argbToHex } from "../styles/converter";
-import type { CellStyle, LineStyle } from "../types/style";
+import type { AlignType, CellStyle, LineStyle } from "../types/style";
 
 /**
  * セルの値とスタイルを保持
@@ -65,11 +65,19 @@ export class CellReader {
       xlmakeStyle.fill = argbToHex(cellStyle.fill.fgColor.argb);
     }
 
-    // 配置
-    if (cellStyle.alignment?.horizontal) {
-      const align = cellStyle.alignment.horizontal;
-      if (align === "left" || align === "center" || align === "right") {
-        xlmakeStyle.align = align;
+    // 配置（水平・垂直両方対応）
+    if (cellStyle.alignment) {
+      const h = cellStyle.alignment.horizontal;
+      const v = cellStyle.alignment.vertical;
+
+      if (h === "left" || h === "center" || h === "right") {
+        if (v && v !== "middle") {
+          // 垂直が middle 以外なら複合形式
+          xlmakeStyle.align = `${v}-${h}` as AlignType;
+        } else {
+          // 垂直が middle またはなしなら従来形式
+          xlmakeStyle.align = h;
+        }
       }
     }
 

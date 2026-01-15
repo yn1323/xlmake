@@ -21,7 +21,7 @@ function HomepageHeader() {
           <Link className="button button--secondary button--lg" to="/docs/intro">
             Get Started
           </Link>
-          <Link className="button button--secondary button--lg" to="https://github.com/yn1323/xlkit">
+          <Link className="button button--secondary button--lg" to="https://github.com/yn1323/xlmake">
             GitHub
           </Link>
         </div>
@@ -98,7 +98,7 @@ function DownloadButton() {
         .text({ value: "xlmake Sample", style: { bold: true, fontSize: 16 } })
         .space(1)
         .image({
-          source: "https://raw.githubusercontent.com/yn1323/xlkit/main/logo.png",
+          source: "https://raw.githubusercontent.com/yn1323/xlmake/main/logo.png",
           width: 150,
           height: 150,
         })

@@ -47,7 +47,7 @@ describe("02-styles.xlsx", () => {
         ],
         data: [{ normal: "テスト", redText: "テスト", yellowBg: "テスト", both: "テスト" }],
       })
-      // Alignment シート
+      // Alignment シート（水平方向のみ）
       .sheet("Alignment")
       .table({
         columns: [
@@ -56,6 +56,34 @@ describe("02-styles.xlsx", () => {
           { key: "right", label: "右寄せ", style: { align: "right" } },
         ],
         data: [{ left: "テスト", center: "テスト", right: "テスト" }],
+      })
+      // VerticalAlignment シート（垂直・水平複合）
+      .sheet("VerticalAlignment")
+      .table({
+        columns: [
+          { key: "topLeft", label: "上左", style: { align: "top-left" } },
+          { key: "topCenter", label: "上中央", style: { align: "top-center" } },
+          { key: "topRight", label: "上右", style: { align: "top-right" } },
+          { key: "middleLeft", label: "中央左", style: { align: "middle-left" } },
+          { key: "middleCenter", label: "中央", style: { align: "middle-center" } },
+          { key: "middleRight", label: "中央右", style: { align: "middle-right" } },
+          { key: "bottomLeft", label: "下左", style: { align: "bottom-left" } },
+          { key: "bottomCenter", label: "下中央", style: { align: "bottom-center" } },
+          { key: "bottomRight", label: "下右", style: { align: "bottom-right" } },
+        ],
+        data: [
+          {
+            topLeft: "テスト\n複数行",
+            topCenter: "テスト\n複数行",
+            topRight: "テスト\n複数行",
+            middleLeft: "テスト\n複数行",
+            middleCenter: "テスト\n複数行",
+            middleRight: "テスト\n複数行",
+            bottomLeft: "テスト\n複数行",
+            bottomCenter: "テスト\n複数行",
+            bottomRight: "テスト\n複数行",
+          },
+        ],
       })
       .getNode();
 
@@ -82,10 +110,22 @@ describe("02-styles.xlsx", () => {
     expect(colorSheet.cell("D2").style?.color).toBe("#0000FF");
     expect(colorSheet.cell("D2").style?.fill).toBe("#00FF00");
 
-    // Alignment シート検証
+    // Alignment シート検証（水平方向のみ）
     const alignSheet = workbook.sheet("Alignment");
     expect(alignSheet.cell("A2").style?.align).toBe("left");
     expect(alignSheet.cell("B2").style?.align).toBe("center");
     expect(alignSheet.cell("C2").style?.align).toBe("right");
+
+    // VerticalAlignment シート検証（垂直・水平複合）
+    const vertAlignSheet = workbook.sheet("VerticalAlignment");
+    expect(vertAlignSheet.cell("A2").style?.align).toBe("top-left");
+    expect(vertAlignSheet.cell("B2").style?.align).toBe("top-center");
+    expect(vertAlignSheet.cell("C2").style?.align).toBe("top-right");
+    expect(vertAlignSheet.cell("D2").style?.align).toBe("left"); // middle-left → left（middleは省略）
+    expect(vertAlignSheet.cell("E2").style?.align).toBe("center"); // middle-center → center
+    expect(vertAlignSheet.cell("F2").style?.align).toBe("right"); // middle-right → right
+    expect(vertAlignSheet.cell("G2").style?.align).toBe("bottom-left");
+    expect(vertAlignSheet.cell("H2").style?.align).toBe("bottom-center");
+    expect(vertAlignSheet.cell("I2").style?.align).toBe("bottom-right");
   });
 });

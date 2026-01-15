@@ -41,8 +41,8 @@ xlmakeでは様々な方法でスタイルを適用できます。
   color: "#FF0000",    // 文字色
   fill: "#FFFF00",     // 背景色
 
-  // 配置
-  align: "center",     // "left" | "center" | "right"
+  // 配置（水平のみ、または垂直-水平の複合形式）
+  align: "center",     // "left" | "center" | "right" | "top-left" | "bottom-center" など
 
   // 数値書式
   format: "number",

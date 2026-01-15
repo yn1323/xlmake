@@ -55,3 +55,4 @@ await output.saveToFile("report.xlsx");
 ## License
 
 MIT
+
