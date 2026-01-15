@@ -41,8 +41,8 @@ You can specify detailed cell styles.
   color: "#FF0000",    // Text color
   fill: "#FFFF00",     // Background color
 
-  // Alignment
-  align: "center",     // "left" | "center" | "right"
+  // Alignment (horizontal only, or vertical-horizontal compound)
+  align: "center",     // "left" | "center" | "right" | "top-left" | "bottom-center" etc.
 
   // Number format
   format: "number",

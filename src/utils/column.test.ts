@@ -130,8 +130,8 @@ describe("column utilities", () => {
       const rows = buildHeaderRows(columns, 1);
       expect(rows).toHaveLength(1);
       expect(rows[0]).toHaveLength(2);
-      expect(rows[0][0]).toEqual({ label: "カテゴリ", colSpan: 1, rowSpan: 1, style: undefined });
-      expect(rows[0][1]).toEqual({ label: "商品名", colSpan: 1, rowSpan: 1, style: undefined });
+      expect(rows[0][0]).toEqual({ label: "カテゴリ", colSpan: 1, rowSpan: 1, startCol: 1, style: undefined });
+      expect(rows[0][1]).toEqual({ label: "商品名", colSpan: 1, rowSpan: 1, startCol: 2, style: undefined });
     });
 
     it("should build two rows for nested columns", () => {
@@ -150,13 +150,13 @@ describe("column utilities", () => {
 
       // 1行目: 商品情報(colSpan=2), 価格(rowSpan=2)
       expect(rows[0]).toHaveLength(2);
-      expect(rows[0][0]).toEqual({ label: "商品情報", colSpan: 2, rowSpan: 1, style: undefined });
-      expect(rows[0][1]).toEqual({ label: "価格", colSpan: 1, rowSpan: 2, style: undefined });
+      expect(rows[0][0]).toEqual({ label: "商品情報", colSpan: 2, rowSpan: 1, startCol: 1, style: undefined });
+      expect(rows[0][1]).toEqual({ label: "価格", colSpan: 1, rowSpan: 2, startCol: 3, style: undefined });
 
       // 2行目: カテゴリ, 商品名
       expect(rows[1]).toHaveLength(2);
-      expect(rows[1][0]).toEqual({ label: "カテゴリ", colSpan: 1, rowSpan: 1, style: undefined });
-      expect(rows[1][1]).toEqual({ label: "商品名", colSpan: 1, rowSpan: 1, style: undefined });
+      expect(rows[1][0]).toEqual({ label: "カテゴリ", colSpan: 1, rowSpan: 1, startCol: 1, style: undefined });
+      expect(rows[1][1]).toEqual({ label: "商品名", colSpan: 1, rowSpan: 1, startCol: 2, style: undefined });
     });
 
     it("should build three rows for deeply nested columns", () => {
@@ -180,17 +180,17 @@ describe("column utilities", () => {
 
       // 1行目: 商品(colSpan=2), 価格(rowSpan=3)
       expect(rows[0]).toHaveLength(2);
-      expect(rows[0][0]).toEqual({ label: "商品", colSpan: 2, rowSpan: 1, style: undefined });
-      expect(rows[0][1]).toEqual({ label: "価格", colSpan: 1, rowSpan: 3, style: undefined });
+      expect(rows[0][0]).toEqual({ label: "商品", colSpan: 2, rowSpan: 1, startCol: 1, style: undefined });
+      expect(rows[0][1]).toEqual({ label: "価格", colSpan: 1, rowSpan: 3, startCol: 3, style: undefined });
 
       // 2行目: 詳細(colSpan=2)
       expect(rows[1]).toHaveLength(1);
-      expect(rows[1][0]).toEqual({ label: "詳細", colSpan: 2, rowSpan: 1, style: undefined });
+      expect(rows[1][0]).toEqual({ label: "詳細", colSpan: 2, rowSpan: 1, startCol: 1, style: undefined });
 
       // 3行目: カテゴリ, 商品名
       expect(rows[2]).toHaveLength(2);
-      expect(rows[2][0]).toEqual({ label: "カテゴリ", colSpan: 1, rowSpan: 1, style: undefined });
-      expect(rows[2][1]).toEqual({ label: "商品名", colSpan: 1, rowSpan: 1, style: undefined });
+      expect(rows[2][0]).toEqual({ label: "カテゴリ", colSpan: 1, rowSpan: 1, startCol: 1, style: undefined });
+      expect(rows[2][1]).toEqual({ label: "商品名", colSpan: 1, rowSpan: 1, startCol: 2, style: undefined });
     });
 
     it("should preserve column style", () => {

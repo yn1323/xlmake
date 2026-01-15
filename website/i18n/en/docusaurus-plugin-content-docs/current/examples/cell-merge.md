@@ -90,6 +90,24 @@ const output = await xlmake()
   .getNode();
 ```
 
+## Merged Cell Alignment
+
+Cells merged with `mergeSameValues` are automatically **top-aligned**.
+This places text at the top of the merged range for better readability.
+
+```typescript
+// Merged cells are automatically top-aligned (vertical: "top")
+.table({
+  mergeSameValues: true,
+  columns: [
+    { key: "category", label: "Category" },  // Auto top-aligned when merged
+    { key: "name", label: "Name" },
+  ],
+  data: [...],
+})
+```
+
 ## Related
 
 - [.table() API](../api-reference/table.md) - mergeSameValues details
+- [Style API](../api-reference/styling.md) - align details

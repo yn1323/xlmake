@@ -9,6 +9,7 @@ export type HeaderCell = {
   label: string;
   colSpan: number; // 水平マージ
   rowSpan: number; // 垂直マージ
+  startCol: number; // 開始列位置（1-indexed）
   style?: CellStyle;
 };
 
@@ -62,7 +63,7 @@ export function getHeaderDepth<T>(columns: Column<T>[]): number {
 export function buildHeaderRows<T>(columns: Column<T>[], totalDepth: number): HeaderCell[][] {
   const rows: HeaderCell[][] = Array.from({ length: totalDepth }, () => []);
 
-  function processColumn(col: Column<T>, currentDepth: number): void {
+  function processColumn(col: Column<T>, currentDepth: number, startCol: number): number {
     if (isLeafColumn(col)) {
       // リーフカラム: 残りの深さ分だけ縦にマージ
       const rowSpan = totalDepth - currentDepth;
@@ -70,26 +71,33 @@ export function buildHeaderRows<T>(columns: Column<T>[], totalDepth: number): He
         label: col.label,
         colSpan: 1,
         rowSpan,
+        startCol,
         style: col.style,
       });
-    } else {
-      // 親カラム: 子の数だけ横にマージ
-      const colSpan = getColumnSpan(col);
-      rows[currentDepth].push({
-        label: col.label,
-        colSpan,
-        rowSpan: 1,
-        style: undefined, // ParentColumnにはstyleがない
-      });
-      // 子カラムを次の深さで処理
-      for (const child of col.children) {
-        processColumn(child, currentDepth + 1);
-      }
+      return 1; // 1列分消費
     }
+    // 親カラム: 子の数だけ横にマージ
+    const colSpan = getColumnSpan(col);
+    rows[currentDepth].push({
+      label: col.label,
+      colSpan,
+      rowSpan: 1,
+      startCol,
+      style: undefined, // ParentColumnにはstyleがない
+    });
+    // 子カラムを次の深さで処理
+    let childStartCol = startCol;
+    for (const child of col.children) {
+      const consumed = processColumn(child, currentDepth + 1, childStartCol);
+      childStartCol += consumed;
+    }
+    return colSpan; // colSpan分消費
   }
 
+  let currentCol = 1; // 1-indexed
   for (const col of columns) {
-    processColumn(col, 0);
+    const consumed = processColumn(col, 0, currentCol);
+    currentCol += consumed;
   }
 
   return rows;
