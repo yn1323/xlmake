@@ -25,7 +25,10 @@ Defines cell-level styles.
   fill?: string,     // Background color "#RRGGBB"
 
   // Alignment
-  align?: "left" | "center" | "right",
+  align?: "left" | "center" | "right"
+        | "top-left" | "top-center" | "top-right"
+        | "middle-left" | "middle-center" | "middle-right"
+        | "bottom-left" | "bottom-center" | "bottom-right",
 
   // Format
   format?: "string" | "number" | "date",
@@ -44,10 +47,25 @@ Defines cell-level styles.
 | `strike` | `boolean` | Strikethrough |
 | `color` | `string` | Text color (#RRGGBB format) |
 | `fill` | `string` | Background color (#RRGGBB format) |
-| `align` | `"left"` \| `"center"` \| `"right"` | Horizontal alignment |
+| `align` | `AlignType` | Alignment (see below) |
 | `format` | `"string"` \| `"number"` \| `"date"` | Cell format |
 | `decimalPlaces` | `number` | Decimal places |
 | `thousandsSeparator` | `boolean` | Use thousands separator |
+
+### AlignType
+
+Can be specified as horizontal only, or as a vertical-horizontal compound format.
+
+| Value | Description |
+|-------|-------------|
+| `"left"` / `"center"` / `"right"` | Horizontal only (vertical defaults to middle) |
+| `"top-left"` / `"top-center"` / `"top-right"` | Top + horizontal |
+| `"middle-left"` / `"middle-center"` / `"middle-right"` | Middle + horizontal |
+| `"bottom-left"` / `"bottom-center"` / `"bottom-right"` | Bottom + horizontal |
+
+:::info Auto Top Alignment for Merged Cells
+Cells merged with `mergeSameValues` are automatically top-aligned (`top`).
+:::
 
 ## TableStyle
 

@@ -1,5 +1,5 @@
 import type { Alignment, Border, Borders, Fill, Font, Style } from "exceljs";
-import type { BorderStyle, CellStyle, LineStyle } from "../types/style";
+import type { AlignType, BorderStyle, CellStyle, LineStyle } from "../types/style";
 
 /**
  * xlmakeのCellStyleをExcelJSのStyleに変換
@@ -81,11 +81,20 @@ function convertFill(hexColor: string): Fill {
 
 /**
  * 配置を変換
+ * - "left", "center", "right": 水平方向のみ（垂直は middle）
+ * - "top-left", "bottom-center" など: 垂直-水平の複合形式
  */
-function convertAlignment(align: "left" | "center" | "right"): Partial<Alignment> {
+function convertAlignment(align: AlignType): Partial<Alignment> {
+  // 複合形式（"top-left" など）の場合
+  if (align.includes("-")) {
+    const [vertical, horizontal] = align.split("-") as ["top" | "middle" | "bottom", "left" | "center" | "right"];
+    return { horizontal, vertical };
+  }
+
+  // 既存形式（"left", "center", "right"）の場合 → 垂直は middle（後方互換）
   return {
-    horizontal: align,
-    vertical: "middle", // 垂直方向は常に中央
+    horizontal: align as "left" | "center" | "right",
+    vertical: "middle",
   };
 }
 

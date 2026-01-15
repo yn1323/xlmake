@@ -90,6 +90,24 @@ const output = await xlmake()
   .getNode();
 ```
 
+## マージセルの配置
+
+`mergeSameValues`でマージされたセルは、自動的に**上寄せ**になります。
+これにより、マージされた範囲内でテキストが上端に配置され、見やすくなります。
+
+```typescript
+// マージされたセルは自動で上寄せ（vertical: "top"）
+.table({
+  mergeSameValues: true,
+  columns: [
+    { key: "category", label: "カテゴリ" },  // マージ時は自動で上寄せ
+    { key: "name", label: "商品名" },
+  ],
+  data: [...],
+})
+```
+
 ## 関連
 
 - [.table() API](../api-reference/table.md) - mergeSameValuesの詳細
+- [スタイルAPI](../api-reference/styling.md) - alignの詳細

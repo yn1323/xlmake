@@ -5,8 +5,23 @@ const hexColorRegex = /^#[\dA-Fa-f]{6}$/;
 
 const hexColorSchema = z.string().regex(hexColorRegex, "色は #RRGGBB 形式で指定してください");
 
-// AlignType
-const alignTypeSchema = z.enum(["left", "center", "right"]);
+// AlignType（水平方向のみ + 複合形式）
+const alignTypeSchema = z.enum([
+  // 水平方向のみ（後方互換）
+  "left",
+  "center",
+  "right",
+  // 複合形式（垂直-水平）
+  "top-left",
+  "top-center",
+  "top-right",
+  "middle-left",
+  "middle-center",
+  "middle-right",
+  "bottom-left",
+  "bottom-center",
+  "bottom-right",
+]);
 
 // FormatType
 const formatTypeSchema = z.enum(["string", "number", "date"]);

@@ -288,6 +288,15 @@ export class SheetWriter {
     for (let colIndex = 0; colIndex < colCount; colIndex++) {
       for (const range of mergeRanges[colIndex]) {
         mergeCells(this.worksheet, range.startRow, colIndex + 1, range.endRow, colIndex + 1);
+
+        // マージされたセルに自動で上寄せを適用
+        const topLeftCell = this.worksheet.getCell(range.startRow, colIndex + 1);
+        const existingHorizontal = topLeftCell.alignment?.horizontal ?? "left";
+        topLeftCell.alignment = {
+          ...topLeftCell.alignment,
+          horizontal: existingHorizontal,
+          vertical: "top",
+        };
       }
     }
 

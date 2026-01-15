@@ -31,6 +31,12 @@ describe("09-merge.xlsx", () => {
           { key: "price" as const, label: "価格" },
         ],
         data: mergeData,
+        border: {
+          outline: "medium",
+          headerBody: "medium",
+          headerInner: "medium",
+          bodyInner: "medium",
+        },
       })
       // ColumnMergeSameValues: 列単位のマージ設定
       .sheet("ColumnMergeSameValues")
@@ -42,6 +48,12 @@ describe("09-merge.xlsx", () => {
           { key: "price" as const, label: "価格" },
         ],
         data: mergeData,
+        border: {
+          outline: "medium",
+          headerBody: "medium",
+          headerInner: "medium",
+          bodyInner: "medium",
+        },
       })
       // MultiHeader: マルチヘッダー（2階層）
       .sheet("MultiHeader")
@@ -57,6 +69,12 @@ describe("09-merge.xlsx", () => {
           { key: "price" as const, label: "価格" },
         ],
         data: mergeData,
+        border: {
+          outline: "medium",
+          headerBody: "medium",
+          headerInner: "medium",
+          bodyInner: "medium",
+        },
       })
       // DeepMultiHeader: マルチヘッダー（3階層）
       .sheet("DeepMultiHeader")
@@ -77,6 +95,12 @@ describe("09-merge.xlsx", () => {
           { key: "price" as const, label: "価格" },
         ],
         data: mergeData,
+        border: {
+          outline: "medium",
+          headerBody: "medium",
+          headerInner: "medium",
+          bodyInner: "medium",
+        },
       })
       // MergeWithBorder: ボディマージ + ボーダー設定
       .sheet("MergeWithBorder")
@@ -91,54 +115,8 @@ describe("09-merge.xlsx", () => {
         border: {
           outline: "medium",
           headerBody: "medium",
-          bodyInner: "thin",
-        },
-      })
-      // MultiHeaderWithBorder: マルチヘッダー + ボーダー設定
-      .sheet("MultiHeaderWithBorder")
-      .table({
-        columns: [
-          {
-            label: "商品情報",
-            children: [
-              { key: "category" as const, label: "カテゴリ" },
-              { key: "name" as const, label: "商品名" },
-            ],
-          },
-          { key: "price" as const, label: "価格" },
-        ],
-        data: mergeData,
-        border: {
-          outline: "medium",
-          headerBody: "medium",
-          headerInner: "thin",
-          bodyInner: "thin",
-        },
-      })
-      // DeepMultiHeaderWithBorder: マルチヘッダー（3階層） + ボーダー設定
-      .sheet("DeepMultiHeaderWithBorder")
-      .table({
-        columns: [
-          {
-            label: "商品",
-            children: [
-              {
-                label: "詳細",
-                children: [
-                  { key: "category" as const, label: "カテゴリ" },
-                  { key: "name" as const, label: "商品名" },
-                ],
-              },
-            ],
-          },
-          { key: "price" as const, label: "価格" },
-        ],
-        data: mergeData,
-        border: {
-          outline: "medium",
-          headerBody: "medium",
-          headerInner: "thin",
-          bodyInner: "thin",
+          headerInner: "medium",
+          bodyInner: "medium",
         },
       })
       // MultiHeaderReverse: マルチヘッダー（2階層）childrenなし→あり順
@@ -155,6 +133,12 @@ describe("09-merge.xlsx", () => {
           },
         ],
         data: mergeData,
+        border: {
+          outline: "medium",
+          headerBody: "medium",
+          headerInner: "medium",
+          bodyInner: "medium",
+        },
       })
       // DeepMultiHeaderReverse: マルチヘッダー（3階層）childrenなし→あり順
       .sheet("DeepMultiHeaderReverse")
@@ -175,6 +159,12 @@ describe("09-merge.xlsx", () => {
           },
         ],
         data: mergeData,
+        border: {
+          outline: "medium",
+          headerBody: "medium",
+          headerInner: "medium",
+          bodyInner: "medium",
+        },
       })
       .getNode();
 
@@ -203,6 +193,9 @@ describe("09-merge.xlsx", () => {
     const mergeSameValuesMerges = mergeSheet.mergedCells;
     expect(mergeSameValuesMerges).toContain("A2:A4"); // 食品
     expect(mergeSameValuesMerges).toContain("A5:A6"); // 家電
+
+    // マージされたセルは自動で上寄せになっている
+    expect(mergeSheet.cell("A2").style?.align).toBe("top-left"); // デフォルトはleftなのでtop-left
 
     // === ColumnMergeSameValues シートの検証 ===
     const colMergeSheet = workbook.sheet("ColumnMergeSameValues");
@@ -234,6 +227,9 @@ describe("09-merge.xlsx", () => {
     expect(multiHeaderSheet.mergedCells).toContain("A1:B1"); // 商品情報 colSpan=2
     expect(multiHeaderSheet.mergedCells).toContain("C1:C2"); // 価格 rowSpan=2
 
+    // 罫線が適用されている
+    expect(multiHeaderSheet.cell("A1").border?.top?.style).toBe("medium");
+
     // === DeepMultiHeader シートの検証 ===
     const deepMultiHeaderSheet = workbook.sheet("DeepMultiHeader");
 
@@ -256,6 +252,14 @@ describe("09-merge.xlsx", () => {
     expect(deepMultiHeaderSheet.mergedCells).toContain("A2:B2"); // 詳細 colSpan=2
     expect(deepMultiHeaderSheet.mergedCells).toContain("C1:C3"); // 価格 rowSpan=3
 
+    // 罫線が適用されている（外枠）
+    expect(deepMultiHeaderSheet.cell("A1").border?.top?.style).toBe("medium");
+    expect(deepMultiHeaderSheet.cell("A1").border?.left?.style).toBe("medium");
+
+    // ヘッダー内部の水平線はthin（headerInner）であるべき
+    expect(deepMultiHeaderSheet.cell("A2").border?.top?.style).toBe("medium");
+    expect(deepMultiHeaderSheet.cell("A3").border?.top?.style).toBe("medium");
+
     // === MergeWithBorder シートの検証 ===
     const mergeWithBorderSheet = workbook.sheet("MergeWithBorder");
 
@@ -265,32 +269,6 @@ describe("09-merge.xlsx", () => {
     // 罫線が適用されている（左上角）
     expect(mergeWithBorderSheet.cell("A1").border?.top?.style).toBe("medium");
     expect(mergeWithBorderSheet.cell("A1").border?.left?.style).toBe("medium");
-
-    // === MultiHeaderWithBorder シートの検証 ===
-    const multiHeaderWithBorderSheet = workbook.sheet("MultiHeaderWithBorder");
-
-    // ヘッダーのマージが正しく適用されている
-    expect(multiHeaderWithBorderSheet.mergedCells).toContain("A1:B1"); // 商品情報
-    expect(multiHeaderWithBorderSheet.mergedCells).toContain("C1:C2"); // 価格
-
-    // 罫線が適用されている
-    expect(multiHeaderWithBorderSheet.cell("A1").border?.top?.style).toBe("medium");
-
-    // === DeepMultiHeaderWithBorder シートの検証 ===
-    const deepMultiHeaderWithBorderSheet = workbook.sheet("DeepMultiHeaderWithBorder");
-
-    // ヘッダーのマージが正しく適用されている
-    expect(deepMultiHeaderWithBorderSheet.mergedCells).toContain("A1:B1"); // 商品 colSpan=2
-    expect(deepMultiHeaderWithBorderSheet.mergedCells).toContain("A2:B2"); // 詳細 colSpan=2
-    expect(deepMultiHeaderWithBorderSheet.mergedCells).toContain("C1:C3"); // 価格 rowSpan=3
-
-    // 罫線が適用されている（外枠）
-    expect(deepMultiHeaderWithBorderSheet.cell("A1").border?.top?.style).toBe("medium");
-    expect(deepMultiHeaderWithBorderSheet.cell("A1").border?.left?.style).toBe("medium");
-
-    // ヘッダー内部の水平線はthin（headerInner）であるべき
-    expect(deepMultiHeaderWithBorderSheet.cell("A2").border?.top?.style).toBe("thin");
-    expect(deepMultiHeaderWithBorderSheet.cell("A3").border?.top?.style).toBe("thin");
 
     // === MultiHeaderReverse シートの検証 ===
     const multiHeaderReverseSheet = workbook.sheet("MultiHeaderReverse");

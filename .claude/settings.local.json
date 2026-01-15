@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Skill(create-doc)",
+      "Skill(create-doc:*)",
+      "Skill(update-manual)",
+      "Skill(update-manual:*)",
+      "Bash(node:*)"
     ]
   }
 }

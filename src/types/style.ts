@@ -1,5 +1,19 @@
-// 基本的な型エイリアス
-export type AlignType = "left" | "center" | "right";
+// AlignType: 後方互換性を保ちつつ拡張
+// - "left", "center", "right": 水平方向のみ（垂直は middle）
+// - "top-left", "bottom-center" など: 垂直・水平両方指定
+export type AlignType =
+  | "left"
+  | "center"
+  | "right"
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "middle-left"
+  | "middle-center"
+  | "middle-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
 export type FormatType = "string" | "number" | "date";
 
 // セルのスタイル
