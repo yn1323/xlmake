@@ -141,6 +141,41 @@ describe("09-merge.xlsx", () => {
           bodyInner: "thin",
         },
       })
+      // MultiHeaderReverse: マルチヘッダー（2階層）childrenなし→あり順
+      .sheet("MultiHeaderReverse")
+      .table({
+        columns: [
+          { key: "price" as const, label: "価格" },
+          {
+            label: "商品情報",
+            children: [
+              { key: "category" as const, label: "カテゴリ" },
+              { key: "name" as const, label: "商品名" },
+            ],
+          },
+        ],
+        data: mergeData,
+      })
+      // DeepMultiHeaderReverse: マルチヘッダー（3階層）childrenなし→あり順
+      .sheet("DeepMultiHeaderReverse")
+      .table({
+        columns: [
+          { key: "price" as const, label: "価格" },
+          {
+            label: "商品",
+            children: [
+              {
+                label: "詳細",
+                children: [
+                  { key: "category" as const, label: "カテゴリ" },
+                  { key: "name" as const, label: "商品名" },
+                ],
+              },
+            ],
+          },
+        ],
+        data: mergeData,
+      })
       .getNode();
 
     // ファイル保存（目視確認用）
@@ -256,5 +291,44 @@ describe("09-merge.xlsx", () => {
     // ヘッダー内部の水平線はthin（headerInner）であるべき
     expect(deepMultiHeaderWithBorderSheet.cell("A2").border?.top?.style).toBe("thin");
     expect(deepMultiHeaderWithBorderSheet.cell("A3").border?.top?.style).toBe("thin");
+
+    // === MultiHeaderReverse シートの検証 ===
+    const multiHeaderReverseSheet = workbook.sheet("MultiHeaderReverse");
+
+    // ヘッダー1行目
+    expect(multiHeaderReverseSheet.cell("A1").value).toBe("価格");
+    expect(multiHeaderReverseSheet.cell("B1").value).toBe("商品情報");
+
+    // ヘッダー2行目
+    expect(multiHeaderReverseSheet.cell("B2").value).toBe("カテゴリ");
+    expect(multiHeaderReverseSheet.cell("C2").value).toBe("商品名");
+
+    // マージ範囲の検証
+    // 「価格」は縦に2行マージ: A1:A2
+    // 「商品情報」は横に2列マージ: B1:C1
+    expect(multiHeaderReverseSheet.mergedCells).toContain("A1:A2"); // 価格 rowSpan=2
+    expect(multiHeaderReverseSheet.mergedCells).toContain("B1:C1"); // 商品情報 colSpan=2
+
+    // === DeepMultiHeaderReverse シートの検証 ===
+    const deepMultiHeaderReverseSheet = workbook.sheet("DeepMultiHeaderReverse");
+
+    // ヘッダー1行目
+    expect(deepMultiHeaderReverseSheet.cell("A1").value).toBe("価格");
+    expect(deepMultiHeaderReverseSheet.cell("B1").value).toBe("商品");
+
+    // ヘッダー2行目
+    expect(deepMultiHeaderReverseSheet.cell("B2").value).toBe("詳細");
+
+    // ヘッダー3行目
+    expect(deepMultiHeaderReverseSheet.cell("B3").value).toBe("カテゴリ");
+    expect(deepMultiHeaderReverseSheet.cell("C3").value).toBe("商品名");
+
+    // マージ範囲の検証
+    // 「価格」は縦に3行マージ: A1:A3
+    // 「商品」は横に2列マージ: B1:C1
+    // 「詳細」は横に2列マージ: B2:C2
+    expect(deepMultiHeaderReverseSheet.mergedCells).toContain("A1:A3"); // 価格 rowSpan=3
+    expect(deepMultiHeaderReverseSheet.mergedCells).toContain("B1:C1"); // 商品 colSpan=2
+    expect(deepMultiHeaderReverseSheet.mergedCells).toContain("B2:C2"); // 詳細 colSpan=2
   });
 });

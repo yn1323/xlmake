@@ -102,9 +102,8 @@ export class SheetWriter {
       const headerRow = headerRows[rowIndex];
       const row = getOrCreateRow(this.worksheet, this.currentRow);
 
-      let colPosition = 1; // 現在の列位置（1-indexed）
-
       for (const headerCell of headerRow) {
+        const colPosition = headerCell.startCol;
         const cell = row.getCell(colPosition);
 
         // スタイルのカスケーディング
@@ -133,9 +132,6 @@ export class SheetWriter {
         if (border) {
           cell.border = border;
         }
-
-        // 次の列位置に移動
-        colPosition += headerCell.colSpan;
       }
 
       this.currentRow++;
@@ -158,11 +154,11 @@ export class SheetWriter {
 
     for (let rowIndex = 0; rowIndex < totalRows; rowIndex++) {
       const headerRow = headerRows[rowIndex];
-      let colPosition = 1;
 
       for (const headerCell of headerRow) {
         // rowSpan > 1 のセルは、マージ範囲の最後の行に罫線を適用
         if (headerCell.rowSpan > 1) {
+          const colPosition = headerCell.startCol;
           const lastRowOfMerge = startRow + rowIndex + headerCell.rowSpan - 1;
           const isLastHeaderRow = lastRowOfMerge === startRow + totalRows - 1;
 
@@ -188,8 +184,6 @@ export class SheetWriter {
             }
           }
         }
-
-        colPosition += headerCell.colSpan;
       }
     }
   }
