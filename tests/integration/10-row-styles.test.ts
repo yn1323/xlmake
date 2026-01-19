@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const outputDir = join(__dirname, "..", "output");
 
 describe("09-row-styles.xlsx", () => {
-  const outputPath = join(outputDir, "09-row-styles.xlsx");
+  const outputPath = join(outputDir, "10-row-styles.xlsx");
 
   it("should generate and verify row styles and header styles", async () => {
     // 生成
