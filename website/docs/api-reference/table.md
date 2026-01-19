@@ -17,7 +17,6 @@ sidebar_position: 3
   mergeSameValues?: boolean,
   style?: TableStyle,
   border?: BorderStyle,
-  conditionalStyle?: (row: T, col: keyof T) => CellStyle | {},
 })
 ```
 
@@ -25,12 +24,28 @@ sidebar_position: 3
 |-----------|-----|-----------|------|
 | `preset` | `"basic"` \| `"minimal"` \| `"striped"` | - | プリセットスタイル |
 | `columns` | `Column<T>[]` | **必須** | カラム定義 |
-| `data` | `T[]` | **必須** | データ配列 |
-| `autoWidth` | `"all"` \| `"body"` \| `false` | `false` | 列幅自動調整 |
+| `data` | `T[]` | **必須** | データ配列（`_style`、`_rowStyle`で行・セル単位スタイル指定可） |
+| `autoWidth` | `"all"` \| `"body"` \| `false` | `"all"` | 列幅自動調整 |
 | `mergeSameValues` | `boolean` | `false` | 同じ値のセルを縦方向にマージ |
 | `style` | `TableStyle` | - | テーブル全体のスタイル |
 | `border` | `BorderStyle` | - | 罫線設定 |
-| `conditionalStyle` | `function` | - | 条件付きスタイル |
+
+### data の特殊プロパティ
+
+データ配列の各要素には、以下の特殊プロパティを追加できます:
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `_rowStyle` | `CellStyle` | この行全体に適用するスタイル |
+| `_style` | `Partial<Record<keyof T, CellStyle>>` | 特定のセルに適用するスタイル |
+
+```typescript
+data: [
+  { name: "通常", price: 100 },
+  { name: "強調", price: 200, _rowStyle: { fill: "#FFFF00" } },
+  { name: "混合", price: 300, _rowStyle: { bold: true }, _style: { price: { fill: "#FF0000" } } },
+]
+```
 
 ## カラム定義（Column）
 
@@ -81,9 +96,9 @@ columns: [
 
 | 値 | 説明 |
 |----|------|
-| `"all"` | ヘッダーとボディ両方の最大幅で調整 |
+| `"all"` | ヘッダーとボディ両方の最大幅で調整（デフォルト） |
 | `"body"` | ボディのみで調整（ヘッダーは無視） |
-| `false` | 自動調整しない（デフォルト） |
+| `false` | 自動調整しない |
 
 ```typescript
 .table({
@@ -112,23 +127,6 @@ columns: [
     { key: "name", label: "商品名" },
   ],
   data: [...],
-})
-```
-
-## conditionalStyle
-
-条件に基づいてセルにスタイルを適用します。
-
-```typescript
-.table({
-  columns: [...],
-  data: [...],
-  conditionalStyle: (row, col) => {
-    if (col === "profit" && row.profit < 0) {
-      return { color: "#FF0000" };
-    }
-    return {};
-  },
 })
 ```
 

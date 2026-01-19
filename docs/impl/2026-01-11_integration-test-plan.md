@@ -70,7 +70,6 @@ xlkitは「ブロックを上から積み上げる」設計のため、各ブロ
 | mergeSameValues | 同値セルの垂直マージ |
 | マルチヘッダー | 親カラム構造（階層ヘッダー） |
 | border | 罫線設定 |
-| conditionalStyle | 条件付きスタイル |
 | _style | セル単位スタイル |
 
 ### 観点4: スタイル項目
@@ -148,7 +147,7 @@ xlkitは「ブロックを上から積み上げる」設計のため、各ブロ
 | `03-formats.xlsx` | 数値/日付/通貨など書式 | 3 |
 | `04-structure.xlsx` | 複数シート + space + 複合ブロック | 3 |
 | `05-table-features.xlsx` | autoWidth/mergeSameValues/border | 5 |
-| `06-cell-styles.xlsx` | _style + conditionalStyle | 2 |
+| `06-cell-styles.xlsx` | _style | 1 |
 | `07-image.xlsx` | 画像ブロック | 1 |
 
 ---
@@ -296,7 +295,6 @@ columns: [
 | シート名 | カバーする機能 |
 |---------|---------------|
 | CellStyle | _style によるセル単位スタイル |
-| ConditionalStyle | conditionalStyle 関数 |
 
 **CellStyleシートのデータ:**
 ```typescript
@@ -305,11 +303,6 @@ data: [
   { name: "強調", price: 200, _style: { price: { bold: true, fill: "#FFFF00" } } },
   { name: "警告", price: -50, _style: { price: { color: "#FF0000" } } },
 ]
-```
-
-**ConditionalStyleシートの条件:**
-```typescript
-conditionalStyle: (row) => row.profit < 0 ? { color: "#FF0000", bold: true } : {}
 ```
 
 ---

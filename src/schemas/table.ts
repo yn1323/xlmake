@@ -14,10 +14,9 @@ export const tableOptionsSchema = z
     preset: tablePresetSchema.optional(),
     columns: columnsSchema,
     data: z.array(z.record(z.string(), z.any())),
-    autoWidth: autoWidthOptionSchema.optional(),
+    autoWidth: autoWidthOptionSchema.default("all"),
     mergeSameValues: z.boolean().optional(),
     style: tableStyleSchema.optional(),
     border: borderStyleSchema.optional(),
-    conditionalStyle: z.function().optional(),
   })
   .strict();

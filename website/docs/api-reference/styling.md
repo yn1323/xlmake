@@ -149,7 +149,7 @@ sidebar_position: 4
 1. **プリセット** - `preset: "basic"` など
 2. **テーブルスタイル** - `style.header` / `style.body`
 3. **列スタイル** - `columns[].style`
-4. **条件付きスタイル** - `conditionalStyle`
+4. **行スタイル** - `data[]._rowStyle`
 5. **セル単位スタイル** - `data[]._style`
 
 ```typescript
@@ -162,17 +162,12 @@ sidebar_position: 4
   columns: [
     { key: "price", label: "価格", style: { bold: true } },  // 3. この列を太字
   ],
-  conditionalStyle: (row, col) => {  // 4. 条件でスタイル適用
-    if (col === "price" && row.price < 0) {
-      return { color: "#FF0000" };
-    }
-    return {};
-  },
   data: [
     {
       name: "特価",
       price: 100,
-      _style: { price: { fill: "#FFFF00" } },  // 5. このセルだけ背景色
+      _rowStyle: { fill: "#E0E0E0" },  // 4. この行全体に背景色
+      _style: { price: { fill: "#FFFF00" } },  // 5. このセルだけ背景色（優先）
     },
   ],
 })
@@ -182,4 +177,3 @@ sidebar_position: 4
 
 - [.table()](./table.md) - テーブルAPIの詳細
 - [罫線の例](../examples/borders.md) - 罫線の使用例
-- [条件付きスタイルの例](../examples/conditional-styling.md) - 条件付きスタイルの使用例

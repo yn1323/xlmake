@@ -186,11 +186,6 @@ data: [
 ]
 ```
 
-#### 5. 条件付きスタイル
-```typescript
-conditionalStyle: (row, col) => row.price < 0 ? { color: "red" } : {}
-```
-
 ### 4.3 スタイル項目一覧
 
 #### フォント
@@ -328,16 +323,6 @@ const dataWithStyle = [
   { name: "PC", price: 100, _style: { price: { bold: true, fill: "#FFFF00" } } },
   { name: "モニタ", price: -50, _style: { price: { color: "#FF0000" } } },
 ];
-
-// 条件付きスタイル
-xlmake()
-  .sheet("データ")
-    .table({
-      columns: [...],
-      data: salesData,
-      conditionalStyle: (row) => row.price < 0 ? { color: "#FF0000" } : {},
-    })
-  .save("conditional.xlsx");
 ```
 
 ---

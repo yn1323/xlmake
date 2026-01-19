@@ -80,7 +80,6 @@ xlmakeは「ブロックを上から積み上げる」方式。
     body?: {...},
   },
   border?: {...},
-  conditionalStyle?: (row, col) => Style | {},
 })
 ```
 
@@ -328,9 +327,7 @@ workbook.sheetNames  // → ["売上", "在庫"]
    ↓ 上書き
 3. 行の種類（header / body）
    ↓ 上書き
-4. 条件付きスタイル（conditionalStyle）
-   ↓ 上書き
-5. セル単位スタイル（_style）  ← 最優先
+4. セル単位スタイル（_style）  ← 最優先
 ```
 
 ### 6.3 スタイル指定方法
@@ -369,12 +366,6 @@ data: [
   { name: "PC", price: 100, _style: { price: { bold: true } } },
   { name: "モニタ", price: 50 },
 ]
-```
-
-#### 5. 条件付きスタイル
-
-```typescript
-conditionalStyle: (row, col) => row.price < 0 ? { color: "red" } : {}
 ```
 
 ---

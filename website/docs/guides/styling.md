@@ -81,25 +81,22 @@ xlmakeでは様々な方法でスタイルを適用できます。
 })
 ```
 
-## 条件付きスタイル
+## 行スタイル（_rowStyle）
 
-データの値に基づいてスタイルを適用します。
+特定のデータ行全体にスタイルを適用します。
 
 ```typescript
 .table({
   columns: [...],
-  data: [...],
-  conditionalStyle: (row, col) => {
-    if (col === "profit" && row.profit < 0) {
-      return { color: "#FF0000" };  // 赤文字
-    }
-    if (col === "price" && row.price >= 10000) {
-      return { bold: true };  // 太字
-    }
-    return {};
-  },
+  data: [
+    { name: "通常", price: 100 },
+    { name: "強調", price: 200, _rowStyle: { fill: "#FFFF00" } },
+    { name: "合計", price: 300, _rowStyle: { bold: true, fill: "#E0E0E0" } },
+  ],
 })
 ```
+
+`_rowStyle`は行全体に同じスタイルを適用したい場合に便利です。例えば、合計行を目立たせたり、エラー行に警告色を付けたりできます。
 
 ## セル単位スタイル（_style）
 
@@ -128,7 +125,7 @@ xlmakeでは様々な方法でスタイルを適用できます。
 1. **プリセット** - `preset: "basic"` など
 2. **テーブルスタイル** - `style.header` / `style.body`
 3. **列スタイル** - `columns[].style`
-4. **条件付きスタイル** - `conditionalStyle`
+4. **行スタイル** - `data[]._rowStyle`
 5. **セル単位スタイル** - `data[]._style`
 
 ## 数値書式
@@ -177,4 +174,3 @@ xlmakeでは様々な方法でスタイルを適用できます。
 
 - [スタイルAPI](../api-reference/styling.md) - 全スタイルプロパティの詳細
 - [罫線の例](../examples/borders.md) - 罫線の使用例
-- [条件付きスタイルの例](../examples/conditional-styling.md) - 条件付きスタイルの使用例

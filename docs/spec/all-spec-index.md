@@ -14,7 +14,7 @@
 | ファイル | 説明 |
 |---------|------|
 | `docs/guides/basic-usage.md` | ビルダーパターン、シート操作、テーブル/テキスト追加、出力方法 |
-| `docs/guides/styling.md` | プリセット、CellStyle、条件付きスタイル、罫線設定 |
+| `docs/guides/styling.md` | プリセット、CellStyle、_rowStyle、条件付きスタイル、罫線設定 |
 | `docs/guides/multi-sheet.md` | 複数シートの作成、シート名の制約 |
 | `docs/guides/images.md` | 画像挿入方法、ImageOptions |
 | `docs/guides/reading.md` | read()関数、WorkbookReader/SheetReader/CellReader |
@@ -38,7 +38,6 @@
 | `docs/examples/multi-header.md` | マルチヘッダー（階層ヘッダー）の例 |
 | `docs/examples/cell-merge.md` | 同値セルの縦方向マージ例 |
 | `docs/examples/borders.md` | 罫線設定の例 |
-| `docs/examples/conditional-styling.md` | conditionalStyle/_styleの使用例 |
 
 ### リファレンス（Reference）
 | ファイル | 説明 |

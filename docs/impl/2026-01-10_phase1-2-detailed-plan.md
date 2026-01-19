@@ -242,9 +242,6 @@ export type TableOptions<T> = {
   // スタイル
   style?: TableStyle;
   border?: BorderStyle;
-
-  // 条件付きスタイル
-  conditionalStyle?: (row: T, col: keyof T) => CellStyle | {};
 };
 ```
 
@@ -252,20 +249,15 @@ export type TableOptions<T> = {
 - `data` の型: `T & { _style?: ... }`
   - 各行にセル単位のスタイルを指定可能（`_style` プロパティ）
   - 例: `{ name: "太郎", age: 30, _style: { age: { bold: true } } }`
-- `conditionalStyle` は関数型
-  - 行とカラムを受け取り、スタイルを返す
-  - 空オブジェクト `{}` を返すとスタイル適用なし
 
 **スタイルのカスケーディング優先度**（低 → 高）:
 1. `preset` - ベース
 2. `columns[].style` - 列単位
 3. `style.header` / `style.body` - 行種類
-4. `conditionalStyle()` - 条件付き
-5. `data[]._style` - セル単位（最優先）
+4. `data[]._style` - セル単位（最優先）
 
 **テスト方針**:
 - 型定義のみなので、コンパイルが通ることを確認
-- `conditionalStyle` の型が正しく推論されることを確認
 
 ---
 
@@ -686,15 +678,12 @@ export const tableOptionsSchema = z.object({
   mergeSameValues: z.boolean().optional(),
   style: tableStyleSchema.optional(),
   border: borderStyleSchema.optional(),
-  conditionalStyle: z.function().optional(),
 }).strict();
 ```
 
 **実装上の注意**:
 - `data` は `z.record(z.unknown())` で任意のオブジェクト配列として扱う
   - ジェネリック型 `<T>` はランタイムでは扱えないため
-- `conditionalStyle` は `z.function()` でバリデーション
-  - 関数の引数や戻り値の型検証はZodでは困難（TypeScriptの型に任せる）
 - `autoWidth` は `"all" | "body" | false` のUnion型
 
 **テスト方針**:
