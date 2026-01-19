@@ -16,7 +16,10 @@ export type TableOptions<T> = {
   columns: Column<T>[];
 
   // データ
-  data: (T & { _style?: Partial<Record<keyof T, CellStyle>> })[];
+  data: (T & {
+    _style?: Partial<Record<keyof T, CellStyle>>;
+    _rowStyle?: CellStyle;
+  })[];
 
   // 列幅
   autoWidth?: AutoWidthOption;
@@ -27,7 +30,4 @@ export type TableOptions<T> = {
   // スタイル
   style?: TableStyle;
   border?: BorderStyle;
-
-  // 条件付きスタイル
-  conditionalStyle?: (row: T, col: keyof T) => CellStyle | Record<string, never>;
 };

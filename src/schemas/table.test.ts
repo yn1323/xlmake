@@ -30,7 +30,6 @@ describe("tableOptionsSchema", () => {
           body: { fontSize: 10 },
         },
         border: { outline: "thin", headerBody: "medium", borderColor: "#000000" },
-        conditionalStyle: (_row: Record<string, unknown>, _col: string) => ({}),
       };
       const result = tableOptionsSchema.safeParse(options);
       expect(result.success).toBe(true);

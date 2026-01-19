@@ -18,6 +18,5 @@ export const tableOptionsSchema = z
     mergeSameValues: z.boolean().optional(),
     style: tableStyleSchema.optional(),
     border: borderStyleSchema.optional(),
-    conditionalStyle: z.function().optional(),
   })
   .strict();

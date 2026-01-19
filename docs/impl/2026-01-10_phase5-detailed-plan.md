@@ -422,7 +422,7 @@ export class SheetWriter {
    * テーブルを書き込む
    */
   private writeTable<T>(options: TableOptions<T>): void {
-    const { preset, columns, data, autoWidth, style, border, conditionalStyle } = options;
+    const { preset, columns, data, autoWidth, style, border } = options;
 
     // プリセット取得
     const presetConfig = preset ? getPreset(preset) : undefined;
@@ -441,7 +441,7 @@ export class SheetWriter {
     this.writeHeaders(columns, leafColumns, headerDepth, presetConfig, style);
 
     // データ行書き込み
-    this.writeDataRows(leafColumns, data, presetConfig, style, conditionalStyle);
+    this.writeDataRows(leafColumns, data, presetConfig, style);
 
     // 罫線を適用
     if (border || presetConfig?.border) {
@@ -507,7 +507,6 @@ export class SheetWriter {
         const baseStyle = presetConfig?.style?.body;
         const columnStyle = col.style;
         const rowStyle = tableStyle?.body;
-        const condStyle = conditionalStyle?.(rowData, col.key) || {};
         const cellStyle = rowData._style?.[col.key];
 
         // ストライプ
@@ -521,7 +520,6 @@ export class SheetWriter {
           stripeStyle,
           columnStyle,
           rowStyle,
-          condStyle,
           cellStyle
         );
 
