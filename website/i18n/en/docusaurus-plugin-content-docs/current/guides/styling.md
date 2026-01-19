@@ -81,25 +81,22 @@ Apply styles to specific columns.
 })
 ```
 
-## Conditional Style
+## Row Style (_rowStyle)
 
-Apply styles based on data values.
+Apply styles to entire data rows.
 
 ```typescript
 .table({
   columns: [...],
-  data: [...],
-  conditionalStyle: (row, col) => {
-    if (col === "profit" && row.profit < 0) {
-      return { color: "#FF0000" };  // Red text
-    }
-    if (col === "price" && row.price >= 10000) {
-      return { bold: true };  // Bold
-    }
-    return {};
-  },
+  data: [
+    { name: "Normal", price: 100 },
+    { name: "Highlighted", price: 200, _rowStyle: { fill: "#FFFF00" } },
+    { name: "Total", price: 300, _rowStyle: { bold: true, fill: "#E0E0E0" } },
+  ],
 })
 ```
+
+`_rowStyle` is useful when you want to apply the same style to an entire row. For example, highlighting totals or applying warning colors to error rows.
 
 ## Cell-Level Style (_style)
 
@@ -128,7 +125,7 @@ Styles are applied in this order (later ones take precedence):
 1. **Preset** - `preset: "basic"` etc.
 2. **Table Style** - `style.header` / `style.body`
 3. **Column Style** - `columns[].style`
-4. **Conditional Style** - `conditionalStyle`
+4. **Row Style** - `data[]._rowStyle`
 5. **Cell-Level Style** - `data[]._style`
 
 ## Number Format
@@ -177,4 +174,3 @@ Styles are applied in this order (later ones take precedence):
 
 - [Style API](../api-reference/styling.md) - All style properties
 - [Borders Examples](../examples/borders.md) - Border usage examples
-- [Conditional Styling Examples](../examples/conditional-styling.md) - Conditional style examples

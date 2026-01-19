@@ -69,6 +69,9 @@ describe("09-merge.xlsx", () => {
           { key: "price" as const, label: "価格" },
         ],
         data: mergeData,
+        style: {
+          header: { fill: "#4472C4", color: "#FFFFFF", bold: true },
+        },
         border: {
           outline: "medium",
           headerBody: "medium",
@@ -229,6 +232,12 @@ describe("09-merge.xlsx", () => {
 
     // 罫線が適用されている
     expect(multiHeaderSheet.cell("A1").border?.top?.style).toBe("medium");
+
+    // ヘッダースタイルの検証（マージされたヘッダーセルにも適用されている）
+    expect(multiHeaderSheet.cell("A1").style?.fill).toBe("#4472C4");
+    expect(multiHeaderSheet.cell("A1").style?.color).toBe("#FFFFFF");
+    expect(multiHeaderSheet.cell("A1").style?.bold).toBe(true);
+    expect(multiHeaderSheet.cell("C1").style?.fill).toBe("#4472C4"); // 縦マージされたセル
 
     // === DeepMultiHeader シートの検証 ===
     const deepMultiHeaderSheet = workbook.sheet("DeepMultiHeader");

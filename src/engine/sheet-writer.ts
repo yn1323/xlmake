@@ -69,9 +69,9 @@ export class SheetWriter {
     // リーフカラムをフラット化
     const leafColumns = flattenColumns(columns);
 
-    // 列幅計算
-    if (autoWidth !== false && autoWidth !== undefined) {
-      this.setColumnWidths(leafColumns, data, autoWidth);
+    // 列幅計算（スキーマでデフォルト値 "all" が設定されているが、型のため ?? でフォールバック）
+    if (autoWidth !== false) {
+      this.setColumnWidths(leafColumns, data, autoWidth ?? "all");
     }
 
     // ヘッダー書き込み（マルチヘッダー対応）
@@ -193,7 +193,7 @@ export class SheetWriter {
    */
   private writeDataRows<T>(
     leafColumns: LeafColumn<T>[],
-    data: (T & { _style?: Partial<Record<keyof T, CellStyle>> })[],
+    data: (T & { _style?: Partial<Record<keyof T, CellStyle>>; _rowStyle?: CellStyle })[],
     presetConfig: TablePresetConfig | undefined,
     tableStyle: TableStyle | undefined,
     borderStyle: BorderStyle | undefined,
@@ -224,7 +224,8 @@ export class SheetWriter {
         // スタイルのカスケーディング
         const baseStyle = presetConfig?.style?.body;
         const columnStyle = col.style;
-        const rowStyle = tableStyle?.body;
+        const tableBodyStyle = tableStyle?.body;
+        const rowRowStyle = rowData._rowStyle;
         const cellStyle = rowData._style?.[col.key];
 
         // ストライプ
@@ -232,7 +233,7 @@ export class SheetWriter {
         const stripeStyle =
           isOddRow && presetConfig?.stripedRowColor ? { fill: presetConfig.stripedRowColor } : undefined;
 
-        const finalStyle = mergeStyles(baseStyle, stripeStyle, columnStyle, rowStyle, cellStyle);
+        const finalStyle = mergeStyles(baseStyle, stripeStyle, columnStyle, tableBodyStyle, rowRowStyle, cellStyle);
 
         writeCell(cell, value, finalStyle);
 

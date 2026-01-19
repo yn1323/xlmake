@@ -25,7 +25,6 @@ describe("06-cell-styles.xlsx", () => {
           { name: "警告", price: -50, _style: { price: { color: "#FF0000" } } },
         ],
       })
-      // Note: conditionalStyle は未実装のため、テストから除外
       .getNode();
 
     // ファイル保存（目視確認用）
@@ -47,7 +46,5 @@ describe("06-cell-styles.xlsx", () => {
     // 警告行（_style適用）
     expect(cellStyleSheet.cell("B4").value).toBe(-50);
     expect(cellStyleSheet.cell("B4").style?.color).toBe("#FF0000");
-
-    // Note: conditionalStyle は未実装のため、テストから除外
   });
 });

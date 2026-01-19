@@ -32,6 +32,16 @@ describe("05-table-features.xlsx", () => {
         ],
         data: [{ short: "A", long: "ボディのテキストが長い場合" }],
       })
+      // AutoWidthFalse
+      .sheet("AutoWidthFalse")
+      .table({
+        autoWidth: false,
+        columns: [
+          { key: "short", label: "短" },
+          { key: "long", label: "長いヘッダーテキスト" },
+        ],
+        data: [{ short: "A", long: "データ" }],
+      })
       .getNode();
 
     // ファイル保存（目視確認用）
@@ -50,5 +60,12 @@ describe("05-table-features.xlsx", () => {
     const autoWidthBody = workbook.sheet("AutoWidthBody");
     expect(autoWidthBody.cell("A1").value).toBe("短いヘッダー");
     expect(autoWidthBody.cell("B2").value).toBe("ボディのテキストが長い場合");
+
+    // AutoWidthFalse シート検証（値の確認）
+    const autoWidthFalse = workbook.sheet("AutoWidthFalse");
+    expect(autoWidthFalse.cell("A1").value).toBe("短");
+    expect(autoWidthFalse.cell("B1").value).toBe("長いヘッダーテキスト");
+    expect(autoWidthFalse.cell("A2").value).toBe("A");
+    expect(autoWidthFalse.cell("B2").value).toBe("データ");
   });
 });

@@ -149,7 +149,7 @@ Styles are applied in this order (later ones take precedence):
 1. **Preset** - `preset: "basic"` etc.
 2. **Table Style** - `style.header` / `style.body`
 3. **Column Style** - `columns[].style`
-4. **Conditional Style** - `conditionalStyle`
+4. **Row Style** - `data[]._rowStyle`
 5. **Cell-Level Style** - `data[]._style`
 
 ```typescript
@@ -162,17 +162,12 @@ Styles are applied in this order (later ones take precedence):
   columns: [
     { key: "price", label: "Price", style: { bold: true } },  // 3. Bold this column
   ],
-  conditionalStyle: (row, col) => {  // 4. Apply style by condition
-    if (col === "price" && row.price < 0) {
-      return { color: "#FF0000" };
-    }
-    return {};
-  },
   data: [
     {
       name: "Sale",
       price: 100,
-      _style: { price: { fill: "#FFFF00" } },  // 5. Background for this cell only
+      _rowStyle: { fill: "#E0E0E0" },  // 4. Background for entire row
+      _style: { price: { fill: "#FFFF00" } },  // 5. Background for this cell only (takes precedence)
     },
   ],
 })
@@ -182,4 +177,3 @@ Styles are applied in this order (later ones take precedence):
 
 - [.table()](./table.md) - Table API details
 - [Border Examples](../examples/borders.md) - Border usage examples
-- [Conditional Styling Examples](../examples/conditional-styling.md) - Conditional style examples

@@ -259,8 +259,7 @@ describe("hasPreset", () => {
 1. プリセット（`preset`）
 2. 列単位スタイル（`columns[].style`）
 3. 行種類（`style.header` / `style.body`）
-4. 条件付きスタイル（`conditionalStyle()`）
-5. セル単位（`data[]._style`） ← 最優先
+4. セル単位（`data[]._style`） ← 最優先
 
 ### 実装内容
 
@@ -325,22 +324,19 @@ import { getPreset } from "../styles/presets";
 const preset = getPreset("basic");
 const columnStyle = { align: "right" };
 const headerStyle = preset.style?.header;
-const conditionalStyle = { color: "#FF0000" };
 const cellStyle = { bold: true };
 
 // マージ（優先度順）
 const finalStyle = mergeStyles(
   headerStyle,        // 1. プリセットのヘッダースタイル
   columnStyle,        // 2. 列単位スタイル
-  conditionalStyle,   // 3. 条件付きスタイル
-  cellStyle,          // 4. セル単位スタイル（最優先）
+  cellStyle,          // 3. セル単位スタイル（最優先）
 );
 
 // 結果:
 // {
 //   bold: true,           // cellStyle から（最優先）
 //   fill: "#4472C4",      // headerStyle から
-//   color: "#FF0000",     // conditionalStyle から（headerStyleの#FFFFFFを上書き）
 //   align: "right",       // columnStyle から（headerStyleのcenterを上書き）
 // }
 ```

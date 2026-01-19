@@ -17,7 +17,6 @@ Adds a table.
   mergeSameValues?: boolean,
   style?: TableStyle,
   border?: BorderStyle,
-  conditionalStyle?: (row: T, col: keyof T) => CellStyle | {},
 })
 ```
 
@@ -25,12 +24,28 @@ Adds a table.
 |--------|------|---------|-------------|
 | `preset` | `"basic"` \| `"minimal"` \| `"striped"` | - | Preset style |
 | `columns` | `Column<T>[]` | **Required** | Column definitions |
-| `data` | `T[]` | **Required** | Data array |
-| `autoWidth` | `"all"` \| `"body"` \| `false` | `false` | Auto column width |
+| `data` | `T[]` | **Required** | Data array (supports `_style`, `_rowStyle` for row/cell styling) |
+| `autoWidth` | `"all"` \| `"body"` \| `false` | `"all"` | Auto column width |
 | `mergeSameValues` | `boolean` | `false` | Merge cells with same values vertically |
 | `style` | `TableStyle` | - | Table-wide style |
 | `border` | `BorderStyle` | - | Border settings |
-| `conditionalStyle` | `function` | - | Conditional styling |
+
+### Special Properties for data
+
+Each element in the data array can have these special properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `_rowStyle` | `CellStyle` | Style applied to the entire row |
+| `_style` | `Partial<Record<keyof T, CellStyle>>` | Style applied to specific cells |
+
+```typescript
+data: [
+  { name: "Normal", price: 100 },
+  { name: "Highlighted", price: 200, _rowStyle: { fill: "#FFFF00" } },
+  { name: "Mixed", price: 300, _rowStyle: { bold: true }, _style: { price: { fill: "#FF0000" } } },
+]
+```
 
 ## Column Definition (Column)
 
@@ -81,9 +96,9 @@ Auto-adjusts column width.
 
 | Value | Description |
 |-------|-------------|
-| `"all"` | Adjust by max width of header and body |
+| `"all"` | Adjust by max width of header and body (default) |
 | `"body"` | Adjust by body only (ignore header) |
-| `false` | No auto-adjustment (default) |
+| `false` | No auto-adjustment |
 
 ```typescript
 .table({
@@ -112,23 +127,6 @@ Merges cells with same values vertically.
     { key: "name", label: "Name" },
   ],
   data: [...],
-})
-```
-
-## conditionalStyle
-
-Applies styles to cells based on conditions.
-
-```typescript
-.table({
-  columns: [...],
-  data: [...],
-  conditionalStyle: (row, col) => {
-    if (col === "profit" && row.profit < 0) {
-      return { color: "#FF0000" };
-    }
-    return {};
-  },
 })
 ```
 
