@@ -186,7 +186,6 @@ type TableOptions<T> = {
   mergeSameValues?: boolean;
   style?: { header?: CellStyle; body?: CellStyle };
   border?: BorderStyle;
-  conditionalStyle?: (row: T, col: keyof T) => CellStyle | {};
 };
 ```
 
