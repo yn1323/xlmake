@@ -25,7 +25,7 @@ sidebar_position: 3
 | `preset` | `"basic"` \| `"minimal"` \| `"striped"` | - | プリセットスタイル |
 | `columns` | `Column<T>[]` | **必須** | カラム定義 |
 | `data` | `T[]` | **必須** | データ配列（`_style`、`_rowStyle`で行・セル単位スタイル指定可） |
-| `autoWidth` | `"all"` \| `"body"` \| `false` | `false` | 列幅自動調整 |
+| `autoWidth` | `"all"` \| `"body"` \| `false` | `"all"` | 列幅自動調整 |
 | `mergeSameValues` | `boolean` | `false` | 同じ値のセルを縦方向にマージ |
 | `style` | `TableStyle` | - | テーブル全体のスタイル |
 | `border` | `BorderStyle` | - | 罫線設定 |
@@ -96,9 +96,9 @@ columns: [
 
 | 値 | 説明 |
 |----|------|
-| `"all"` | ヘッダーとボディ両方の最大幅で調整 |
+| `"all"` | ヘッダーとボディ両方の最大幅で調整（デフォルト） |
 | `"body"` | ボディのみで調整（ヘッダーは無視） |
-| `false` | 自動調整しない（デフォルト） |
+| `false` | 自動調整しない |
 
 ```typescript
 .table({

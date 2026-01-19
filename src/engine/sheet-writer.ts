@@ -69,9 +69,9 @@ export class SheetWriter {
     // リーフカラムをフラット化
     const leafColumns = flattenColumns(columns);
 
-    // 列幅計算
-    if (autoWidth !== false && autoWidth !== undefined) {
-      this.setColumnWidths(leafColumns, data, autoWidth);
+    // 列幅計算（スキーマでデフォルト値 "all" が設定されているが、型のため ?? でフォールバック）
+    if (autoWidth !== false) {
+      this.setColumnWidths(leafColumns, data, autoWidth ?? "all");
     }
 
     // ヘッダー書き込み（マルチヘッダー対応）

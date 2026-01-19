@@ -25,7 +25,7 @@ Adds a table.
 | `preset` | `"basic"` \| `"minimal"` \| `"striped"` | - | Preset style |
 | `columns` | `Column<T>[]` | **Required** | Column definitions |
 | `data` | `T[]` | **Required** | Data array (supports `_style`, `_rowStyle` for row/cell styling) |
-| `autoWidth` | `"all"` \| `"body"` \| `false` | `false` | Auto column width |
+| `autoWidth` | `"all"` \| `"body"` \| `false` | `"all"` | Auto column width |
 | `mergeSameValues` | `boolean` | `false` | Merge cells with same values vertically |
 | `style` | `TableStyle` | - | Table-wide style |
 | `border` | `BorderStyle` | - | Border settings |
@@ -96,9 +96,9 @@ Auto-adjusts column width.
 
 | Value | Description |
 |-------|-------------|
-| `"all"` | Adjust by max width of header and body |
+| `"all"` | Adjust by max width of header and body (default) |
 | `"body"` | Adjust by body only (ignore header) |
-| `false` | No auto-adjustment (default) |
+| `false` | No auto-adjustment |
 
 ```typescript
 .table({
