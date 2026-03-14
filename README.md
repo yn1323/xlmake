@@ -52,6 +52,10 @@ const output = await xlmake()
 await output.saveToFile("report.xlsx");
 ```
 
+## For AI Tools
+
+If you are using AI coding assistants (GitHub Copilot, Claude, ChatGPT, etc.), see [llms.txt](./llms.txt) for a comprehensive API reference optimized for LLM consumption.
+
 ## License
 
 MIT
