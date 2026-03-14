@@ -1,0 +1,66 @@
+# xlmake
+
+> Declarative Excel generation library for TypeScript. Built on ExcelJS, providing a method-chaining API where code reflects the final Excel structure. Runs in both Node.js and browsers.
+
+## Quick Start
+
+Install:
+
+```
+npm install xlmake
+```
+
+```typescript
+import { xlmake } from "xlmake";
+
+const output = await xlmake()
+  .sheet("Sales")
+  .table({
+    preset: "basic",
+    columns: [
+      { key: "name", label: "Product" },
+      { key: "price", label: "Price" },
+      { key: "quantity", label: "Quantity" },
+    ],
+    data: [
+      { name: "Apple", price: 100, quantity: 50 },
+      { name: "Orange", price: 80, quantity: 100 },
+    ],
+  })
+  .getNode();
+
+await output.saveToFile("report.xlsx");
+```
+
+## API Reference
+
+- [Overview](website/docs/api-reference/overview.md): API structure and design concepts
+- [xlmake()](website/docs/api-reference/xlmake.md): WorkbookBuilder and SheetBuilder methods (sheet, merge, getNode, getBrowser, table, text, image, space)
+- [.table()](website/docs/api-reference/table.md): TableOptions, Column definitions (LeafColumn, ParentColumn), autoWidth, mergeSameValues
+- [Styling](website/docs/api-reference/styling.md): CellStyle, TableStyle, BorderStyle, LineStyle, AlignType, style priority
+- [.text()](website/docs/api-reference/text.md): Text input (plain string or styled object)
+- [.image()](website/docs/api-reference/image.md): ImageOptions (source, width, height, row, col)
+- [Reading API](website/docs/api-reference/reading.md): read(), WorkbookReader, SheetReader, CellReader
+
+## Guides
+
+- [Quick Start](website/docs/quick-start.md): Getting started with xlmake
+- [Basic Usage](website/docs/guides/basic-usage.md): Core concepts and patterns
+- [Multi-sheet](website/docs/guides/multi-sheet.md): Working with multiple sheets
+- [Styling](website/docs/guides/styling.md): Applying styles and presets
+- [Images](website/docs/guides/images.md): Inserting images into sheets
+- [Reading Excel files](website/docs/guides/reading.md): Reading existing Excel files
+
+## Examples
+
+- [Basic Table](website/docs/examples/basic-table.md): Simple table output
+- [Presets](website/docs/examples/presets.md): Using basic, minimal, and striped presets
+- [Borders](website/docs/examples/borders.md): Border styling examples
+- [Multi-level Headers](website/docs/examples/multi-header.md): Nested column headers
+- [Cell Merge](website/docs/examples/cell-merge.md): Merging cells with same values
+
+## Reference
+
+- [Presets](website/docs/reference/presets.md): Detailed preset specifications
+- [Excel Constraints](website/docs/reference/excel-constraints.md): Excel format limitations
+- [Limitations](website/docs/reference/limitations.md): Features not supported by xlmake

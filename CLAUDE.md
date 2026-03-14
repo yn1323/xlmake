@@ -32,6 +32,7 @@
 - IMPORTANT: 開発者の指摘が誤っているときは、根拠を示して反論すること
 - IMPORTANT: このライブラリ呼び出し方法を検討するときは、Developer Experienceを重視して考えること
 - IMPORTANT: リリース前につきソースコードの修正時のマイグレーション考慮は不要。でも警告くらいは出してね
+- IMPORTANT: APIの追加・変更・削除を行った場合、llms.txtも同期的に更新すること。llms.txtはLLMがxlmakeを理解するためのAPI要約ファイル
 
 ## 開発コマンド
 
